@@ -23,7 +23,8 @@ namespace app {
     // - Create a Sprite, load texture, add as costume
     // - Render sprite
     // - Drag & drop on mouse
-    // - Optional keyboard controls for move/turn
+    // - Keyboard controls (W/S move, A/D turn)
+    // - Pen integration (P toggle down/up, E erase, T stamp, C color, [/] size)
 
     // Returns 0 on clean exit, nin-zero on failure.
 

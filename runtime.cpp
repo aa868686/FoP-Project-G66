@@ -1,6 +1,7 @@
 #include "runtime.h"
 #include "sprite.h"
 #include "texture_loader.h"
+#include "pen.h"
 #include <SDL2/SDL_image.h>
 #include <cstdio>
 
@@ -73,6 +74,34 @@ namespace app {
     }
 
 
+    // Simple color cycle for pen (black -> red -> green -> blue -> black)
+    static SDL_Color pen_next_color ( SDL_Color c ) {
+        if ( c.r == 0 && c.g == 0 && c.b == 0 ) {
+            return SDL_Color { 255 , 0 , 0 , 255 } ;
+        }
+        if ( c.r == 255 && c.g == 0 && c.b == 0 ) {
+            return SDL_Color { 0 , 255 , 0 , 255 } ;
+        }
+        if ( c.r == 0 && c.g == 255 && c.b == 0 ) {
+            return SDL_Color { 0 , 0 , 255 , 255 } ;
+        }
+
+        return SDL_Color { 0 , 0 , 0 , 255 } ;
+    }
+
+
+    static SDL_Texture * sprite_current_texture ( const gfx :: sprite & spr ) {
+        if ( spr . costumes . empty() ) {
+            return nullptr ;
+        }
+        if ( spr . current_costume < 0 || spr . current_costume >= (int) spr.costumes.size() ) {
+            return nullptr ;
+        }
+
+        return spr . costumes[spr.current_costume] . texture ;
+    }
+
+
     int run_basic_sprite_demo ( const runtimeConfig & cfg ,
                                 const std :: string & sprite_image_path
                                 ) {
@@ -114,13 +143,26 @@ namespace app {
         // Add as costume
         gfx :: sprite_add_costume ( spr , tex , tex_w , tex_h , "default" ) ;
 
+
+        // Pen state (persistent)
+        gfx :: pen_state pen {} ;
+        gfx :: pen_init ( pen ) ;
+
         bool running = true ;
+
+
+
 
         // Simple keyboard controls : W/S = move, A/D = turn
         const float move_step = 5.0f ;
         const float turn_step = 5.0f ;
 
         while ( running ) {
+            // Track previous sprite position so we can add pen points when it moves.
+            const float prev_x = spr.x ;
+            const float prev_y = spr.y ;
+
+
             SDL_Event e ;
             while ( SDL_PollEvent ( &e ) ) {
                 if ( e.type == SDL_QUIT ) {
@@ -139,6 +181,41 @@ namespace app {
                     // allow exit with ESC
                     if ( e.key.keysym.sym == SDLK_ESCAPE ) {
                         running = false ;
+                        continue ;
+                    }
+
+
+                    // Pen controls
+                    if ( e.key.keysym.sym == SDLK_p ) {
+                        // Toggle pen down/up using the sprite center
+                        if ( !pen.is_down ) {
+                            gfx :: pen_down ( pen , spr.x , spr.y ) ;
+                        } else {
+                            gfx :: pen_up ( pen ) ;
+                        }
+                    } else if ( e.key.keysym.sym == SDLK_c ) {
+                        gfx :: pen_set_color ( pen , pen_next_color ( pen.color ) ) ;
+                    } else if ( e.key.keysym.sym == SDLK_e ) {
+                        gfx :: pen_erase_all ( pen ) ;
+                    } else if ( e.key.keysym.sym == SDLK_LEFTBRACKET ) {
+                        gfx :: pen_change_size ( pen , -1 ) ;
+                    } else if ( e.key.keysym.sym == SDLK_RIGHTBRACKET ) {
+                        gfx :: pen_change_size ( pen , +1 ) ;
+                    } else if ( e.key.keysym.sym == SDLK_t ) {
+                        // Stamp current sprite costume with same render params as sprite_draw.
+                        float w = 0.0f , h = 0.0f ;
+                        if ( gfx :: sprite_get_render_size ( spr , w , h ) ) {
+                            SDL_FRect dst ;
+                            dst.x = ( spr.x - ( w * 0.5f ) ) + ( float ) stage.x ;
+                            dst.y = ( spr.x - ( h * 0.5f ) ) + ( float ) stage.y ;
+                            dst.w = w ;
+                            dst.h = h ;
+
+                            SDL_FPoint center { dst.w * 0.5f , dst.h * 0.5f } ;
+                            const auto angle = (double)(spr.direction_deg - 90.0f ) ;
+
+                            gfx :: pen_stamp ( pen , sprite_current_texture ( spr ) , dst , angle , center ) ;
+                        }
                     }
                 }
             }
@@ -163,9 +240,18 @@ namespace app {
             // Keep sprite inside stage
             gfx :: sprite_clamp_to_stage ( spr , stage ) ;
 
-            // Render
+
+            // If pen is down and sprite moved (including dragging), add a point.
+            if ( pen.is_down && ( spr.x != prev_x || spr.y != prev_y ) ) {
+                gfx :: pen_add_point ( pen , spr.x , spr.y ) ;
+            }
+
+            // Render pipeline: background -> pen -> sprite
             SDL_SetRenderDrawColor ( renderer , 25 , 25 , 25 , 255 ) ;
             SDL_RenderClear ( renderer ) ;
+
+            gfx :: StageRect pen_stage { stage.x , stage.y , stage.w , stage.h } ;
+            gfx :: pen_render ( renderer , pen , pen_stage ) ;
 
             gfx :: sprite_draw ( renderer , spr , stage ) ;
 
