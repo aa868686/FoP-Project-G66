@@ -17,8 +17,8 @@ namespace app {
 
 
         // SDL_image init
-        int img_flags = IMG_INIT_PNG | IMG_INIT_JPG ;
-        int initted = IMG_Init ( img_flags ) ;
+        const int img_flags = IMG_INIT_PNG | IMG_INIT_JPG ;
+        const int initted = IMG_Init ( img_flags ) ;
         if ( ( initted & img_flags ) != img_flags ) {
             std :: fprintf ( stderr , "IMG_Init failed: %s\n" , IMG_GetError() ) ;
             SDL_Quit() ;
@@ -153,10 +153,10 @@ namespace app {
                 gfx :: sprite_move_steps ( spr , -move_step ) ;
             }
             if ( ks[SDL_SCANCODE_A] ) {
-                gfx :: sprite_move_steps ( spr , -turn_step ) ;
+                gfx :: sprite_turn_degree ( spr , -turn_step ) ;
             }
             if ( ks[SDL_SCANCODE_D] ) {
-                gfx :: sprite_move_steps ( spr , turn_step ) ;
+                gfx :: sprite_turn_degree ( spr , turn_step ) ;
             }
 
 
