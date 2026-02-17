@@ -122,13 +122,13 @@ namespace gfx {
         float w = 0 , h = 0 ;
         sprite_get_render_size ( s , w , h ) ;
 
-        float half_w = w * 0.5f ;
-        float half_h = h * 0.5f ;
+        const float half_w = w * 0.5f ;
+        const float half_h = h * 0.5f ;
 
-        float min_x = (float) stage.x + half_w ;
-        float max_x = (float)( stage.x + stage.w ) - half_w ;
-        float min_y = (float) stage.y + half_h ;
-        float max_y = (float)( stage.y + stage.h ) - half_h ;
+        const float min_x = half_w ;
+        const float max_x = (float) stage.w - half_w ;
+        const float min_y = half_h ;
+        const float max_y = (float) stage.h - half_h ;
 
         s.x = std :: min ( std :: max ( s.x , min_x ) , max_x ) ;
         s.y = std :: min ( std :: max ( s.y , min_y ) , max_y ) ;
