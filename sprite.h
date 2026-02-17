@@ -31,7 +31,7 @@ namespace gfx {
         bool visible = true ;
         bool draggable = false ;
 
-        //Sprite center position in stage coordinates ( pixels )
+        // Sprite center position in stage coordinates ( pixels )
         float x = 0.0f ;
         float y = 0.0f ;
 

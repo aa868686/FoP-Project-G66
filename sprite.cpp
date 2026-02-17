@@ -61,8 +61,8 @@ namespace gfx {
         s.x = x ;
         s.y = y ;
     }
-    void sprite_set_direction ( sprite &s , float degree ) {
-        s.direction_deg = degree ;
+    void sprite_set_direction ( sprite &s , float deg ) {
+        s.direction_deg = deg ;
     }
 
     void sprite_set_size ( sprite &s , float size_percent ) {
@@ -103,8 +103,8 @@ namespace gfx {
         s.y += dy * steps ;
     }
 
-    void sprite_turn_deg ( sprite &s , float degree ) {
-        s.direction_deg += degree ;
+    void sprite_turn_degree ( sprite &s , float deg ) {
+        s.direction_deg += deg ;
 
         // Normalize angle to [0,360)
         while ( s.direction_deg >= 360.0f ) {
@@ -138,13 +138,13 @@ namespace gfx {
 
     ///// Costume API /////
 
-    int sprite_add_costume ( sprite &s , SDL_Texture *tex , int tex_w , int tex_h , const char * costime_name ) {
+    int sprite_add_costume ( sprite &s , SDL_Texture *tex , int tex_w , int tex_h , const char * costume_name ) {
         Costume c ;
         c . texture = tex ;
         c . tex_w = tex_w ;
         c . tex_h = tex_h ;
-        if ( costime_name ) {
-            c.name = costime_name ;
+        if ( costume_name ) {
+            c.name = costume_name ;
         }
 
         s.costumes.push_back ( c ) ;
@@ -170,7 +170,7 @@ namespace gfx {
             return false ;
         }
 
-        for ( int i = 0 ; (int)s.costumes.size() ; ++i ) {
+        for ( int i = 0 ; i < (int)s.costumes.size() ; ++i ) {
             if ( s.costumes[i].name == costume_name ) {
                 s.current_costume = i ;
                 return true ;
@@ -226,7 +226,7 @@ namespace gfx {
 
 
         // Adjust angle so that 90 degrees means facing right ( no rotation visually )
-        double angle = (double)(s.direction_deg - 90.0 ) ;
+        double angle = (double)(s.direction_deg - 90.0f ) ;
 
         SDL_RenderCopyExF ( ren , c.texture , nullptr , &dst , angle , &center , SDL_FLIP_NONE ) ;
     }
@@ -250,12 +250,30 @@ namespace gfx {
     }
 
     void sprite_drag_begin ( sprite &s , int mouse_px , int mouse_py , const stage_rectangle & stage ) {
+        if ( !s.draggable ) {
+            return ;
+        }
+        if ( !sprite_hit_test_aabb ( s , mouse_px , mouse_py , stage ) ) {
+            return ;
+        }
+
+
+        float mx_stage = (float)( mouse_px - stage.x ) ;
+        float my_stage = (float)( mouse_py - stage.y ) ;
+
+        s.drag.dragging = true ;
+        s.drag.grab_dx = s.x - mx_stage ;
+        s.drag.grab_dy = s.y - my_stage ;
+
+    }
+
+    void sprite_drag_update ( sprite &s , int mouse_px , int mouse_py , const stage_rectangle & stage ) {
         if ( !s.drag.dragging ) {
             return ;
         }
 
-        float mx_stage = (float)( mouse_px - stage.x ) ;
-        float my_stage = (float)( mouse_py - stage.y ) ;
+        float mx_stage = ( float )( mouse_px - stage.x ) ;
+        float my_stage = ( float )( mouse_py - stage.y ) ;
 
         s.x = mx_stage + s.drag.grab_dx ;
         s.y = my_stage + s.drag.grab_dy ;
