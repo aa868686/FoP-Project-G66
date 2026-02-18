@@ -11,6 +11,7 @@
 #include "ui_menu.h"
 #include "ui_button.h"
 #include "backdrop.h"
+#include "sound_manager.h"
 
 namespace app {
 
@@ -87,6 +88,8 @@ namespace app {
 
         gfx :: pen_state pen {} ;
         gfx :: backdrop_manager backdrops {} ;
+        snd :: sound_manager sounds {} ;
+        bool sound_dragging = false ;
 
         ui :: menu menu_file {} ;
         ui :: menu menu_help {} ;
@@ -148,6 +151,8 @@ namespace app {
                 { "Background: Green Field" , true , [&]{ gfx :: backdrop_set_active_by_name ( st.backdrops , "Green Field" ) ;
                     close_all_menus ( st ) ; } } ,
                 { "Add Sprite..." , true , [&] { /* TODO: sprite picker */ } } ,
+                { "Add Sound..." , true , [&] { /* TODO: file dialog -> sound_add(st.sounds, path, name) */
+                    close_all_menus ( st ) ; } } ,
         };
 
         st.menu_run.title = "Run" ;
@@ -240,6 +245,13 @@ namespace app {
                         gfx :: sprite_drag_begin ( spr , mx , my , sr ) ;
                     }
                 }
+
+                if ( !menu_consumed ) {
+                    if ( snd :: sound_handle_click ( st.sounds , st.lay.spriteBar , mx , my ) ) {
+                        menu_consumed = true ;
+                    }
+                }
+
             }
 
             if ( e.type == SDL_MOUSEMOTION ) {
@@ -249,6 +261,9 @@ namespace app {
                 for ( auto & spr : st.sprites ) {
                     gfx :: sprite_drag_update ( spr , e.motion.x , e.motion.y , sr ) ;
                 }
+
+                snd :: sound_handle_drag ( st.sounds , st.lay.spriteBar ,
+                                           e.motion.x , e.motion.y , st.sound_dragging ) ;
             }
 
             if ( e.type == SDL_MOUSEBUTTONUP &&
@@ -256,6 +271,7 @@ namespace app {
                 for ( auto & spr : st.sprites ) {
                     gfx :: sprite_drag_end ( spr ) ;
                 }
+                st.sound_dragging = false ;
             }
         }
     }
@@ -301,6 +317,8 @@ namespace app {
             gfx :: sprite_draw ( st.renderer , spr , sr ) ;
         }
 
+        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar ) ;
+
         ui :: button_draw ( st.renderer , st.btn_run ,
                             clr :: btn_run , clr :: btn_border ) ;
         ui :: button_draw ( st.renderer , st.btn_stop ,
@@ -332,6 +350,8 @@ namespace app {
 
         st.backdrops = gfx :: backdrop_make_defaults () ;
 
+        snd :: sound_init() ;
+
         build_menus ( st ) ;
 
         while ( st.running ) {
@@ -343,6 +363,9 @@ namespace app {
             handle_events ( st ) ;
             render_frame ( st ) ;
         }
+
+        snd ::sound_stop_all ( st.sounds) ;
+        snd :: sound_quit () ;
 
         shutdown_sdl ( st.window , st.renderer ) ;
         return 0 ;
