@@ -3,8 +3,13 @@
 #include "texture_loader.h"
 #include "pen.h"
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL.h>
 #include <cstdio>
+#include <vector>
+#include <string>
 #include "layout.h"
+#include "ui_menu.h"
+#include "ui_button.h"
 
 namespace app {
 
@@ -12,16 +17,14 @@ namespace app {
                            SDL_Renderer *& out_renderer ,
                            const runtimeConfig & cfg
                            ) {
-        if ( SDL_Init ( SDL_INIT_VIDEO ) != 0 ) {
+        if ( SDL_Init ( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) != 0 ) {
             std :: fprintf ( stderr , "SDL_Init failed: %s\n" , SDL_GetError () ) ;
             return false ;
         }
 
 
-        // SDL_image init
         const int img_flags = IMG_INIT_PNG | IMG_INIT_JPG ;
-        const int initted = IMG_Init ( img_flags ) ;
-        if ( ( initted & img_flags ) != img_flags ) {
+        if ( ( IMG_Init ( img_flags ) & img_flags ) != img_flags ) {
             std :: fprintf ( stderr , "IMG_Init failed: %s\n" , IMG_GetError() ) ;
             SDL_Quit() ;
             return false ;
@@ -55,11 +58,8 @@ namespace app {
         }
 
 
-        // Enable linear filtering
         SDL_SetHint ( SDL_HINT_RENDER_SCALE_QUALITY , "1" ) ;
-
         return true ;
-
     }
 
 
@@ -75,229 +75,268 @@ namespace app {
     }
 
 
-    // Simple color cycle for pen (black -> red -> green -> blue -> black)
-    static SDL_Color pen_next_color ( SDL_Color c ) {
-        if ( c.r == 0 && c.g == 0 && c.b == 0 ) {
-            return SDL_Color { 255 , 0 , 0 , 255 } ;
-        }
-        if ( c.r == 255 && c.g == 0 && c.b == 0 ) {
-            return SDL_Color { 0 , 255 , 0 , 255 } ;
-        }
-        if ( c.r == 0 && c.g == 255 && c.b == 0 ) {
-            return SDL_Color { 0 , 0 , 255 , 255 } ;
-        }
-
-        return SDL_Color { 0 , 0 , 0 , 255 } ;
-    }
-
-
-    static SDL_Texture * sprite_current_texture ( const gfx :: sprite & spr ) {
-        if ( spr . costumes . empty() ) {
-            return nullptr ;
-        }
-        if ( spr . current_costume < 0 || spr . current_costume >= (int) spr.costumes.size() ) {
-            return nullptr ;
-        }
-
-        return spr . costumes[spr.current_costume] . texture ;
-    }
-
-
-    int run_basic_sprite_demo ( const runtimeConfig & cfg ,
-                                const std :: string & sprite_image_path
-                                ) {
+    struct app_state {
         SDL_Window *window = nullptr ;
-        SDL_Renderer  *renderer = nullptr ;
+        SDL_Renderer * renderer = nullptr ;
 
-        if ( !init_sdl ( window , renderer , cfg ) ) {
-            return 1 ;
-        }
+        ui :: layout lay {} ;
 
+        std :: vector < gfx :: sprite > sprites ;
+        int active_sprite = -1 ;
 
-        // Define stage as full window
-        gfx :: stage_rectangle stage{} ;
-        stage.x = 0 ;
-        stage.y = 0 ;
-        stage.w = cfg.window_w ;
-        stage.h = cfg.window_h ;
-
-
-        // Create one sprite
-        gfx :: sprite spr = gfx :: sprite_make ( 1 , "Sprite1") ;
-        gfx :: sprite_set_draggable ( spr , true ) ;
-
-
-        // Start at center of stage
-        gfx :: sprite_set_position ( spr , stage.w * 0.5f , stage.h * 0.5f ) ;
-
-
-        // Load texture via SDL_image
-        int tex_w = 0 , tex_h = 0 ;
-        SDL_Texture * tex = gfx :: load_texture ( renderer , sprite_image_path , tex_w , tex_h ) ;
-        if ( !tex ) {
-            shutdown_sdl ( window , renderer ) ;
-            return 2 ;
-        }
-
-
-
-        // Add as costume
-        gfx :: sprite_add_costume ( spr , tex , tex_w , tex_h , "default" ) ;
-
-
-        // Pen state (persistent)
         gfx :: pen_state pen {} ;
-        gfx :: pen_init ( pen ) ;
+
+        ui :: menu menu_file {} ;
+        ui :: menu menu_help {} ;
+        ui :: menu menu_code {} ;
+        ui :: menu menu_settings {} ;
+        ui :: menu menu_run {} ;
+
+        ui :: button btn_run {} ;
+        ui :: button btn_stop {} ;
 
         bool running = true ;
+        bool is_paused = false ;
+
+        ui :: menu * open_menu = nullptr ;
+    };
 
 
 
+    static void build_menus ( app_state &st ) {
+        st.menu_file.title = "File" ;
+        st.menu_file.items = {
+                { "New Project" , true , [&]{/* TODO: clear workspace */} } ,
+                { "Save Project" , true , [&]{/* TODO: serialise */} } ,
+                { "Load Project" , true , [&]{/* TODO: deserialise */} } ,
+        };
 
-        // Simple keyboard controls : W/S = move, A/D = turn
-        const float move_step = 5.0f ;
-        const float turn_step = 5.0f ;
+        st.menu_help.title = "Help" ;
+        st.menu_help.items = {
+                { "Debug Logger" , true , [&]{ /* TODO: open logger panel */ } } ,
+                { "Step-by-Step" , true , [&] { /* TODO: toggle debug mode */ } } ,
+                { "About" , true , [&] { /* TODO: show about dialog */ } } ,
+        } ;
 
-        while ( running ) {
-            // Recompute layout on each frame
-            int ww = 0 , wh = 0 ;
-            SDL_GetWindowSize ( window , &ww , &wh ) ;
-            ui :: layout lay = ui :: build_layout ( ww , wh ) ;
+        st.menu_code.title = "Code" ;
+        st.menu_code.items = {
+                { "Add Block " , true , [&] { /* TODO: show block picker */ } } ,
+                { "Clear Script" , true , [&] { /* TODO: clear script */ } } ,
+        } ;
 
 
-            // Stage rect for sprite system
-            gfx :: stage_rectangle stage {} ;
-            stage.x = lay . stage . x ;
-            stage.y = lay . stage . y ;
-            stage.w = lay . stage . w ;
-            stage.h = lay . stage . h ;
+        st.menu_settings.title = "Settings" ;
+        st.menu_settings.items = {
+                { "Background..." , true , [&] { /* TODO: backdrop picker */ }  } ,
+                { "Add Sprite..." , true , [&] { /* TODO: sprite picker */ } } ,
+        };
 
-            // Ensure sprite starts inside stage (once texture is known)
-            // If user resizes too small, clamp keeps it inside.
-            if ( spr.x == 0.0f && spr.y == 0.0f ) {
-                gfx :: sprite_set_position ( spr , stage.w * 0.5f , stage.h * 0.5f ) ;
+        st.menu_run.title = "Run" ;
+        st.menu_run.items = {
+                { "Run" , true , [&] { st.is_paused = false ; } } ,
+                { "Pause" , true , [&] { st.is_paused = true ; } } ,
+                { "Stop" , true , [&] { st.is_paused = false ; /* TODO: reset interpreter PC */ } } ,
+        } ;
+    }
+
+
+    static void update_rects ( app_state &st ) {
+        const SDL_Rect  & tb = st.lay.topBar ;
+
+        st.menu_file.title_rect = ui :: topbar_menu_rect ( tb , 0 ) ;
+        st.menu_help.title_rect = ui :: topbar_menu_rect ( tb , 1 ) ;
+        st.menu_code.title_rect = ui :: topbar_menu_rect ( tb , 2 ) ;
+        st.menu_settings.title_rect = ui :: topbar_menu_rect ( tb , 3 ) ;
+        st.menu_run.title_rect = ui :: topbar_menu_rect ( tb , 4 ) ;
+
+
+        st.btn_run.rect = ui :: topbar_right_rect ( tb , 1 , 60 , 26 ) ;
+        st.btn_stop.rect = ui :: topbar_right_rect ( tb , 0 , 60 , 26 ) ;
+
+
+        ui :: menu_layout ( st.menu_file ) ;
+        ui :: menu_layout ( st.menu_help ) ;
+        ui :: menu_layout ( st.menu_code ) ;
+        ui :: menu_layout ( st.menu_settings ) ;
+        ui :: menu_layout ( st.menu_run ) ;
+    }
+
+
+
+    static std :: vector < ui ::menu* > all_menus ( app_state & st ) {
+        return { &st.menu_file , &st.menu_help ,
+                 &st.menu_code , &st.menu_settings ,
+                 &st.menu_run } ;
+    }
+
+
+    static void close_all_menus ( app_state & st ) {
+        for ( auto * m : all_menus ( st ) ) {
+            ui :: menu_close ( *m ) ;
+        }
+        st.open_menu = nullptr ;
+    }
+
+
+    static void handle_events ( app_state & st ) {
+        SDL_Event e ;
+        while ( SDL_PollEvent ( &e ) ) {
+
+            if ( e.type == SDL_QUIT ) {
+                st.running = false ;
+                return ;
             }
-            gfx :: sprite_clamp_to_stage ( spr , stage ) ;
 
-            // Track previous sprite position so we can add pen points when it moves.
-            const float prev_x = spr.x ;
-            const float prev_y = spr.y ;
+            if ( e.type == SDL_KEYDOWN ) {
+                if ( e.key.keysym.sym == SDLK_ESCAPE ) {
+                    st.running = false ;
+                    return ;
+                }
+            }
 
+            if ( e.type == SDL_MOUSEBUTTONDOWN &&
+                 e.button.button == SDL_BUTTON_LEFT ) {
+                const int mx = e.button.x ;
+                const int my = e.button.y ;
 
-            SDL_Event e ;
-            while ( SDL_PollEvent ( &e ) ) {
-                if ( e.type == SDL_QUIT ) {
-                    running = false ;
-                    break ;
-                } else if ( e.type == SDL_MOUSEBUTTONDOWN ) {
-                    if ( e.button.button == SDL_BUTTON_LEFT ) {
-                        if ( ui :: point_in_rect ( e.button.x , e.button.y , lay.stage ) ) {
-                            gfx :: sprite_drag_begin ( spr , e.button.x , e.button.y , stage ) ;
+                bool menu_consumed = false ;
+                for ( auto * m : all_menus ( st ) ) {
+                    if ( ui :: menu_handle_click ( *m , mx , my ) ) {
+                        for ( auto * other : all_menus ( st ) ) {
+                            if ( other != m ) {
+                                ui :: menu_close ( *other ) ;
+                            }
                         }
-                    }
-                } else if ( e.type == SDL_MOUSEMOTION ) {
-                    gfx :: sprite_drag_update ( spr , e.motion.x , e.motion.y , stage ) ;
-                } else if ( e.type == SDL_MOUSEBUTTONUP ) {
-                    if ( e.button.button == SDL_BUTTON_LEFT ) {
-                        gfx :: sprite_drag_end ( spr ) ;
-                    }
-                } else if ( e.type == SDL_KEYDOWN ) {
-                    // allow exit with ESC
-                    if ( e.key.keysym.sym == SDLK_ESCAPE ) {
-                        running = false ;
+                        st.open_menu = m -> open ? m : nullptr ;
+                        menu_consumed = true ;
                         break ;
                     }
+                }
 
+                if ( !menu_consumed ) {
+                    if ( ui :: button_handle_click ( st.btn_run , mx , my ) ||
+                         ui :: button_handle_click ( st.btn_stop , mx , my ) ) {
+                        menu_consumed = true ;
+                    }
+                }
 
-                    // Pen controls
-                    if ( e.key.keysym.sym == SDLK_p ) {
-                        // Toggle pen down/up using the sprite center
-                        if ( !pen.is_down ) {
-                            gfx :: pen_down ( pen , spr.x , spr.y ) ;
-                        } else {
-                            gfx :: pen_up ( pen ) ;
-                        }
-                    } else if ( e.key.keysym.sym == SDLK_c ) {
-                        gfx :: pen_set_color ( pen , pen_next_color ( pen.color ) ) ;
-                    } else if ( e.key.keysym.sym == SDLK_e ) {
-                        gfx :: pen_erase_all ( pen ) ;
-                    } else if ( e.key.keysym.sym == SDLK_LEFTBRACKET ) {
-                        gfx :: pen_change_size ( pen , -1 ) ;
-                    } else if ( e.key.keysym.sym == SDLK_RIGHTBRACKET ) {
-                        gfx :: pen_change_size ( pen , +1 ) ;
-                    } else if ( e.key.keysym.sym == SDLK_t ) {
-                        // Stamp current sprite costume with same render params as sprite_draw.
-                        float w = 0.0f , h = 0.0f ;
-                        if ( gfx :: sprite_get_render_size ( spr , w , h ) ) {
-                            SDL_FRect dst ;
-                            dst.x = ( spr.x - ( w * 0.5f ) ) + ( float ) stage.x ;
-                            dst.y = ( spr.y - ( h * 0.5f ) ) + ( float ) stage.y ;
-                            dst.w = w ;
-                            dst.h = h ;
+                if ( !menu_consumed && st.open_menu ) {
+                    close_all_menus ( st ) ;
+                }
 
-                            SDL_FPoint center { dst.w * 0.5f , dst.h * 0.5f } ;
-                            const auto angle = (double)(spr.direction_deg - 90.0f ) ;
+                if ( !menu_consumed &&
+                     ui :: point_in_rect ( mx , my , st.lay.stage ) ) {
+                    const gfx :: stage_rectangle sr {
+                        st.lay.stage.x , st.lay.stage.y ,
+                        st.lay.stage.w , st.lay.stage.h } ;
 
-                            gfx :: pen_stamp ( pen , sprite_current_texture ( spr ) , dst , angle , center ) ;
-                        }
+                    for ( auto & spr : st.sprites ) {
+                        gfx :: sprite_drag_begin ( spr , mx , my , sr ) ;
                     }
                 }
             }
 
-
-            // Continuous keyboard state ( smooth movement )
-            const Uint8 *ks = SDL_GetKeyboardState ( nullptr ) ;
-            if ( ks[SDL_SCANCODE_W] ) {
-                gfx :: sprite_move_steps ( spr , move_step ) ;
-            }
-            if ( ks[SDL_SCANCODE_S] ) {
-                gfx :: sprite_move_steps ( spr , -move_step ) ;
-            }
-            if ( ks[SDL_SCANCODE_A] ) {
-                gfx :: sprite_turn_degree ( spr , -turn_step ) ;
-            }
-            if ( ks[SDL_SCANCODE_D] ) {
-                gfx :: sprite_turn_degree ( spr , turn_step ) ;
+            if ( e.type == SDL_MOUSEMOTION ) {
+                const gfx :: stage_rectangle sr {
+                    st.lay.stage.x , st.lay.stage.y ,
+                    st.lay.stage.w , st.lay.stage.h } ;
+                for ( auto & spr : st.sprites ) {
+                    gfx :: sprite_drag_update ( spr , e.motion.x , e.motion.y , sr ) ;
+                }
             }
 
-
-            // Keep sprite inside stage
-            gfx :: sprite_clamp_to_stage ( spr , stage ) ;
-
-
-            // If pen is down and sprite moved (including dragging), add a point.
-            if ( pen.is_down && ( spr.x != prev_x || spr.y != prev_y ) ) {
-                gfx :: pen_add_point ( pen , spr.x , spr.y ) ;
+            if ( e.type == SDL_MOUSEBUTTONUP &&
+                 e.button.button == SDL_BUTTON_LEFT ) {
+                for ( auto & spr : st.sprites ) {
+                    gfx :: sprite_drag_end ( spr ) ;
+                }
             }
+        }
+    }
 
-            // Render pipeline: background -> pen -> sprite
-            SDL_SetRenderDrawColor ( renderer , 25 , 25 , 25 , 255 ) ;
-            SDL_RenderClear ( renderer ) ;
 
-            // Draw thr UI layout first
-            ui :: render_layout ( renderer , lay ) ;
 
-            // Clip drawing to stage region for pen + sprite
-            SDL_RenderSetClipRect ( renderer , &lay.stage ) ;
+    namespace clr {
+        constexpr SDL_Color menu_title { 45 , 45 , 45 , 255 } ;
+        constexpr SDL_Color menu_border { 80 , 80 , 80 , 255 } ;
+        constexpr SDL_Color panel_fill { 38 , 38 , 38 , 255 } ;
+        constexpr SDL_Color panel_border { 70 , 70 , 70 , 255 } ;
+        constexpr SDL_Color item_fill { 50 , 50 , 50 , 255 } ;
+        constexpr SDL_Color item_border { 70 , 70 , 70 , 255 } ;
+        constexpr SDL_Color item_dis { 35 , 35 , 35 , 255 } ;
+        constexpr SDL_Color btn_run { 30 , 140 , 60 , 255 } ;
+        constexpr SDL_Color btn_stop { 180 , 40 , 40 , 255 } ;
+        constexpr SDL_Color btn_border { 100 , 100 , 100 , 255 } ;
 
-            gfx :: StageRect pen_stage { stage.x , stage.y , stage.w , stage.h } ;
-            gfx :: pen_render ( renderer , pen , pen_stage ) ;
+    }
 
-            gfx :: sprite_draw ( renderer , spr , stage ) ;
 
-            SDL_RenderSetClipRect ( renderer , nullptr ) ;
-            SDL_RenderPresent ( renderer ) ;
+    static void render_frame ( app_state & st ) {
+        SDL_SetRenderDrawColor ( st.renderer , 15 , 15 , 15 , 255 ) ;
+        SDL_RenderClear ( st.renderer ) ;
 
+        ui :: render_layout ( st.renderer , st.lay ) ;
+
+        const gfx :: StageRect ps {
+            st.lay.stage.x , st.lay.stage.y ,
+            st.lay.stage.w , st.lay.stage.h
+        };
+
+        gfx :: pen_render ( st.renderer , st.pen , ps ) ;
+
+
+        const gfx :: stage_rectangle sr {
+            st.lay.stage.x , st.lay.stage.y ,
+            st.lay.stage.w , st.lay.stage.h
+        } ;
+
+        for ( const auto & spr : st.sprites ) {
+            gfx :: sprite_draw ( st.renderer , spr , sr ) ;
         }
 
+        ui :: button_draw ( st.renderer , st.btn_run ,
+                            clr :: btn_run , clr :: btn_border ) ;
+        ui :: button_draw ( st.renderer , st.btn_stop ,
+                            clr :: btn_stop , clr :: btn_border ) ;
 
 
-        // Cleanup texture created by load_texture
-        SDL_DestroyTexture ( tex ) ;
 
-        shutdown_sdl ( window , renderer ) ;
+        for ( auto * m : all_menus ( st ) ) {
+            ui :: menu_draw ( st.renderer , *m ,
+                              clr :: menu_title , clr :: menu_border ,
+                              clr :: panel_fill , clr :: panel_border ,
+                              clr :: item_fill , clr :: item_border ,
+                              clr :: item_dis ) ;
+        }
+
+        SDL_RenderPresent ( st.renderer ) ;
+
+    }
+
+
+    int run ( const runtimeConfig & cfg ) {
+        app_state st {} ;
+
+        if ( !init_sdl ( st.window , st.renderer , cfg ) ) {
+            return 1 ;
+        }
+
+        gfx :: pen_init ( st.pen ) ;
+
+        build_menus ( st ) ;
+
+        while ( st.running ) {
+            int ww = 0 , wh = 0 ;
+            SDL_GetWindowSize ( st.window , &ww , &wh ) ;
+            st.lay = ui :: build_layout ( ww , wh ) ;
+
+            update_rects ( st ) ;
+            handle_events ( st ) ;
+            render_frame ( st ) ;
+        }
+
+        shutdown_sdl ( st.window , st.renderer ) ;
         return 0 ;
-
     }
 
 }
