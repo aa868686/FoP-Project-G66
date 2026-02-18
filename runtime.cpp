@@ -4,6 +4,7 @@
 #include "pen.h"
 #include <SDL2/SDL_image.h>
 #include <cstdio>
+#include "layout.h"
 
 namespace app {
 
@@ -31,7 +32,7 @@ namespace app {
                                         SDL_WINDOWPOS_CENTERED ,
                                         SDL_WINDOWPOS_CENTERED ,
                                         cfg . window_w , cfg . window_h ,
-                                        SDL_WINDOW_SHOWN
+                                        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
                                         ) ;
 
         if ( !out_window ) {
@@ -158,6 +159,26 @@ namespace app {
         const float turn_step = 5.0f ;
 
         while ( running ) {
+            // Recompute layout on each frame
+            int ww = 0 , wh = 0 ;
+            SDL_GetWindowSize ( window , &ww , &wh ) ;
+            ui :: layout lay = ui :: build_layout ( ww , wh ) ;
+
+
+            // Stage rect for sprite system
+            gfx :: stage_rectangle stage {} ;
+            stage.x = lay . stage . x ;
+            stage.y = lay . stage . y ;
+            stage.w = lay . stage . w ;
+            stage.h = lay . stage . h ;
+
+            // Ensure sprite starts inside stage (once texture is known)
+            // If user resizes too small, clamp keeps it inside.
+            if ( spr.x == 0.0f && spr.y == 0.0f ) {
+                gfx :: sprite_set_position ( spr , stage.w * 0.5f , stage.h * 0.5f ) ;
+            }
+            gfx :: sprite_clamp_to_stage ( spr , stage ) ;
+
             // Track previous sprite position so we can add pen points when it moves.
             const float prev_x = spr.x ;
             const float prev_y = spr.y ;
@@ -167,9 +188,12 @@ namespace app {
             while ( SDL_PollEvent ( &e ) ) {
                 if ( e.type == SDL_QUIT ) {
                     running = false ;
+                    break ;
                 } else if ( e.type == SDL_MOUSEBUTTONDOWN ) {
                     if ( e.button.button == SDL_BUTTON_LEFT ) {
-                        gfx :: sprite_drag_begin ( spr , e.button.x , e.button.y , stage ) ;
+                        if ( ui :: point_in_rect ( e.button.x , e.button.y , lay.stage ) ) {
+                            gfx :: sprite_drag_begin ( spr , e.button.x , e.button.y , stage ) ;
+                        }
                     }
                 } else if ( e.type == SDL_MOUSEMOTION ) {
                     gfx :: sprite_drag_update ( spr , e.motion.x , e.motion.y , stage ) ;
@@ -181,7 +205,7 @@ namespace app {
                     // allow exit with ESC
                     if ( e.key.keysym.sym == SDLK_ESCAPE ) {
                         running = false ;
-                        continue ;
+                        break ;
                     }
 
 
@@ -207,7 +231,7 @@ namespace app {
                         if ( gfx :: sprite_get_render_size ( spr , w , h ) ) {
                             SDL_FRect dst ;
                             dst.x = ( spr.x - ( w * 0.5f ) ) + ( float ) stage.x ;
-                            dst.y = ( spr.x - ( h * 0.5f ) ) + ( float ) stage.y ;
+                            dst.y = ( spr.y - ( h * 0.5f ) ) + ( float ) stage.y ;
                             dst.w = w ;
                             dst.h = h ;
 
@@ -250,11 +274,18 @@ namespace app {
             SDL_SetRenderDrawColor ( renderer , 25 , 25 , 25 , 255 ) ;
             SDL_RenderClear ( renderer ) ;
 
+            // Draw thr UI layout first
+            ui :: render_layout ( renderer , lay ) ;
+
+            // Clip drawing to stage region for pen + sprite
+            SDL_RenderSetClipRect ( renderer , &lay.stage ) ;
+
             gfx :: StageRect pen_stage { stage.x , stage.y , stage.w , stage.h } ;
             gfx :: pen_render ( renderer , pen , pen_stage ) ;
 
             gfx :: sprite_draw ( renderer , spr , stage ) ;
 
+            SDL_RenderSetClipRect ( renderer , nullptr ) ;
             SDL_RenderPresent ( renderer ) ;
 
         }
