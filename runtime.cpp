@@ -10,6 +10,7 @@
 #include "layout.h"
 #include "ui_menu.h"
 #include "ui_button.h"
+#include "backdrop.h"
 
 namespace app {
 
@@ -85,6 +86,7 @@ namespace app {
         int active_sprite = -1 ;
 
         gfx :: pen_state pen {} ;
+        gfx :: backdrop_manager backdrops {} ;
 
         ui :: menu menu_file {} ;
         ui :: menu menu_help {} ;
@@ -100,6 +102,20 @@ namespace app {
 
         ui :: menu * open_menu = nullptr ;
     };
+
+    static std :: vector < ui ::menu* > all_menus ( app_state & st ) {
+        return { &st.menu_file , &st.menu_help ,
+                 &st.menu_code , &st.menu_settings ,
+                 &st.menu_run } ;
+    }
+
+
+    static void close_all_menus ( app_state & st ) {
+        for ( auto * m : all_menus ( st ) ) {
+            ui :: menu_close ( *m ) ;
+        }
+        st.open_menu = nullptr ;
+    }
 
 
 
@@ -127,7 +143,10 @@ namespace app {
 
         st.menu_settings.title = "Settings" ;
         st.menu_settings.items = {
-                { "Background..." , true , [&] { /* TODO: backdrop picker */ }  } ,
+                { "Background: Blue Sky" , true , [&] { gfx :: backdrop_set_active_by_name ( st.backdrops , "Blue Sky" ) ;
+                    close_all_menus ( st ) ;  }  } ,
+                { "Background: Green Field" , true , [&]{ gfx :: backdrop_set_active_by_name ( st.backdrops , "Green Field" ) ;
+                    close_all_menus ( st ) ; } } ,
                 { "Add Sprite..." , true , [&] { /* TODO: sprite picker */ } } ,
         };
 
@@ -163,19 +182,6 @@ namespace app {
 
 
 
-    static std :: vector < ui ::menu* > all_menus ( app_state & st ) {
-        return { &st.menu_file , &st.menu_help ,
-                 &st.menu_code , &st.menu_settings ,
-                 &st.menu_run } ;
-    }
-
-
-    static void close_all_menus ( app_state & st ) {
-        for ( auto * m : all_menus ( st ) ) {
-            ui :: menu_close ( *m ) ;
-        }
-        st.open_menu = nullptr ;
-    }
 
 
     static void handle_events ( app_state & st ) {
@@ -276,6 +282,7 @@ namespace app {
         SDL_RenderClear ( st.renderer ) ;
 
         ui :: render_layout ( st.renderer , st.lay ) ;
+        gfx :: backdrop_render ( st.renderer , st.backdrops , st.lay.stage ) ;
 
         const gfx :: StageRect ps {
             st.lay.stage.x , st.lay.stage.y ,
@@ -322,6 +329,8 @@ namespace app {
         }
 
         gfx :: pen_init ( st.pen ) ;
+
+        st.backdrops = gfx :: backdrop_make_defaults () ;
 
         build_menus ( st ) ;
 
