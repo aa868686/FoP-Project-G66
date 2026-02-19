@@ -26,7 +26,9 @@ add_executable(FoP-Project-G66
         sound_manager.h
         sound_manager.cpp
         font_manager.h
-        font_manager.cpp)
+        font_manager.cpp
+        ui_block.h
+        ui_block.cpp)
 
 target_link_libraries(FoP-Project-G66
         mingw32
