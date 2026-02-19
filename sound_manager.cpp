@@ -1,4 +1,5 @@
 #include "sound_manager.h"
+#include "font_manager.h"
 #include <cstdio>
 #include <algorithm>
 
@@ -159,9 +160,11 @@ namespace snd {
     }
 
 
-    void sound_render(SDL_Renderer *ren,
-                      sound_manager &sm,
-                      SDL_Rect panel) {
+    void sound_render(SDL_Renderer *ren ,
+                      sound_manager &sm ,
+                      SDL_Rect panel ,
+                      TTF_Font * font
+                      ) {
         if (!ren) { return; }
 
 
@@ -208,6 +211,15 @@ namespace snd {
             SDL_Rect handle = slider_handle_rect(track, se.volume);
             fill(ren, handle, 200, 200, 200);
             outline(ren, handle, 120, 120, 120);
+
+            if ( font && !se.name.empty() ) {
+                SDL_Rect name_rect { row.x + pad + mute_w + pad ,
+                                     row.y ,
+                                     row.w / 3 ,
+                                     row_h
+                                     } ;
+                fnt :: draw_text_left ( ren , font , se.name.c_str () , name_rect , { 200 , 200 , 200 , 255 } ) ;
+            }
         }
 
 

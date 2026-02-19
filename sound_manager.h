@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 #include <string>
 #include <vector>
 
@@ -43,7 +44,8 @@ namespace snd {
 
     void sound_render ( SDL_Renderer *ren ,
                         sound_manager & sm ,
-                        SDL_Rect panel
+                        SDL_Rect panel ,
+                        TTF_Font * font
                         ) ;
 
 
