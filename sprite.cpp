@@ -1,4 +1,6 @@
 #include "sprite.h"
+#include <SDL2/SDL_ttf.h>
+#include "font_manager.h"
 #include <algorithm>
 #include <cmath>
 
@@ -284,5 +286,204 @@ namespace gfx {
     void sprite_drag_end ( sprite &s ) {
         s.drag.dragging = false ;
     }
+
+
+    static constexpr int sm_icon_w = 64 ;
+    static constexpr int sm_icon_h = 64 ;
+    static constexpr int sm_pad = 6 ;
+    static constexpr int sm_name_h = 16 ;
+    static constexpr int sm_item_w = sm_icon_w + ( sm_pad * 2 ) ;
+    static constexpr int sm_item_h = sm_icon_h + sm_name_h + ( sm_pad * 3 ) ;
+    static constexpr int sm_btn_w = 28 ;
+    static constexpr int sm_btn_h = 28 ;
+
+    int sprite_manger_add ( sprite_manager & sm , sprite s ) {
+        sm.sprites.push_back ( s ) ;
+        return static_cast <int> ( sm.sprites.size() ) - 1 ;
+    }
+
+    void sprite_manager_remove ( sprite_manager & sm , int index ) {
+        if ( index < 0 || index >= static_cast <int> ( sm.sprites.size() ) ) {
+            return ;
+        }
+
+        sm.sprites.erase ( sm.sprites.begin () + index ) ;
+        if ( sm.active >= static_cast <int> ( sm.sprites.size() ) ) {
+            sm.active = static_cast <int> ( sm.sprites.size() ) - 1 ;
+        }
+    }
+
+    void sprite_manager_select ( sprite_manager & sm , int index ) {
+        if ( index >= -1 && index < static_cast <int> ( sm.sprites.size() ) ) {
+            sm.active = index ;
+        }
+    }
+
+    static void sm_fill ( SDL_Renderer * ren , SDL_Rect r ,
+                          Uint8 rr , Uint8 g , Uint8 b
+                          ) {
+        SDL_SetRenderDrawColor ( ren , rr , g , b , 255 ) ;
+        SDL_RenderFillRect ( ren , &r ) ;
+    }
+
+    static void sm_outline ( SDL_Renderer * ren , SDL_Rect r ,
+                             Uint8 rr , Uint8 g , Uint8 b
+                             ) {
+        SDL_SetRenderDrawColor ( ren , rr , g , b , 255 ) ;
+        SDL_RenderDrawRect ( ren , &r ) ;
+    }
+
+    static bool sm_hit ( SDL_Rect r , int x , int y ) {
+        return x >= r.x && x < r.x + r.w &&
+        y >= r.y && y < r.y + r.h ;
+    }
+
+
+    void sprite_manager_render ( SDL_Renderer * ren ,
+                                 sprite_manager & sm ,
+                                 SDL_Rect panel ,
+                                 TTF_Font * font
+                                 ) {
+
+        if ( !ren ) {
+            return ;
+        }
+
+        SDL_RenderSetClipRect ( ren  ,& panel ) ;
+
+        sm_fill ( ren , panel , 26 , 26 , 26 ) ;
+        sm_outline ( ren , panel , 60 , 60 , 60 ) ;
+
+        SDL_Rect add_btn {
+            panel.x + panel.w - sm_btn_w - sm_pad ,
+            panel.y + sm_pad ,
+            sm_btn_w , sm_btn_h
+        } ;
+        sm_fill ( ren , add_btn , 40 , 140 , 60 ) ;
+        sm_outline ( ren , add_btn , 80 , 80 , 80 ) ;
+        if ( font ) {
+            fnt :: draw_text_centered ( ren , font , "+" , add_btn , { 255 , 255 , 255 , 255 } ) ;
+        }
+
+        const int count = static_cast <int> ( sm.sprites.size() ) ;
+        for ( int i = 0 ; i < count ; ++i ) {
+            const sprite & s = sm.sprites[i] ;
+
+            SDL_Rect item {
+                panel.x + sm_pad + ( i * ( sm_item_w + sm_pad ) ) ,
+                panel.y + sm_pad ,
+                sm_item_w ,
+                sm_item_h
+            } ;
+
+            if ( ( item.x + item.w ) < panel.x || item.x > ( panel.x + panel.w ) ) {
+                continue ;
+            }
+
+            if ( i == sm.active ) {
+                sm_fill ( ren , item , 50 , 80 , 120 ) ;
+                sm_outline ( ren , item , 80 , 140 , 200 ) ;
+            } else {
+                sm_fill ( ren , item , 35 , 35 , 35 ) ;
+                sm_outline ( ren , item , 60 , 60 , 60 ) ;
+            }
+
+
+            SDL_Rect icon {
+                item.x + sm_pad ,
+                item.y + sm_pad ,
+                sm_icon_w ,
+                sm_icon_h
+            } ;
+
+            if ( !s.costumes.empty() && s.costumes[s.current_costume].texture ) {
+                SDL_RenderCopy ( ren , s.costumes[s.current_costume].texture , nullptr , &icon ) ;
+            } else {
+                sm_fill ( ren , icon , 60 , 60 , 60 ) ;
+                sm_outline ( ren , icon , 90 , 90 , 90 ) ;
+            }
+
+            if ( font && !s.name.empty() ) {
+                SDL_Rect name_rect {
+                    item.x ,
+                    item.y + sm_pad + sm_icon_h + sm_pad ,
+                    sm_item_w ,
+                    sm_name_h
+                } ;
+                fnt :: draw_text_centered ( ren , font , s.name.c_str () ,
+                                            name_rect , { 200 , 200 , 200 , 255 }
+                                            ) ;
+
+            }
+
+            SDL_Rect del_btn {
+                item.x + item.w - 16 ,
+                item.y ,
+                16 , 16
+            } ;
+
+            sm_fill ( ren , del_btn , 160 , 40 , 40 ) ;
+            sm_outline ( ren , del_btn , 80 , 80 , 80 ) ;
+            if ( font ) {
+                fnt :: draw_text_centered ( ren , font , "x" , del_btn , { 255 , 255 , 255 , 255 } ) ;
+            }
+
+        }
+
+        SDL_RenderSetClipRect ( ren , nullptr ) ;
+
+    }
+
+
+    bool sprite_manager_handle_click ( sprite_manager & sm ,
+                                       SDL_Rect panel ,
+                                       int mx , int my
+                                       ) {
+        if ( !sm_hit ( panel , mx , my ) ) {
+            return false ;
+        }
+
+        SDL_Rect add_btn {
+            panel.x + panel.w - sm_btn_w - sm_pad ,
+            panel.y + sm_pad ,
+            sm_btn_w , sm_btn_h
+        } ;
+
+        if ( sm_hit ( add_btn , mx , my ) ) {
+            // TODO: open file dialog to load sprite image
+            return true ;
+        }
+
+
+        const int count = static_cast <int> ( sm.sprites.size() ) ;
+        for ( int i = 0 ; i < count ; ++i ) {
+            SDL_Rect item {
+                panel.x + sm_pad + ( i * ( sm_item_w + sm_pad ) ) ,
+                panel.y + sm_pad ,
+                sm_item_w , sm_item_h
+            } ;
+
+            if ( !sm_hit ( item , mx , my ) ) {
+                continue ;
+            }
+
+
+            SDL_Rect del_btn {
+                item.x + item.w - 16 , item.y , 16 , 16
+            } ;
+
+            if ( sm_hit ( del_btn , mx , my ) ) {
+                sprite_manager_remove ( sm , i ) ;
+                return true ;
+            }
+
+
+            sprite_manager_select ( sm , i ) ;
+            return true ;
+        }
+
+        return true ;
+    }
+
 
 }
