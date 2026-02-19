@@ -12,6 +12,7 @@
 #include "ui_button.h"
 #include "backdrop.h"
 #include "sound_manager.h"
+#include "font_manager.h"
 
 namespace app {
 
@@ -90,6 +91,8 @@ namespace app {
         gfx :: backdrop_manager backdrops {} ;
         snd :: sound_manager sounds {} ;
         bool sound_dragging = false ;
+
+        fnt :: font_manager fonts {} ;
 
         ui :: menu menu_file {} ;
         ui :: menu menu_help {} ;
@@ -317,17 +320,20 @@ namespace app {
             gfx :: sprite_draw ( st.renderer , spr , sr ) ;
         }
 
-        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar ) ;
+        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar , st.fonts.small ) ;
 
         ui :: button_draw ( st.renderer , st.btn_run ,
+                            st.fonts.medium , "Run" ,
                             clr :: btn_run , clr :: btn_border ) ;
         ui :: button_draw ( st.renderer , st.btn_stop ,
+                            st.fonts.medium , "Stop" ,
                             clr :: btn_stop , clr :: btn_border ) ;
 
 
 
         for ( auto * m : all_menus ( st ) ) {
             ui :: menu_draw ( st.renderer , *m ,
+                              st.fonts.medium ,
                               clr :: menu_title , clr :: menu_border ,
                               clr :: panel_fill , clr :: panel_border ,
                               clr :: item_fill , clr :: item_border ,
@@ -352,6 +358,10 @@ namespace app {
 
         snd :: sound_init() ;
 
+        fnt :: font_init ( st.fonts , "assets/arial.ttf" ) ;
+
+
+
         build_menus ( st ) ;
 
         while ( st.running ) {
@@ -366,6 +376,7 @@ namespace app {
 
         snd ::sound_stop_all ( st.sounds) ;
         snd :: sound_quit () ;
+        fnt :: font_quit ( st.fonts ) ;
 
         shutdown_sdl ( st.window , st.renderer ) ;
         return 0 ;
