@@ -38,16 +38,22 @@ namespace ui {
     // Returns rect for a menu title button in topBar, placed left-to-right.
     // index = 0 -> leftmost, index = 1 -> next, ...
     // w = desired button width, h = desired button height (centered vertically).
-    SDL_Rect topbar_right_rect ( const SDL_Rect & top_bar , int index , int w = 72 , int h = 26 ) ;
 
 
     // Returns rect for right-aligned icon/button in topBar.
     // index = 0 -> rightmost, index = 1 -> one slot to the lest, ...
+    SDL_Rect topbar_menu_rect ( const SDL_Rect & top_bar ,
+                                int index ,
+                                int w = 72 ,
+                                int h = 26
+                                ) ;
+
+
     SDL_Rect topbar_right_rect ( const SDL_Rect & top_bar ,
                                  int index ,
                                  int w = 28 ,
                                  int h = 28
-                                 ) ;as
+                                 ) ;
 }
 
 #endif //FOP_PROJECT_G66_LAYOUT_H
