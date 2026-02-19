@@ -1,4 +1,5 @@
 #include "ui_menu.h"
+#include "font_manager.h"
 
 namespace ui {
 
@@ -30,6 +31,7 @@ namespace ui {
 
 
     void menu_draw ( SDL_Renderer *r , const menu &m ,
+                     TTF_Font * font ,
                      SDL_Color title_fill , SDL_Color title_border ,
                      SDL_Color panel_fill , SDL_Color panel_border ,
                      SDL_Color item_fill , SDL_Color item_border ,
@@ -46,6 +48,7 @@ namespace ui {
         SDL_RenderDrawRect ( r , &m.title_rect ) ;
 
 
+        fnt :: draw_text_centered ( r , font , m.title , m.title_rect , { 220 , 220 , 220 , 255 } ) ;
 
         /////Title text will be added/////
 
@@ -68,10 +71,12 @@ namespace ui {
             SDL_SetRenderDrawColor ( r , fill.r , fill.g , fill.b , fill.a ) ;
             SDL_RenderFillRect ( r , &it.rect ) ;
 
+
             SDL_SetRenderDrawColor ( r , item_border.r , item_border.g , item_border.b , item_border.a ) ;
             SDL_RenderDrawRect ( r , &it.rect ) ;
 
-            /////Item text will be added/////
+            fnt :: draw_text_left ( r , font , it.label , it.rect , { 200 , 200 , 200 , 255 } ) ;
+
         }
     }
 

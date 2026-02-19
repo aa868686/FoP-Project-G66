@@ -3,6 +3,7 @@
 
 #pragma once
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <functional>
 #include <vector>
@@ -40,6 +41,7 @@ namespace ui {
 
     // Draw title + dropdown
     void menu_draw ( SDL_Renderer *r , const menu &m ,
+                     TTF_Font * font ,
                      SDL_Color title_fill , SDL_Color title_border ,
                      SDL_Color panel_fill , SDL_Color panel_border ,
                      SDL_Color item_fill , SDL_Color item_border ,

@@ -23,9 +23,14 @@ namespace fnt {
                               TTF_Font * font ,
                               const char * text ,
                               SDL_Rect rect ,
-                              SDL_Color color ,
-                              int pad_x = 6
+                              SDL_Color color
                               ) ;
+
+    void draw_text_left ( SDL_Renderer * ren , TTF_Font * font ,
+                          const char * text ,
+                          SDL_Rect rect , SDL_Color color ,
+                          int pad_x = 6
+                          ) ;
 
 
 }
