@@ -85,8 +85,8 @@ namespace app {
 
         ui :: layout lay {} ;
 
-        std :: vector < gfx :: sprite > sprites ;
-        int active_sprite = -1 ;
+        gfx :: sprite_manager sprite_mgr {} ;
+
 
         gfx :: pen_state pen {} ;
         gfx :: backdrop_manager backdrops {} ;
@@ -217,6 +217,8 @@ namespace app {
                 const int my = e.button.y ;
 
                 bool menu_consumed = false ;
+
+
                 for ( auto * m : all_menus ( st ) ) {
                     if ( ui :: menu_handle_click ( *m , mx , my ) ) {
                         for ( auto * other : all_menus ( st ) ) {
@@ -242,14 +244,23 @@ namespace app {
                 }
 
                 if ( !menu_consumed &&
-                     ui :: point_in_rect ( mx , my , st.lay.stage ) ) {
-                    const gfx :: stage_rectangle sr {
-                        st.lay.stage.x , st.lay.stage.y ,
-                        st.lay.stage.w , st.lay.stage.h } ;
-
-                    for ( auto & spr : st.sprites ) {
-                        gfx :: sprite_drag_begin ( spr , mx , my , sr ) ;
+                     ui :: point_in_rect ( mx , my , st.lay.spriteBar ) ) {
+                    if ( gfx :: sprite_manager_handle_click ( st.sprite_mgr , st.lay.spriteBar , mx , my ) ) {
+                        menu_consumed = true ;
                     }
+
+                }
+
+                if ( !menu_consumed &&
+                     ui :: point_in_rect ( mx , my , st.lay.stage ) ) {
+                    if ( st.sprite_mgr.active >= 0 ) {
+                        const gfx :: stage_rectangle sr {
+                            st.lay.stage.x , st.lay.stage.y , st.lay.stage.w , st.lay.stage.h
+                        } ;
+                        gfx :: sprite_drag_begin ( st.sprite_mgr.sprites[st.sprite_mgr.active] ,
+                                                   mx , my , sr ) ;
+                    }
+                    menu_consumed = true ;
                 }
 
                 if ( !menu_consumed ) {
@@ -272,29 +283,20 @@ namespace app {
                     }
                 }
 
-                if ( !menu_consumed &&
-                     ui :: point_in_rect ( mx , my , st.lay.workspace )
-                ) {
-                    int idx = ui :: block_hit_test ( st.workspace , st.lay.workspace , mx , my ) ;
-                    if ( idx >= 0 ) {
-                        ui :: block_drag_begin ( st.workspace , idx , mx , my ) ;
-                        menu_consumed = true ;
-                    }
-                }
-
             }
 
             if ( e.type == SDL_MOUSEMOTION ) {
-                const gfx :: stage_rectangle sr {
-                    st.lay.stage.x , st.lay.stage.y ,
-                    st.lay.stage.w , st.lay.stage.h } ;
-                for ( auto & spr : st.sprites ) {
-                    gfx :: sprite_drag_update ( spr , e.motion.x , e.motion.y , sr ) ;
+
+                if ( st.sprite_mgr.active >= 0 ) {
+                    const gfx :: stage_rectangle sr {
+                        st.lay.stage.x , st.lay.stage.y , st.lay.stage.w , st.lay.stage.h
+                    } ;
+                    gfx :: sprite_drag_update ( st.sprite_mgr.sprites[st.sprite_mgr.active] ,
+                                                e.motion.x , e.motion.y , sr ) ;
                 }
 
                 snd :: sound_handle_drag ( st.sounds , st.lay.spriteBar ,
                                            e.motion.x , e.motion.y , st.sound_dragging ) ;
-
 
                 ui :: block_drag_update ( st.workspace , e.motion.x , e.motion.y ) ;
 
@@ -302,9 +304,10 @@ namespace app {
 
             if ( e.type == SDL_MOUSEBUTTONUP &&
                  e.button.button == SDL_BUTTON_LEFT ) {
-                for ( auto & spr : st.sprites ) {
-                    gfx :: sprite_drag_end ( spr ) ;
+                if ( st.sprite_mgr.active >= 0 ) {
+                    gfx :: sprite_drag_end ( st.sprite_mgr.sprites[st.sprite_mgr.active] ) ;
                 }
+
                 st.sound_dragging = false ;
 
                 ui :: block_drag_end ( st.workspace ) ;
@@ -351,11 +354,12 @@ namespace app {
             st.lay.stage.w , st.lay.stage.h
         } ;
 
-        for ( const auto & spr : st.sprites ) {
+        for ( const auto & spr : st.sprite_mgr.sprites ) {
             gfx :: sprite_draw ( st.renderer , spr , sr ) ;
         }
+        gfx :: sprite_manager_render ( st.renderer , st.sprite_mgr , st.lay.spriteBar , st.fonts.small ) ;
 
-        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar , st.fonts.small ) ;
+//        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar , st.fonts.small ) ;
 
         ui :: button_draw ( st.renderer , st.btn_run ,
                             st.fonts.medium , "Run" ,
