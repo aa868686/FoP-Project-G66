@@ -207,7 +207,6 @@ namespace gfx {
 
 
 
-    ///// Render + HitTest + Drag /////
 
     void sprite_draw ( SDL_Renderer *ren , const sprite &s , const stage_rectangle stage ) {
         if ( !ren || !s.visible || !has_valid_costume ( s ) ) {
@@ -297,7 +296,7 @@ namespace gfx {
     static constexpr int sm_btn_w = 28 ;
     static constexpr int sm_btn_h = 28 ;
 
-    int sprite_manger_add ( sprite_manager & sm , sprite s ) {
+    int sprite_manager_add ( sprite_manager & sm , sprite s ) {
         sm.sprites.push_back ( s ) ;
         return static_cast <int> ( sm.sprites.size() ) - 1 ;
     }

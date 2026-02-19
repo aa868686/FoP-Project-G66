@@ -283,6 +283,15 @@ namespace app {
                     }
                 }
 
+                if ( !menu_consumed &&
+                     ui :: point_in_rect ( mx , my , st.lay.workspace ) ) {
+                    int idx = ui :: block_hit_test ( st.workspace , st.lay.workspace , mx , my ) ;
+                    if ( idx >= 0 ) {
+                        ui :: block_drag_begin ( st.workspace , idx , mx , my ) ;
+                        menu_consumed = true ;
+                    }
+                }
+
             }
 
             if ( e.type == SDL_MOUSEMOTION ) {
