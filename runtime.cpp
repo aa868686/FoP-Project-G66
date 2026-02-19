@@ -13,6 +13,7 @@
 #include "backdrop.h"
 #include "sound_manager.h"
 #include "font_manager.h"
+#include "ui_block.h"
 
 namespace app {
 
@@ -107,6 +108,8 @@ namespace app {
         bool is_paused = false ;
 
         ui :: menu * open_menu = nullptr ;
+
+        ui :: block_workspace workspace {} ;
     };
 
     static std :: vector < ui ::menu* > all_menus ( app_state & st ) {
@@ -255,6 +258,30 @@ namespace app {
                     }
                 }
 
+                if ( !menu_consumed &&
+                     ui :: point_in_rect ( mx , my , st.lay.leftPanel ) ) {
+                    ui :: block_category cat {} ;
+                    std :: string label {} ;
+
+                    if ( ui :: block_palette_click ( st.lay.leftPanel , mx , my , cat , label ) ) {
+                        ui :: block_workspace_add ( st.workspace , label , cat ,
+                                                    80 , 80 + static_cast <int> ( st.workspace.blocks.size() ) * 44
+                                                    ) ;
+
+                        menu_consumed = true ;
+                    }
+                }
+
+                if ( !menu_consumed &&
+                     ui :: point_in_rect ( mx , my , st.lay.workspace )
+                ) {
+                    int idx = ui :: block_hit_test ( st.workspace , st.lay.workspace , mx , my ) ;
+                    if ( idx >= 0 ) {
+                        ui :: block_drag_begin ( st.workspace , idx , mx , my ) ;
+                        menu_consumed = true ;
+                    }
+                }
+
             }
 
             if ( e.type == SDL_MOUSEMOTION ) {
@@ -267,6 +294,10 @@ namespace app {
 
                 snd :: sound_handle_drag ( st.sounds , st.lay.spriteBar ,
                                            e.motion.x , e.motion.y , st.sound_dragging ) ;
+
+
+                ui :: block_drag_update ( st.workspace , e.motion.x , e.motion.y ) ;
+
             }
 
             if ( e.type == SDL_MOUSEBUTTONUP &&
@@ -275,6 +306,8 @@ namespace app {
                     gfx :: sprite_drag_end ( spr ) ;
                 }
                 st.sound_dragging = false ;
+
+                ui :: block_drag_end ( st.workspace ) ;
             }
         }
     }
@@ -301,6 +334,8 @@ namespace app {
         SDL_RenderClear ( st.renderer ) ;
 
         ui :: render_layout ( st.renderer , st.lay ) ;
+        ui :: block_palette_render ( st.renderer , st.lay.leftPanel , st.fonts.medium ) ;
+        ui :: block_workspace_render ( st.renderer , st.workspace , st.lay.workspace , st.fonts.medium ) ;
         gfx :: backdrop_render ( st.renderer , st.backdrops , st.lay.stage ) ;
 
         const gfx :: StageRect ps {
