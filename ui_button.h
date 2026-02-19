@@ -3,6 +3,7 @@
 
 #pragma once
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <functional>
 
 namespace ui {
@@ -25,7 +26,7 @@ namespace ui {
 
 
     // Minimal visual
-    void button_draw ( SDL_Renderer *r , const button &b , SDL_Color fill , SDL_Color border ) ;
+    void button_draw ( SDL_Renderer *r , const button &b , TTF_Font * font , const char * label , SDL_Color fill , SDL_Color border ) ;
 
 }
 
