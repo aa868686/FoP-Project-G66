@@ -549,6 +549,8 @@ namespace app {
         gfx::sprite_manager_add(st.sprite_mgr, s);
         gfx::sprite_manager_select(st.sprite_mgr, 0);
 
+        snd :: sound_add ( st.sounds , "assets/cat_meow.wav" , "Meow" ) ;
+
         while (st.running) {
             ww = 0, wh = 0;
             SDL_GetWindowSize(st.window, &ww, &wh);
