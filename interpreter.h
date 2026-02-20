@@ -9,6 +9,7 @@
 #include <vector>
 #include "sprite.h"
 #include "logger.h"
+#include "safetynet.h"
 namespace core {
     struct interpreter {
         std::vector<Block*> blocks;
@@ -19,6 +20,7 @@ namespace core {
         gfx::sprite* active_sprite = nullptr;
         logger log;
         int cycle = 0;
+        safety_net safety;
     };
 
     void interpreter_load(interpreter& interp, const std::vector<Block*>& blocks);

@@ -150,6 +150,12 @@
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/runtime.h">
 			<Option target="FoP-Project-G66"/>
 		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/safetynet.cpp">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/safetynet.h">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/sound_manager.cpp">
 			<Option target="FoP-Project-G66"/>
 		</Unit>

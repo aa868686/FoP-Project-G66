@@ -44,7 +44,7 @@ add_executable(
         debug_logger.h
         debug_logger.cpp
         logger.h
-        logger.cpp)
+        logger.cpp safetynet.cpp safetynet.h)
 
 target_link_libraries(FoP-Project-G66
         mingw32

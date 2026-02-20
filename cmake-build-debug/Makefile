@@ -392,6 +392,30 @@ runtime.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/runtime.cpp.s
 .PHONY : runtime.cpp.s
 
+safetynet.obj: safetynet.cpp.obj
+.PHONY : safetynet.obj
+
+# target to build an object file
+safetynet.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/safetynet.cpp.obj
+.PHONY : safetynet.cpp.obj
+
+safetynet.i: safetynet.cpp.i
+.PHONY : safetynet.i
+
+# target to preprocess a source file
+safetynet.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/safetynet.cpp.i
+.PHONY : safetynet.cpp.i
+
+safetynet.s: safetynet.cpp.s
+.PHONY : safetynet.s
+
+# target to generate assembly for a file
+safetynet.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/safetynet.cpp.s
+.PHONY : safetynet.cpp.s
+
 sound_manager.obj: sound_manager.cpp.obj
 .PHONY : sound_manager.obj
 
@@ -626,6 +650,9 @@ help:
 	@echo ... runtime.obj
 	@echo ... runtime.i
 	@echo ... runtime.s
+	@echo ... safetynet.obj
+	@echo ... safetynet.i
+	@echo ... safetynet.s
 	@echo ... sound_manager.obj
 	@echo ... sound_manager.i
 	@echo ... sound_manager.s
