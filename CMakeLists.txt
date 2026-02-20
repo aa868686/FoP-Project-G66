@@ -42,9 +42,8 @@ add_executable(
         image_editor.h
         image_editor.cpp
         debug_logger.h
-        debug_logger.cpp
-        logger.h
-        logger.cpp safetynet.cpp safetynet.h)
+        debug_logger.cpp)
+
 
 target_link_libraries(FoP-Project-G66
         mingw32
