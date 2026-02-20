@@ -14,6 +14,10 @@ namespace ui {
         motion , looks , control , events , operators ,
     } ;
 
+    struct block_palette_state {
+        block_category selected_category = block_category :: motion ;
+    };
+
     struct block_input {
         std :: string value {} ;
         bool editable = true ;
@@ -86,10 +90,14 @@ namespace ui {
 
     void block_try_snap ( block_workspace & ws , int idx ) ;
 
+
     void block_palette_render ( SDL_Renderer * ren ,
                                 SDL_Rect panel ,
-                                TTF_Font * font
+                                TTF_Font * font ,
+                                block_palette_state & state
                                 ) ;
+
+    bool block_palette_handle_click ( SDL_Rect panel , int mx , int my , block_palette_state & state ) ;
 
 
     bool block_palette_click ( SDL_Rect panel ,

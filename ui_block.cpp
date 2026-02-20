@@ -320,38 +320,86 @@ namespace ui {
     static constexpr int palette_item_h = 32 ;
     static constexpr int palette_pad = 4  ;
 
-    void block_palette_render ( SDL_Renderer * ren , SDL_Rect panel , TTF_Font * font ) {
+    static const struct { block_category cat ; const char * label ; } CATEGORIES[] = {
+            { block_category :: motion , "Motion" } ,
+            { block_category :: looks , "Looks" } ,
+            { block_category :: events , "Events" } ,
+            { block_category :: control , "Control" } ,
+            { block_category :: operators , "Operators" } ,
+    } ;
+    static constexpr int cat_count = 5 ;
+    static constexpr int cat_w = 80 ;
+    static constexpr int cat_item_h = 48 ;
+
+    void block_palette_render ( SDL_Renderer * ren , SDL_Rect panel , TTF_Font * font , block_palette_state & state ) {
         if ( !ren ) {
             return ;
         }
 
-        SDL_RenderSetClipRect ( ren , &panel ) ;
+        SDL_Rect sidebar { panel.x , panel.y , cat_w , panel.h } ;
+        SDL_SetRenderDrawColor ( ren , 30 , 30 , 30 , 255 ) ;
+        SDL_RenderFillRect ( ren , &sidebar ) ;
 
+        for ( int i = 0 ; i < cat_count ; ++i ) {
+            SDL_Rect r { sidebar.x , sidebar.y + i * cat_item_h , cat_w , cat_item_h } ;
+            SDL_Color col = block_category_color ( CATEGORIES[i].cat ) ;
+
+            if ( CATEGORIES[i].cat == state.selected_category ) {
+                SDL_SetRenderDrawColor ( ren , col.r , col.g , col.b , 255 ) ;
+            } else {
+                SDL_SetRenderDrawColor ( ren , col.r/3 , col.g/3 , col.b/3 , 255 ) ;
+            }
+            SDL_RenderFillRect ( ren , &r ) ;
+            SDL_SetRenderDrawColor ( ren , 0 , 0 , 0 , 255 ) ;
+            SDL_RenderDrawRect ( ren , &r ) ;
+
+            if ( font ) {
+                fnt :: draw_text_centered ( ren , font , CATEGORIES[i].label , r , { 255,255,255,255 } ) ;
+            }
+        }
+
+
+        SDL_Rect blocks_panel { panel.x + cat_w , panel.y , panel.w - cat_w , panel.h } ;
+        SDL_RenderSetClipRect ( ren , &blocks_panel ) ;
+
+        int y = blocks_panel.y + palette_pad ;
         for ( int i = 0 ; i < palette_count ; ++i ) {
-            const palette_entry & pe = PALETTE[i] ;
-
-            SDL_Rect r { panel.x + palette_pad ,
-                    panel.y + palette_pad + i * ( palette_item_h + palette_pad ) ,
-                    panel.w - palette_pad * 2 ,
-                    palette_item_h
-            } ;
-
-
-            if ( r.y + r.h < panel.y || r.y > panel.y + panel.h ) {
+            if ( PALETTE[i].cat != state.selected_category ) {
                 continue ;
             }
 
-            SDL_Color col = block_category_color ( pe.cat ) ;
+            SDL_Rect r { blocks_panel.x + palette_pad , y , blocks_panel.w - ( palette_pad * 2 ) , palette_item_h } ;
+
+            if ( r.y + r.h < blocks_panel.y || r.y > blocks_panel.y + blocks_panel.h ) {
+                y += palette_item_h + palette_pad ;
+                continue ;
+            }
+
+            SDL_Color col = block_category_color ( PALETTE[i].cat ) ;
             fill_rect ( ren , r , col ) ;
             draw_rect_outline ( ren , r , darker ( col , 40 ) ) ;
 
             if ( font ) {
-                fnt :: draw_text_left ( ren , font , pe.label , r ,
-                                      { 255 , 255 , 255 , 255 } , pad ) ;
+                fnt :: draw_text_left ( ren , font , PALETTE[i].label , r , { 255,255,255,255 } , pad ) ;
             }
+
+            y += palette_item_h + palette_pad ;
         }
 
         SDL_RenderSetClipRect ( ren , nullptr ) ;
+    }
+
+    bool block_palette_handle_click ( SDL_Rect panel , int mx , int my , block_palette_state & state ) {
+        SDL_Rect sidebar { panel.x , panel.y , cat_w , panel.h } ;
+        if ( mx >= sidebar.x && mx < sidebar.x + sidebar.w &&
+             my >= sidebar.y && my < sidebar.y + sidebar.h ) {
+            int i = ( my - sidebar.y ) / cat_item_h ;
+            if ( i >= 0 && i < cat_count ) {
+                state.selected_category = CATEGORIES[i].cat ;
+                return true ;
+            }
+        }
+        return false ;
     }
 
     bool block_palette_click ( SDL_Rect panel ,

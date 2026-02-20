@@ -90,6 +90,8 @@ namespace app {
 
         ui::layout lay{};
 
+        ui :: block_palette_state palette_state {} ;
+
         gfx::sprite_manager sprite_mgr{};
 
 
@@ -364,7 +366,11 @@ namespace app {
                 }
 
                 if (!menu_consumed &&
-                    ui::point_in_rect(mx, my, st.lay.leftPanel)) {
+                    ui::point_in_rect (mx, my, st.lay.leftPanel) ) {
+
+                    if ( ui :: block_palette_handle_click ( st.lay.leftPanel , mx , my , st.palette_state ) ) {
+                        menu_consumed = true ;
+                    }
                     ui::block_category cat{};
                     std::string label{};
 
@@ -445,7 +451,7 @@ namespace app {
         SDL_RenderClear(st.renderer);
 
         ui::render_layout(st.renderer, st.lay);
-        ui::block_palette_render(st.renderer, st.lay.leftPanel, st.fonts.medium);
+        ui::block_palette_render( st.renderer , st.lay.leftPanel , st.fonts.medium , st.palette_state ) ;
         ui::block_workspace_render(st.renderer, st.workspace, st.lay.workspace, st.fonts.medium);
         gfx::backdrop_render(st.renderer, st.backdrops, st.lay.stage);
 
