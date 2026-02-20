@@ -530,8 +530,23 @@ namespace app {
 
         build_menus ( st ) ;
 
+        int ww = 0 , wh = 0 ;
+        SDL_GetWindowSize ( st.window , &ww , &wh ) ;
+        st.lay = ui :: build_layout ( ww , wh ) ;
+
+        gfx :: sprite s = gfx :: sprite_make ( 0 , "Sprite1" ) ;
+        s.draggable = true ;
+        int w = 0 , h = 0 ;
+        SDL_Texture * tex = gfx :: load_texture ( st.renderer , "assets/default_sprite.png" , w , h ) ;
+        if ( tex ) {
+            gfx :: sprite_add_costume ( s , tex , w , h , "default" ) ;
+        }
+        gfx :: sprite_set_position ( s , st.lay.stage.w * 0.5f , st.lay.stage.h * 0.5f ) ;
+        gfx :: sprite_manager_add ( st.sprite_mgr , s ) ;
+        gfx :: sprite_manager_select ( st.sprite_mgr , 0 ) ;
+
         while ( st.running ) {
-            int ww = 0 , wh = 0 ;
+            ww = 0 , wh = 0 ;
             SDL_GetWindowSize ( st.window , &ww , &wh ) ;
             st.lay = ui :: build_layout ( ww , wh ) ;
 
