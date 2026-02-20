@@ -350,6 +350,9 @@ namespace app {
                         };
                         gfx::sprite_drag_begin(st.sprite_mgr.sprites[st.sprite_mgr.active],
                                                mx, my, sr);
+                        if ( !st.sounds.sounds.empty() ) {
+                            snd ::sound_play ( st.sounds.sounds[0] ) ;
+                        }
                     }
                     menu_consumed = true;
                 }
@@ -548,6 +551,8 @@ namespace app {
         gfx::sprite_set_position(s, st.lay.stage.w * 0.5f, st.lay.stage.h * 0.5f ) ;
         gfx::sprite_manager_add(st.sprite_mgr, s);
         gfx::sprite_manager_select(st.sprite_mgr, 0);
+
+        st.interp.sound_manager = & st.sounds ;
 
         snd :: sound_add ( st.sounds , "assets/cat_meow.wav" , "Meow" ) ;
 

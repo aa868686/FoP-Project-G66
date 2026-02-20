@@ -1,13 +1,10 @@
-//
-// Created by amirf on 2/20/2026.
-//
-
 #ifndef FOP_PROJECT_G66_INTERPRETER_H
 #define FOP_PROJECT_G66_INTERPRETER_H
 #include "block.h"
 #include "variable.h"
 #include <vector>
 #include "sprite.h"
+#include "sound_manager.h"
 #include "logger.h"
 #include "safetynet.h"
 #include "ui_block.h"
@@ -22,6 +19,7 @@ namespace core {
         logger log;
         int cycle = 0;
         safety_net safety;
+        snd :: sound_manager * sound_manager = nullptr ;
     };
 
     void interpreter_load(interpreter& interp, const std::vector<Block*>& blocks);

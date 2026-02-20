@@ -1,7 +1,3 @@
-//
-// Created by amirf on 2/20/2026.
-//
-
 #include "interpreter.h"
 #include "variable.h"
 #include "sprite.h"
@@ -179,6 +175,19 @@ namespace core {
                 gfx::sprite_set_costume(*interp.active_sprite, next);
                 interp.active_sprite->current_costume = next;
                 break;
+            }
+
+            case block_type :: play_sound : {
+                if ( interp.sound_manager ) {
+                    std :: string name = value_to_string ( block -> parameters[0].data ) ;
+                    for ( auto & se : interp.sound_manager -> sounds ) {
+                        if ( se.name == name ) {
+                            snd :: sound_play ( se ) ;
+                            break ;
+                        }
+                    }
+                }
+                break ;
             }
         }
     }
