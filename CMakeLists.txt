@@ -47,6 +47,7 @@ target_link_libraries(FoP-Project-G66
         SDL2_image
         SDL2_ttf
         SDL2_mixer
+        comdlg32
 )
 
 add_custom_command(TARGET FoP-Project-G66 POST_BUILD

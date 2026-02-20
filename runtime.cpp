@@ -14,6 +14,7 @@
 #include "sound_manager.h"
 #include "font_manager.h"
 #include "ui_block.h"
+#include "file_dialog.h"
 
 namespace app {
 
@@ -156,9 +157,42 @@ namespace app {
                     close_all_menus ( st ) ;  }  } ,
                 { "Background: Green Field" , true , [&]{ gfx :: backdrop_set_active_by_name ( st.backdrops , "Green Field" ) ;
                     close_all_menus ( st ) ; } } ,
-                { "Add Sprite..." , true , [&] { /* TODO: sprite picker */ } } ,
-                { "Add Sound..." , true , [&] { /* TODO: file dialog -> sound_add(st.sounds, path, name) */
-                    close_all_menus ( st ) ; } } ,
+                { "Load Backdrop Image..." , true , [&] {
+                    close_all_menus ( st ) ;
+                    std :: string path = dlg :: open_image_dialog () ;
+                    if ( !path.empty() ) {
+                        int w = 0 , h = 0 ;
+                        SDL_Texture * tex = gfx :: load_texture ( st.renderer , path , w , h ) ;
+                        if ( tex ) {
+                            gfx :: backdrop_add_texture ( st.backdrops , path , tex , w , h ) ;
+                            gfx :: backdrop_set_active ( st.backdrops ,
+                                 static_cast <int> ( st.backdrops.backdrops.size() ) -1 ) ;
+                        }
+                    }
+                } } ,
+                { "Add Sprite Image..." , true , [&] {
+                    close_all_menus ( st ) ;
+                    std :: string path = dlg :: open_image_dialog () ;
+                    if ( !path.empty() ) {
+                        int w = 0 , h = 0 ;
+                        SDL_Texture * tex = gfx ::load_texture ( st.renderer , path , w , h ) ;
+                        if ( tex ) {
+                            gfx :: sprite s = gfx ::sprite_make (
+                                    static_cast <int> ( st.sprite_mgr.sprites.size() ) , path.c_str() ) ;
+                            s.draggable = true ;
+                            gfx :: sprite_add_costume ( s , tex , w , h , "default" ) ;
+                            gfx :: sprite_set_position ( s , 100.f , 100.0f ) ;
+                            gfx :: sprite_manager_add ( st.sprite_mgr , s ) ;
+                        }
+                    }
+                } } ,
+                { "Add Sound..." , true , [&] {
+                    close_all_menus ( st ) ;
+                    std :: string path = dlg :: open_audio_dialog () ;
+                    if ( !path.empty() ) {
+                        snd ::sound_add ( st.sounds , path , path ) ;
+                    }
+                } } ,
         };
 
         st.menu_run.title = "Run" ;
