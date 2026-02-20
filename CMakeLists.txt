@@ -38,7 +38,11 @@ add_executable(
         interpreter.h
         interpreter.cpp
         file_dialog.h
-        file_dialog.cpp)
+        file_dialog.cpp
+        image_editor.h
+        image_editor.cpp
+        debug_logger.h
+        debug_logger.cpp)
 
 target_link_libraries(FoP-Project-G66
         mingw32
