@@ -459,9 +459,12 @@ namespace app {
                 st.lay.stage.w, st.lay.stage.h
         };
 
-        for (const auto &spr: st.sprite_mgr.sprites) {
-            gfx::sprite_draw(st.renderer, spr, sr);
+        SDL_RenderSetClipRect ( st.renderer , &st.lay.stage ) ;
+        for ( const auto & spr : st.sprite_mgr.sprites ) {
+            gfx :: sprite_draw ( st.renderer , spr , sr ) ;
         }
+        SDL_RenderSetClipRect ( st.renderer , nullptr ) ;
+
         gfx::sprite_manager_render(st.renderer, st.sprite_mgr, st.lay.spriteBar, st.fonts.small);
 
 //        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar , st.fonts.small ) ;
