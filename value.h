@@ -24,10 +24,26 @@ namespace core {
     Value value_make_float(float v);
     Value value_make_string(const std::string& v);
     Value value_make_bool(bool v);
+
     int value_to_int(const Value& v);
     float value_to_float(const Value& v);
     std::string value_to_string(const Value& v);
     bool value_to_bool(const Value& v);
+
+    bool value_is_numeric(const Value& v);
+
+    Value value_add(const Value& a, const Value& b);
+    Value value_sub(const Value& a, const Value& b);
+    Value value_mul(const Value& a, const Value& b);
+    Value value_div(const Value& a, const Value& b);
+
+    bool value_eq(const Value& a, const Value& b);
+    bool value_lt(const Value& a, const Value& b);
+    bool value_gt(const Value& a, const Value& b);
+
+    Value value_and(const Value& a, const Value& b);
+    Value value_or (const Value& a, const Value& b);
+    Value value_not(const Value& a);
 
 }
 

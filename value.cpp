@@ -4,6 +4,8 @@
 
 #include "value.h"
 #include <stdexcept>
+#include <limits>
+#include <cmath>
 
 namespace core {
     Value value_make_int(int v) {
@@ -12,21 +14,18 @@ namespace core {
         val.int_val = v;
         return val;
     }
-
     Value value_make_float(float v) {
         Value val;
         val.type = value_type::type_float;
         val.float_val = v;
         return val;
     }
-
     Value value_make_string(const std::string &v) {
         Value val;
         val.type = value_type::type_string;
         val.string_val = v;
         return val;
     }
-
     Value value_make_bool(bool v) {
         Value val;
         val.type = value_type::type_bool;
@@ -99,5 +98,66 @@ namespace core {
                 return v.bool_val;
             default: return false;
         }
+    }
+
+    bool value_is_numeric(const Value& v) {
+        if (v.type == value_type::type_int || v.type == value_type::type_float) return true;
+        return false;
+    }
+
+    Value value_add(const Value& a, const Value& b) {
+        Value val;
+        if (value_is_numeric(a) && value_is_numeric(b)) {
+            val.type = value_type::type_float;
+            val.float_val = value_to_float(a) + value_to_float(b);
+        }
+        else {
+            val.type = value_type::type_string;
+            val.string_val = value_to_string(a) + value_to_string(b);
+        }
+        return val;
+    }
+    Value value_sub(const Value& a, const Value& b) {
+        return value_make_float(value_to_float(a) - value_to_float(b));
+    }
+    Value value_mul(const Value& a, const Value& b) {
+        return value_make_float(value_to_float(a) * value_to_float(b));
+    }
+    Value value_div(const Value& a, const Value& b) {
+        Value val;
+        val.type = value_type::type_float;
+        if (std::fabs(value_to_float(b)) < 1e-9f)
+            return value_make_float(std::numeric_limits<float>::infinity());
+        else {
+            return value_make_float(value_to_float(a) / value_to_float(b));
+        }
+    }
+
+    bool value_eq(const Value& a, const Value& b) {
+        if (value_is_numeric(a) && value_is_numeric(b)) {
+            return (std::fabs(value_to_float(a) - value_to_float(b)) < 1e-9f);
+        }
+        else {
+            return (value_to_string(a) == value_to_string(b));
+        }
+    }
+    bool value_lt(const Value& a, const Value& b) {
+        return (value_to_float(a) < value_to_float(b));
+    }
+    bool value_gt(const Value& a, const Value& b) {
+        return (value_to_float(a) > value_to_float(b));
+    }
+
+    Value value_and(const Value& a, const Value& b) {
+        if (value_to_bool(a) && value_to_bool(b)) return value_make_bool(true);
+        return value_make_bool(false);
+    }
+    Value value_or (const Value& a, const Value& b) {
+        if (value_to_bool(a) || value_to_bool(b)) return value_make_bool(true);
+        return value_make_bool(false);
+    }
+    Value value_not(const Value& a) {
+        if (value_to_bool(a)) return value_make_bool(false);
+        return value_make_bool(true);
     }
 }
