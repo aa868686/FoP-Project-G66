@@ -9,16 +9,28 @@ namespace ui {
     }
 
 
-    void menu_layout ( menu &m ) {
+    void menu_layout ( menu &m, TTF_Font* font ) {
         const int item_count = static_cast < int > ( m.items.size() ) ;
         if ( item_count <= 0 ) {
             m.panel_rect = SDL_Rect { m.title_rect.x , m.title_rect.y + m.title_rect.h , m.title_rect.w , 0 } ;
             return ;
         }
+        int max_w = m.title_rect.w;
+
+        if (font) {
+            for (const auto& it : m.items) {
+                int text_w = 0, text_h = 0;
+                TTF_SizeText(font, it.label, &text_w, &text_h);
+                int needed = text_w + 24; // 24px padding
+                if (needed > max_w) max_w = needed;
+            }
+        }
+
+
 
         m.panel_rect.x = m.title_rect.x ;
         m.panel_rect.y = m.title_rect.y + m.title_rect.h ;
-        m.panel_rect.w = m.title_rect.w ;
+        m.panel_rect.w = max_w;
         m.panel_rect.h = item_count * m.item_height ;
 
         for ( int i = 0 ; i < item_count ; ++i ) {
@@ -83,7 +95,7 @@ namespace ui {
 
     bool menu_handle_click ( menu &m , int x , int y ) {
         // Always recompute layout before hit-testing
-        menu_layout ( m ) ;
+        menu_layout ( m , nullptr) ;
 
         // Click on title toggles menu
         if ( pt_in_rect ( m.title_rect , x , y ) ) {

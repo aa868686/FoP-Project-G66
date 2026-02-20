@@ -261,11 +261,11 @@ namespace app {
         st.btn_stop.rect = ui::topbar_right_rect(tb, 0, 60, 26);
 
 
-        ui::menu_layout(st.menu_file);
-        ui::menu_layout(st.menu_help);
-        ui::menu_layout(st.menu_code);
-        ui::menu_layout(st.menu_settings);
-        ui::menu_layout(st.menu_run);
+        ui::menu_layout(st.menu_file, st.fonts.medium);
+        ui::menu_layout(st.menu_help, st.fonts.medium);
+        ui::menu_layout(st.menu_code, st.fonts.medium);
+        ui::menu_layout(st.menu_settings, st.fonts.medium);
+        ui::menu_layout(st.menu_run, st.fonts.medium);
     }
 
 

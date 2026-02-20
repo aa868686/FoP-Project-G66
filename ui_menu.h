@@ -37,7 +37,7 @@ namespace ui {
 
 
     // Compute panel_rect and each item.rect based on title_rect and item_height
-    void menu_layout ( menu &m ) ;
+    void menu_layout ( menu &m, TTF_Font* font) ;
 
     // Draw title + dropdown
     void menu_draw ( SDL_Renderer *r , const menu &m ,
