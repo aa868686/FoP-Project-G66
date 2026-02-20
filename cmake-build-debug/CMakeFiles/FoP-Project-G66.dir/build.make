@@ -263,20 +263,20 @@ CMakeFiles/FoP-Project-G66.dir/value.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/FoP-Project-G66.dir/value.cpp.s"
 	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\amirf\Desktop\FProject\FoP-Project-G66\value.cpp -o CMakeFiles\FoP-Project-G66.dir\value.cpp.s
 
-CMakeFiles/FoP-Project-G66.dir/block.cpp.obj: CMakeFiles/FoP-Project-G66.dir/flags.make
-CMakeFiles/FoP-Project-G66.dir/block.cpp.obj: CMakeFiles/FoP-Project-G66.dir/includes_CXX.rsp
-CMakeFiles/FoP-Project-G66.dir/block.cpp.obj: ../block.cpp
-CMakeFiles/FoP-Project-G66.dir/block.cpp.obj: CMakeFiles/FoP-Project-G66.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirf\Desktop\FProject\FoP-Project-G66\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/FoP-Project-G66.dir/block.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FoP-Project-G66.dir/block.cpp.obj -MF CMakeFiles\FoP-Project-G66.dir\block.cpp.obj.d -o CMakeFiles\FoP-Project-G66.dir\block.cpp.obj -c C:\Users\amirf\Desktop\FProject\FoP-Project-G66\block.cpp
+CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj: CMakeFiles/FoP-Project-G66.dir/flags.make
+CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj: CMakeFiles/FoP-Project-G66.dir/includes_CXX.rsp
+CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj: ../variable.cpp
+CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj: CMakeFiles/FoP-Project-G66.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirf\Desktop\FProject\FoP-Project-G66\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj -MF CMakeFiles\FoP-Project-G66.dir\variable.cpp.obj.d -o CMakeFiles\FoP-Project-G66.dir\variable.cpp.obj -c C:\Users\amirf\Desktop\FProject\FoP-Project-G66\variable.cpp
 
-CMakeFiles/FoP-Project-G66.dir/block.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/FoP-Project-G66.dir/block.cpp.i"
-	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\amirf\Desktop\FProject\FoP-Project-G66\block.cpp > CMakeFiles\FoP-Project-G66.dir\block.cpp.i
+CMakeFiles/FoP-Project-G66.dir/variable.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/FoP-Project-G66.dir/variable.cpp.i"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\amirf\Desktop\FProject\FoP-Project-G66\variable.cpp > CMakeFiles\FoP-Project-G66.dir\variable.cpp.i
 
-CMakeFiles/FoP-Project-G66.dir/block.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/FoP-Project-G66.dir/block.cpp.s"
-	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\amirf\Desktop\FProject\FoP-Project-G66\block.cpp -o CMakeFiles\FoP-Project-G66.dir\block.cpp.s
+CMakeFiles/FoP-Project-G66.dir/variable.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/FoP-Project-G66.dir/variable.cpp.s"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\amirf\Desktop\FProject\FoP-Project-G66\variable.cpp -o CMakeFiles\FoP-Project-G66.dir\variable.cpp.s
 
 # Object files for target FoP-Project-G66
 FoP__Project__G66_OBJECTS = \
@@ -293,7 +293,7 @@ FoP__Project__G66_OBJECTS = \
 "CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj" \
 "CMakeFiles/FoP-Project-G66.dir/ui_block.cpp.obj" \
 "CMakeFiles/FoP-Project-G66.dir/value.cpp.obj" \
-"CMakeFiles/FoP-Project-G66.dir/block.cpp.obj"
+"CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj"
 
 # External object files for target FoP-Project-G66
 FoP__Project__G66_EXTERNAL_OBJECTS =
@@ -311,7 +311,7 @@ FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/sound_manager.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/ui_block.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/value.cpp.obj
-FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/block.cpp.obj
+FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/build.make
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/linklibs.rsp
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/objects1.rsp

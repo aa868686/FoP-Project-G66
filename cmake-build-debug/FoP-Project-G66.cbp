@@ -90,9 +90,6 @@
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/backdrop.h">
 			<Option target="FoP-Project-G66"/>
 		</Unit>
-		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/block.cpp">
-			<Option target="FoP-Project-G66"/>
-		</Unit>
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/block.h">
 			<Option target="FoP-Project-G66"/>
 		</Unit>
@@ -163,6 +160,12 @@
 			<Option target="FoP-Project-G66"/>
 		</Unit>
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/value.h">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/variable.cpp">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/variable.h">
 			<Option target="FoP-Project-G66"/>
 		</Unit>
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/CMakeLists.txt">

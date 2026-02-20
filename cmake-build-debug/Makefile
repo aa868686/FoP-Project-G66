@@ -152,30 +152,6 @@ backdrop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.s
 .PHONY : backdrop.cpp.s
 
-block.obj: block.cpp.obj
-.PHONY : block.obj
-
-# target to build an object file
-block.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/block.cpp.obj
-.PHONY : block.cpp.obj
-
-block.i: block.cpp.i
-.PHONY : block.i
-
-# target to preprocess a source file
-block.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/block.cpp.i
-.PHONY : block.cpp.i
-
-block.s: block.cpp.s
-.PHONY : block.s
-
-# target to generate assembly for a file
-block.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/block.cpp.s
-.PHONY : block.cpp.s
-
 font_manager.obj: font_manager.cpp.obj
 .PHONY : font_manager.obj
 
@@ -464,6 +440,30 @@ value.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/value.cpp.s
 .PHONY : value.cpp.s
 
+variable.obj: variable.cpp.obj
+.PHONY : variable.obj
+
+# target to build an object file
+variable.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj
+.PHONY : variable.cpp.obj
+
+variable.i: variable.cpp.i
+.PHONY : variable.i
+
+# target to preprocess a source file
+variable.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/variable.cpp.i
+.PHONY : variable.cpp.i
+
+variable.s: variable.cpp.s
+.PHONY : variable.s
+
+# target to generate assembly for a file
+variable.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/variable.cpp.s
+.PHONY : variable.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -476,9 +476,6 @@ help:
 	@echo ... backdrop.obj
 	@echo ... backdrop.i
 	@echo ... backdrop.s
-	@echo ... block.obj
-	@echo ... block.i
-	@echo ... block.s
 	@echo ... font_manager.obj
 	@echo ... font_manager.i
 	@echo ... font_manager.s
@@ -515,6 +512,9 @@ help:
 	@echo ... value.obj
 	@echo ... value.i
 	@echo ... value.s
+	@echo ... variable.obj
+	@echo ... variable.i
+	@echo ... variable.s
 .PHONY : help
 
 

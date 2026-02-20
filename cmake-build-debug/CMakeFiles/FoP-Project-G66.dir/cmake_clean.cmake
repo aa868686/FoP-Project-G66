@@ -1,8 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.obj"
   "CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.obj.d"
-  "CMakeFiles/FoP-Project-G66.dir/block.cpp.obj"
-  "CMakeFiles/FoP-Project-G66.dir/block.cpp.obj.d"
   "CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj"
   "CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj.d"
   "CMakeFiles/FoP-Project-G66.dir/layout.cpp.obj"
@@ -27,6 +25,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/FoP-Project-G66.dir/ui_menu.cpp.obj.d"
   "CMakeFiles/FoP-Project-G66.dir/value.cpp.obj"
   "CMakeFiles/FoP-Project-G66.dir/value.cpp.obj.d"
+  "CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj"
+  "CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj.d"
   "FoP-Project-G66.exe"
   "FoP-Project-G66.exe.manifest"
   "FoP-Project-G66.pdb"
