@@ -121,24 +121,17 @@ namespace gfx {
         if ( stage.w <= 0 || stage.h <= 0 ) {
             return ;
         }
-        float w = 0 , h = 0 ;
-        sprite_get_render_size ( s , w , h ) ;
 
-        const float half_w = w * 0.5f ;
-        const float half_h = h * 0.5f ;
-
-        const float min_x = half_w ;
-        const float max_x = (float) stage.w - half_w ;
-        const float min_y = half_h ;
-        const float max_y = (float) stage.h - half_h ;
+        const float min_x = 0.0f ;
+        const float max_x = (float) stage.w ;
+        const float min_y = 0.0f ;
+        const float max_y = (float) stage.h ;
 
         s.x = std :: min ( std :: max ( s.x , min_x ) , max_x ) ;
         s.y = std :: min ( std :: max ( s.y , min_y ) , max_y ) ;
 
     }
 
-
-    ///// Costume API /////
 
     int sprite_add_costume ( sprite &s , SDL_Texture *tex , int tex_w , int tex_h , const char * costume_name ) {
         Costume c ;
