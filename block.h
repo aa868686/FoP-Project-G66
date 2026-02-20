@@ -31,6 +31,7 @@ namespace core {
         block_type type;
         std::vector<Parameter> parameters;
         std::vector<Block*> nested_blocks;
+        std::vector<Block*> else_blocks;
         int line_number = -1;
         int jump_target = -1;
         std::string name;

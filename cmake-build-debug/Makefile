@@ -176,6 +176,30 @@ font_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.s
 .PHONY : font_manager.cpp.s
 
+interpreter.obj: interpreter.cpp.obj
+.PHONY : interpreter.obj
+
+# target to build an object file
+interpreter.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.obj
+.PHONY : interpreter.cpp.obj
+
+interpreter.i: interpreter.cpp.i
+.PHONY : interpreter.i
+
+# target to preprocess a source file
+interpreter.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.i
+.PHONY : interpreter.cpp.i
+
+interpreter.s: interpreter.cpp.s
+.PHONY : interpreter.s
+
+# target to generate assembly for a file
+interpreter.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.s
+.PHONY : interpreter.cpp.s
+
 layout.obj: layout.cpp.obj
 .PHONY : layout.obj
 
@@ -479,6 +503,9 @@ help:
 	@echo ... font_manager.obj
 	@echo ... font_manager.i
 	@echo ... font_manager.s
+	@echo ... interpreter.obj
+	@echo ... interpreter.i
+	@echo ... interpreter.s
 	@echo ... layout.obj
 	@echo ... layout.i
 	@echo ... layout.s

@@ -35,7 +35,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 38,
+				"line" : 40,
 				"parent" : 0
 			},
 			{
@@ -93,7 +93,8 @@
 				20,
 				22,
 				24,
-				27
+				27,
+				29
 			]
 		}
 	],
@@ -173,7 +174,8 @@
 				21,
 				23,
 				25,
-				26
+				26,
+				28
 			]
 		},
 		{
@@ -193,7 +195,8 @@
 				20,
 				22,
 				24,
-				27
+				27,
+				29
 			]
 		}
 	],
@@ -351,6 +354,17 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "variable.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "interpreter.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "interpreter.cpp",
 			"sourceGroupIndex" : 1
 		}
 	],

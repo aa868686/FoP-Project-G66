@@ -34,7 +34,9 @@ add_executable(
         value.cpp
         block.h
         variable.h
-        variable.cpp)
+        variable.cpp
+        interpreter.h
+        interpreter.cpp)
 
 target_link_libraries(FoP-Project-G66
         mingw32

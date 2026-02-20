@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.obj.d"
   "CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj"
   "CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj.d"
+  "CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.obj"
+  "CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.obj.d"
   "CMakeFiles/FoP-Project-G66.dir/layout.cpp.obj"
   "CMakeFiles/FoP-Project-G66.dir/layout.cpp.obj.d"
   "CMakeFiles/FoP-Project-G66.dir/main.cpp.obj"
