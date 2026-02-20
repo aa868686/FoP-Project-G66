@@ -467,6 +467,7 @@ namespace app {
                               clr :: item_dis ) ;
         }
 
+
         dbg :: logger_render ( st.renderer , st.logger , st.fonts.small ) ;
         gfx :: editor_render ( st.renderer , st.img_editor , st.fonts.medium ) ;
 

@@ -44,6 +44,7 @@ add_executable(
         debug_logger.h
         debug_logger.cpp)
 
+
 target_link_libraries(FoP-Project-G66
         mingw32
         SDL2main
