@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <string>
+#include "image_editor.h"
 
 namespace app {
 
