@@ -30,7 +30,9 @@ add_executable(FoP-Project-G66
         ui_block.h
         ui_block.cpp
         image_editor.h
-        image_editor.cpp)
+        image_editor.cpp
+        debug_logger.h
+        debug_logger.cpp)
 
 target_link_libraries(FoP-Project-G66
         mingw32
