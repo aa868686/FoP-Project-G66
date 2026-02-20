@@ -18,6 +18,7 @@
 #include "debug_logger.h"
 #include "image_editor.h"
 #include "interpreter.h"
+#include "block_compiler.h"
 
 namespace app {
 
@@ -211,15 +212,29 @@ namespace app {
         st.menu_run.title = "Run" ;
         st.menu_run.items = {
                 { "Run" , true , [&] {
-                    core :: interpreter_run ( st.interp ) ;
+                    auto compiled = compiler :: compile_workspace ( st.workspace ) ;
+                    if ( !compiled.empty() ) {
+                        if ( st.sprite_mgr.active >= 0 &&
+                             st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size() ) ) {
+                            st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                        }
+                        core :: interpreter_load ( st.interp , compiled ) ;
+                        core :: interpreter_run ( st.interp ) ;
+                        compiler :: free_compiled ( compiled ) ;
+                        dbg :: logger_log ( st.logger , "Program finished." ) ;
+                    } else {
+                        dbg :: logger_log ( st.logger , "No blocks to run." , dbg :: log_level :: warn ) ;
+                    }
                     close_all_menus ( st ) ;
                 } } ,
                 { "Pause" , true , [&] {
                     core :: interpreter_pause ( st.interp ) ;
+                    dbg :: logger_log ( st.logger , "Resumed.") ;
                     close_all_menus ( st ) ;
                 } } ,
                 { "Stop" , true , [&] {
                     core :: interpreter_stop ( st.interp ) ;
+                    dbg :: logger_log ( st.logger , "Stopped.") ;
                     close_all_menus ( st ) ;
                 } } ,
         } ;
@@ -491,6 +506,26 @@ namespace app {
 
         fnt :: font_init ( st.fonts , "assets/arial.ttf" ) ;
 
+
+        st.btn_run.on_click = [&] {
+            auto compiled = compiler :: compile_workspace ( st.workspace ) ;
+            if ( !compiled.empty() ) {
+                if ( st.sprite_mgr.active >= 0 &&
+                     st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size() ) ) {
+                    st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                }
+                core :: interpreter_load ( st.interp , compiled ) ;
+                core :: interpreter_run ( st.interp ) ;
+                compiler :: free_compiled ( compiled ) ;
+                dbg :: logger_log ( st.logger , "Program finished." ) ;
+            } else {
+                dbg :: logger_log ( st.logger , "No blocks to run." , dbg :: log_level :: warn ) ;
+            }
+        } ;
+        st.btn_stop.on_click = [&] {
+            core :: interpreter_stop ( st.interp ) ;
+            dbg :: logger_log ( st.logger , "Stopped." ) ;
+        } ;
 
 
         build_menus ( st ) ;
