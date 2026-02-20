@@ -459,9 +459,12 @@ namespace app {
                 st.lay.stage.w, st.lay.stage.h
         };
 
-        for (const auto &spr: st.sprite_mgr.sprites) {
-            gfx::sprite_draw(st.renderer, spr, sr);
+        SDL_RenderSetClipRect ( st.renderer , &st.lay.stage ) ;
+        for ( const auto & spr : st.sprite_mgr.sprites ) {
+            gfx :: sprite_draw ( st.renderer , spr , sr ) ;
         }
+        SDL_RenderSetClipRect ( st.renderer , nullptr ) ;
+
         gfx::sprite_manager_render(st.renderer, st.sprite_mgr, st.lay.spriteBar, st.fonts.small);
 
 //        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar , st.fonts.small ) ;
@@ -542,9 +545,11 @@ namespace app {
         if (tex) {
             gfx::sprite_add_costume(s, tex, w, h, "default");
         }
-        gfx::sprite_set_position(s, 0.0f, 0.0f ) ;
+        gfx::sprite_set_position(s, st.lay.stage.w * 0.5f, st.lay.stage.h * 0.5f ) ;
         gfx::sprite_manager_add(st.sprite_mgr, s);
         gfx::sprite_manager_select(st.sprite_mgr, 0);
+
+        snd :: sound_add ( st.sounds , "assets/cat_meow.wav" , "Meow" ) ;
 
         while (st.running) {
             ww = 0, wh = 0;
