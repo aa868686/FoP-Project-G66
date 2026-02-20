@@ -548,6 +548,7 @@ namespace app {
         if (tex) {
             gfx::sprite_add_costume(s, tex, w, h, "default");
         }
+
         gfx::sprite_set_position(s, st.lay.stage.w * 0.5f, st.lay.stage.h * 0.5f ) ;
         gfx::sprite_manager_add(st.sprite_mgr, s);
         gfx::sprite_manager_select(st.sprite_mgr, 0);
