@@ -293,6 +293,36 @@ CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.s"
 	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\amirf\Desktop\FProject\FoP-Project-G66\interpreter.cpp -o CMakeFiles\FoP-Project-G66.dir\interpreter.cpp.s
 
+CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj: CMakeFiles/FoP-Project-G66.dir/flags.make
+CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj: CMakeFiles/FoP-Project-G66.dir/includes_CXX.rsp
+CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj: ../file_dialog.cpp
+CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj: CMakeFiles/FoP-Project-G66.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirf\Desktop\FProject\FoP-Project-G66\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj -MF CMakeFiles\FoP-Project-G66.dir\file_dialog.cpp.obj.d -o CMakeFiles\FoP-Project-G66.dir\file_dialog.cpp.obj -c C:\Users\amirf\Desktop\FProject\FoP-Project-G66\file_dialog.cpp
+
+CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.i"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\amirf\Desktop\FProject\FoP-Project-G66\file_dialog.cpp > CMakeFiles\FoP-Project-G66.dir\file_dialog.cpp.i
+
+CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.s"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\amirf\Desktop\FProject\FoP-Project-G66\file_dialog.cpp -o CMakeFiles\FoP-Project-G66.dir\file_dialog.cpp.s
+
+CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj: CMakeFiles/FoP-Project-G66.dir/flags.make
+CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj: CMakeFiles/FoP-Project-G66.dir/includes_CXX.rsp
+CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj: ../logger.cpp
+CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj: CMakeFiles/FoP-Project-G66.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\amirf\Desktop\FProject\FoP-Project-G66\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj -MF CMakeFiles\FoP-Project-G66.dir\logger.cpp.obj.d -o CMakeFiles\FoP-Project-G66.dir\logger.cpp.obj -c C:\Users\amirf\Desktop\FProject\FoP-Project-G66\logger.cpp
+
+CMakeFiles/FoP-Project-G66.dir/logger.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/FoP-Project-G66.dir/logger.cpp.i"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\amirf\Desktop\FProject\FoP-Project-G66\logger.cpp > CMakeFiles\FoP-Project-G66.dir\logger.cpp.i
+
+CMakeFiles/FoP-Project-G66.dir/logger.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/FoP-Project-G66.dir/logger.cpp.s"
+	C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\amirf\Desktop\FProject\FoP-Project-G66\logger.cpp -o CMakeFiles\FoP-Project-G66.dir\logger.cpp.s
+
 # Object files for target FoP-Project-G66
 FoP__Project__G66_OBJECTS = \
 "CMakeFiles/FoP-Project-G66.dir/sprite.cpp.obj" \
@@ -309,7 +339,9 @@ FoP__Project__G66_OBJECTS = \
 "CMakeFiles/FoP-Project-G66.dir/ui_block.cpp.obj" \
 "CMakeFiles/FoP-Project-G66.dir/value.cpp.obj" \
 "CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj" \
-"CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.obj"
+"CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.obj" \
+"CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj" \
+"CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj"
 
 # External object files for target FoP-Project-G66
 FoP__Project__G66_EXTERNAL_OBJECTS =
@@ -329,11 +361,13 @@ FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/ui_block.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/value.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/variable.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/interpreter.cpp.obj
+FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj
+FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/build.make
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/linklibs.rsp
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/objects1.rsp
 FoP-Project-G66.exe: CMakeFiles/FoP-Project-G66.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\amirf\Desktop\FProject\FoP-Project-G66\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Linking CXX executable FoP-Project-G66.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\amirf\Desktop\FProject\FoP-Project-G66\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Linking CXX executable FoP-Project-G66.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\FoP-Project-G66.dir\link.txt --verbose=$(VERBOSE)
 	"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E copy_directory C:/Users/amirf/Desktop/FProject/FoP-Project-G66/assets C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/assets
 

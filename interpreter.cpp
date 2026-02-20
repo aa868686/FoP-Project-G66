@@ -36,6 +36,13 @@ namespace core {
     void interpreter_execute_block(interpreter& interp, Block* block) {
         if (!block) return;
 
+        log_entry entry;
+        entry.cycle = interp.cycle++;
+        entry.line = interp.line_number;
+        entry.command = "BLOCK";
+        entry.level = log_level::info;
+        logger_log(interp.log, entry);
+
         switch (block->type) {
             case block_type::set_variable: {
                 variable_set(interp.store, value_to_string(block->parameters[0].data), block->parameters[1].data);

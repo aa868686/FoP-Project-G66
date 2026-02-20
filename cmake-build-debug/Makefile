@@ -152,6 +152,30 @@ backdrop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.s
 .PHONY : backdrop.cpp.s
 
+file_dialog.obj: file_dialog.cpp.obj
+.PHONY : file_dialog.obj
+
+# target to build an object file
+file_dialog.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.obj
+.PHONY : file_dialog.cpp.obj
+
+file_dialog.i: file_dialog.cpp.i
+.PHONY : file_dialog.i
+
+# target to preprocess a source file
+file_dialog.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.i
+.PHONY : file_dialog.cpp.i
+
+file_dialog.s: file_dialog.cpp.s
+.PHONY : file_dialog.s
+
+# target to generate assembly for a file
+file_dialog.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/file_dialog.cpp.s
+.PHONY : file_dialog.cpp.s
+
 font_manager.obj: font_manager.cpp.obj
 .PHONY : font_manager.obj
 
@@ -223,6 +247,30 @@ layout.s: layout.cpp.s
 layout.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/layout.cpp.s
 .PHONY : layout.cpp.s
+
+logger.obj: logger.cpp.obj
+.PHONY : logger.obj
+
+# target to build an object file
+logger.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/logger.cpp.obj
+.PHONY : logger.cpp.obj
+
+logger.i: logger.cpp.i
+.PHONY : logger.i
+
+# target to preprocess a source file
+logger.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/logger.cpp.i
+.PHONY : logger.cpp.i
+
+logger.s: logger.cpp.s
+.PHONY : logger.s
+
+# target to generate assembly for a file
+logger.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/logger.cpp.s
+.PHONY : logger.cpp.s
 
 main.obj: main.cpp.obj
 .PHONY : main.obj
@@ -500,6 +548,9 @@ help:
 	@echo ... backdrop.obj
 	@echo ... backdrop.i
 	@echo ... backdrop.s
+	@echo ... file_dialog.obj
+	@echo ... file_dialog.i
+	@echo ... file_dialog.s
 	@echo ... font_manager.obj
 	@echo ... font_manager.i
 	@echo ... font_manager.s
@@ -509,6 +560,9 @@ help:
 	@echo ... layout.obj
 	@echo ... layout.i
 	@echo ... layout.s
+	@echo ... logger.obj
+	@echo ... logger.i
+	@echo ... logger.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

@@ -1,7 +1,4 @@
 "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles" -S C:\Users\amirf\Desktop\FProject\FoP-Project-G66 -B C:\Users\amirf\Desktop\FProject\FoP-Project-G66\cmake-build-debug
-CMake Error at CMakeLists.txt:40:
-  Parse error.  Expected a command name, got unquoted argument with text
-  "file_dialog.h".
-
-
--- Configuring incomplete, errors occurred!
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug

@@ -8,6 +8,7 @@
 #include "variable.h"
 #include <vector>
 #include "sprite.h"
+#include "logger.h"
 namespace core {
     struct interpreter {
         std::vector<Block*> blocks;
@@ -16,6 +17,8 @@ namespace core {
         bool running = false;
         bool is_paused = false;
         gfx::sprite* active_sprite = nullptr;
+        logger log;
+        int cycle = 0;
     };
 
     void interpreter_load(interpreter& interp, const std::vector<Block*>& blocks);
