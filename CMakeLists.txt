@@ -1,11 +1,12 @@
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.23)
 project(FoP-Project-G66)
 
 set(CMAKE_CXX_STANDARD 20)
 
 include_directories(C:/Program Files/JetBrains/MinGW)
 
-add_executable(FoP-Project-G66
+add_executable(
+        FoP-Project-G66
         sprite.h
         sprite.cpp
         texture_loader.h
@@ -28,7 +29,10 @@ add_executable(FoP-Project-G66
         font_manager.h
         font_manager.cpp
         ui_block.h
-        ui_block.cpp)
+        ui_block.cpp
+        value.h
+        value.cpp
+)
 
 target_link_libraries(FoP-Project-G66
         mingw32

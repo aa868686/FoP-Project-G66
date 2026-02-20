@@ -5,7 +5,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include <vector>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
 namespace gfx {
