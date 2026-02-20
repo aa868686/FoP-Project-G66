@@ -36,7 +36,7 @@ add_executable(
         variable.h
         variable.cpp
         interpreter.h
-        interpreter.cpp)
+        interpreter.cpp
         file_dialog.h
         file_dialog.cpp)
 
