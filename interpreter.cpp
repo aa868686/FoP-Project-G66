@@ -162,8 +162,9 @@ namespace core {
             }
             case block_type::next_costume: {
                 if (!interp.active_sprite) break;
-                interp.active_sprite->current_costume++;
-                gfx::sprite_set_costume(*interp.active_sprite, (interp.active_sprite->current_costume + 1) % interp.active_sprite->costumes.size());
+                int next = (interp.active_sprite->current_costume+1) % interp.active_sprite->costumes.size();
+                gfx::sprite_set_costume(*interp.active_sprite, next);
+                interp.active_sprite->current_costume = next;
                 break;
             }
         }
