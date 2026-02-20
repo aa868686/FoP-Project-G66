@@ -10,6 +10,7 @@
 #include "sprite.h"
 #include "logger.h"
 #include "safetynet.h"
+#include "ui_block.h"
 namespace core {
     struct interpreter {
         std::vector<Block*> blocks;
@@ -30,5 +31,7 @@ namespace core {
     void interpreter_stop(interpreter& interp);
 
     void interpreter_execute_block(interpreter& interp, Block* block);
+
+    std::vector<Block*> interpreter_build_blocks(const ui::block_workspace& ws);
 }
 #endif //FOP_PROJECT_G66_INTERPRETER_H

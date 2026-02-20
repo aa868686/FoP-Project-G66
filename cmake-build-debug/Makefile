@@ -152,6 +152,30 @@ backdrop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.s
 .PHONY : backdrop.cpp.s
 
+block_compiler.obj: block_compiler.cpp.obj
+.PHONY : block_compiler.obj
+
+# target to build an object file
+block_compiler.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/block_compiler.cpp.obj
+.PHONY : block_compiler.cpp.obj
+
+block_compiler.i: block_compiler.cpp.i
+.PHONY : block_compiler.i
+
+# target to preprocess a source file
+block_compiler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/block_compiler.cpp.i
+.PHONY : block_compiler.cpp.i
+
+block_compiler.s: block_compiler.cpp.s
+.PHONY : block_compiler.s
+
+# target to generate assembly for a file
+block_compiler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/block_compiler.cpp.s
+.PHONY : block_compiler.cpp.s
+
 debug_logger.obj: debug_logger.cpp.obj
 .PHONY : debug_logger.obj
 
@@ -620,6 +644,9 @@ help:
 	@echo ... backdrop.obj
 	@echo ... backdrop.i
 	@echo ... backdrop.s
+	@echo ... block_compiler.obj
+	@echo ... block_compiler.i
+	@echo ... block_compiler.s
 	@echo ... debug_logger.obj
 	@echo ... debug_logger.i
 	@echo ... debug_logger.s
