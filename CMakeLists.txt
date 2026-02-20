@@ -37,6 +37,8 @@ add_executable(
         variable.cpp
         interpreter.h
         interpreter.cpp)
+        file_dialog.h
+        file_dialog.cpp)
 
 target_link_libraries(FoP-Project-G66
         mingw32
