@@ -34,7 +34,9 @@ add_executable(
         value.cpp
         block.h
         variable.h
-        variable.cpp)
+        variable.cpp
+        file_dialog.h
+        file_dialog.cpp)
 
 target_link_libraries(FoP-Project-G66
         mingw32
