@@ -181,7 +181,8 @@ namespace gfx {
         q.push_back ( { sx , sy } ) ;
 
         while ( !q.empty() ) {
-            auto [x , y] = q.back() ;
+            int x = q.back().first ;
+            int y = q.back().second ;
             q.pop_back() ;
 
             if ( x < 0 || x >= ed.canvas_w ) {
@@ -195,10 +196,10 @@ namespace gfx {
             }
 
             px[ ( y * stride ) + x ] = replacement ;
-            q.push_back ( { x+1 , y } ) ;
-            q.push_back ( { x-1 , y } ) ;
-            q.push_back ( { x , y+1 } ) ;
-            q.push_back ( { x , y-1 } ) ;
+            q.push_back ( { x + 1 , y } ) ;
+            q.push_back ( { x - 1 , y } ) ;
+            q.push_back ( { x , y + 1 } ) ;
+            q.push_back ( { x , y - 1 } ) ;
         }
 
         SDL_UnlockTexture ( ed.canvas ) ;
