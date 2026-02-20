@@ -230,10 +230,6 @@ namespace app {
                         dbg::logger_log(st.logger, "No blocks to run.", dbg::log_level::warn);
                     }
 
-                    if (st.sprite_mgr.active >= 0) {
-                        st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
-                    }
-                    core::interpreter_run(st.interp);
 
                     close_all_menus(st);
                 }},

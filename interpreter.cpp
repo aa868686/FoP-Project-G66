@@ -182,47 +182,4 @@ namespace core {
             }
         }
     }
-    std::vector<Block*> interpreter_build_blocks(const ui::block_workspace& ws) {
-
-        std::vector<Block*> block_list;
-
-        std::vector<ui::ui_block> sorted = ws.blocks;
-        std::sort(sorted.begin(), sorted.end(), [](const ui::ui_block& a, const ui::ui_block& b) {
-            return a.y < b.y;
-        });
-        for (auto ublock: sorted) {
-            Block* b = new Block();
-            if      (ublock.label == "move _ steps")       b->type = block_type::move;
-            else if (ublock.label == "turn _ degrees")      b->type = block_type::turn;
-            else if (ublock.label == "go to x:_ y:_")       b->type = block_type::go_to_xy;
-            else if (ublock.label == "point in direction _") b->type = block_type::point_in_direction;
-            else if (ublock.label == "wait _ secs")         b->type = block_type::wait;
-            else if (ublock.label == "repeat _")            b->type = block_type::repeat;
-            else if (ublock.label == "forever")             b->type = block_type::forever;
-            else if (ublock.label == "if _ then")           b->type = block_type::if_then;
-            else if (ublock.label == "if _ then else")      b->type = block_type::if_then_else;
-            else if (ublock.label == "stop all")            b->type = block_type::stop_all;
-            else if (ublock.label == "say _")               b->type = block_type::say;
-            else if (ublock.label == "say _ for _ secs")    b->type = block_type::say;
-            else if (ublock.label == "think _")             b->type = block_type::think;
-            else if (ublock.label == "show")                b->type = block_type::show;
-            else if (ublock.label == "hide")                b->type = block_type::hide;
-            else if (ublock.label == "set size to _%")      b->type = block_type::set_size;
-            else if (ublock.label == "when flag clicked")   b->type = block_type::when_flag_clicked;
-            else if (ublock.label == "broadcast _")         b->type = block_type::broadcast;
-            else if (ublock.label == "_ + _")              b->type = block_type::op_add;
-            else if (ublock.label == "_ - _")              b->type = block_type::op_sub;
-            else if (ublock.label == "_ * _")              b->type = block_type::op_mul;
-            else if (ublock.label == "_ / _")              b->type = block_type::op_div;
-            else if (ublock.label == "_ = _")              b->type = block_type::op_eq;
-            else if (ublock.label == "_ < _")              b->type = block_type::op_lt;
-            else if (ublock.label == "_ > _")              b->type = block_type::op_gt;
-            else if (ublock.label == "_ and _")            b->type = block_type::op_and;
-            else if (ublock.label == "_ or _")             b->type = block_type::op_or;
-            else if (ublock.label == "not _")              b->type = block_type::op_not;
-            block_list.push_back(b);
-        }
-
-        return block_list;
-    }
 }

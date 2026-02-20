@@ -32,6 +32,5 @@ namespace core {
 
     void interpreter_execute_block(interpreter& interp, Block* block);
 
-    std::vector<Block*> interpreter_build_blocks(const ui::block_workspace& ws);
-}
+    }
 #endif //FOP_PROJECT_G66_INTERPRETER_H
