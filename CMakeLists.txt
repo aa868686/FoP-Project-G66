@@ -44,7 +44,11 @@ add_executable(
         debug_logger.h
         debug_logger.cpp
         block_compiler.h
-        block_compiler.cpp)
+        block_compiler.cpp
+        logger.h
+        logger.cpp
+        safetynet.h
+        safetynet.cpp)
 
 
 target_link_libraries(FoP-Project-G66
