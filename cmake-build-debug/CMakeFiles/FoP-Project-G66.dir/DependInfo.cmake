@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "C:/Users/amirf/Desktop/FProject/FoP-Project-G66/backdrop.cpp" "CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.obj" "gcc" "CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.obj.d"
+  "C:/Users/amirf/Desktop/FProject/FoP-Project-G66/block.cpp" "CMakeFiles/FoP-Project-G66.dir/block.cpp.obj" "gcc" "CMakeFiles/FoP-Project-G66.dir/block.cpp.obj.d"
   "C:/Users/amirf/Desktop/FProject/FoP-Project-G66/font_manager.cpp" "CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj" "gcc" "CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.obj.d"
   "C:/Users/amirf/Desktop/FProject/FoP-Project-G66/layout.cpp" "CMakeFiles/FoP-Project-G66.dir/layout.cpp.obj" "gcc" "CMakeFiles/FoP-Project-G66.dir/layout.cpp.obj.d"
   "C:/Users/amirf/Desktop/FProject/FoP-Project-G66/main.cpp" "CMakeFiles/FoP-Project-G66.dir/main.cpp.obj" "gcc" "CMakeFiles/FoP-Project-G66.dir/main.cpp.obj.d"

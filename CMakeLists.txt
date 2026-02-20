@@ -32,7 +32,7 @@ add_executable(
         ui_block.cpp
         value.h
         value.cpp
-)
+        block.h)
 
 target_link_libraries(FoP-Project-G66
         mingw32
