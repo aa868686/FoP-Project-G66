@@ -370,17 +370,20 @@ namespace app {
 
                     if ( ui :: block_palette_handle_click ( st.lay.leftPanel , mx , my , st.palette_state ) ) {
                         menu_consumed = true ;
-                    }
-                    ui::block_category cat{};
-                    std::string label{};
+                    } else {
+                        ui :: block_category cat {} ;
+                        std :: string label {} ;
 
-                    if (ui::block_palette_click(st.lay.leftPanel, mx, my, cat, label)) {
-                        ui::block_workspace_add(st.workspace, label, cat,
-                                                80, 80 + static_cast <int> ( st.workspace.blocks.size()) * 44
-                        );
+                        if (ui::block_palette_click(st.lay.leftPanel, mx, my, cat, label)) {
+                            ui::block_workspace_add(st.workspace, label, cat,
+                                                    80, 80 + static_cast <int> ( st.workspace.blocks.size()) * 44
+                            );
 
-                        menu_consumed = true;
+                            menu_consumed = true;
+                        }
+
                     }
+
                 }
 
                 if (!menu_consumed &&
