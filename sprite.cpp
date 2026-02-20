@@ -122,6 +122,7 @@ namespace gfx {
             return ;
         }
 
+
         const float min_x = 0.0f ;
         const float max_x = (float) stage.w ;
         const float min_y = 0.0f ;
