@@ -13,6 +13,7 @@ namespace gfx {
     static constexpr int ed_btn_h = 32 ;
 
 
+
     static void ed_fill ( SDL_Renderer * ren , SDL_Rect r ,
                           Uint8 rr , Uint8 g , Uint8 b , Uint8 a = 255
                                   ) {
