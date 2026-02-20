@@ -14,7 +14,6 @@
 #include "sound_manager.h"
 #include "font_manager.h"
 #include "ui_block.h"
-#include "debug_logger.h"
 
 namespace app {
 
@@ -96,10 +95,6 @@ namespace app {
 
         fnt :: font_manager fonts {} ;
 
-        gfx :: image_editor img_editor {} ;
-
-        dbg :: debug_logger logger {} ;
-
         ui :: menu menu_file {} ;
         ui :: menu menu_help {} ;
         ui :: menu menu_code {} ;
@@ -143,12 +138,7 @@ namespace app {
 
         st.menu_help.title = "Help" ;
         st.menu_help.items = {
-                { "Debug Logger" , true , [&]{
-                    int ww , wh ;
-                    SDL_GetWindowSize ( st.window , &ww , &wh ) ;
-                    dbg :: logger_open ( st.logger , ww , wh ) ;
-                    close_all_menus ( st ) ;
-                } } ,
+                { "Debug Logger" , true , [&]{ /* TODO: open logger panel */ } } ,
                 { "Step-by-Step" , true , [&] { /* TODO: toggle debug mode */ } } ,
                 { "About" , true , [&] { /* TODO: show about dialog */ } } ,
         } ;
@@ -225,24 +215,6 @@ namespace app {
                  e.button.button == SDL_BUTTON_LEFT ) {
                 const int mx = e.button.x ;
                 const int my = e.button.y ;
-
-                if ( gfx :: editor_handle_click ( st.img_editor , mx , my ) ) {
-                    return ;
-                }
-
-                if ( dbg :: logger_handle_click ( st.logger , mx , my ) ) {
-                    return ;
-                }
-
-                if ( e.button.clicks == 2 && ui :: point_in_rect ( mx , my , st.lay.spriteBar ) ) {
-                    if ( st.sprite_mgr.active >= 0 ) {
-                        int ww , wh ;
-                        SDL_GetWindowSize ( st.window , &ww , &wh ) ;
-                        gfx :: editor_open ( st.img_editor , st.renderer , ww , wh , st.sprite_mgr.active ) ;
-                    }
-                    return ;
-                }
-
 
                 bool menu_consumed = false ;
 
@@ -332,8 +304,6 @@ namespace app {
                                                 e.motion.x , e.motion.y , sr ) ;
                 }
 
-                gfx :: editor_handle_drag ( st.img_editor , e.motion.x , e.motion.y ) ;
-
                 snd :: sound_handle_drag ( st.sounds , st.lay.spriteBar ,
                                            e.motion.x , e.motion.y , st.sound_dragging ) ;
 
@@ -349,13 +319,7 @@ namespace app {
 
                 st.sound_dragging = false ;
 
-                gfx :: editor_handle_up ( st.img_editor , st.sprite_mgr , st.renderer ) ;
-
                 ui :: block_drag_end ( st.workspace ) ;
-            }
-
-            if ( e.type == SDL_MOUSEWHEEL ) {
-                dbg :: logger_handle_scroll ( st.logger , -e.wheel.y ) ;
             }
         }
     }
@@ -423,10 +387,6 @@ namespace app {
                               clr :: item_fill , clr :: item_border ,
                               clr :: item_dis ) ;
         }
-
-        dbg :: logger_render ( st.renderer , st.logger , st.fonts.small ) ;
-
-        gfx :: editor_render ( st.renderer , st.img_editor , st.fonts.medium ) ;
 
         SDL_RenderPresent ( st.renderer ) ;
 
