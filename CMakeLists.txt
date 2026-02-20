@@ -37,9 +37,13 @@ add_executable(
         variable.cpp
         interpreter.h
         interpreter.cpp
-        logger.h
         file_dialog.h
         file_dialog.cpp
+        image_editor.h
+        image_editor.cpp
+        debug_logger.h
+        debug_logger.cpp
+
         logger.cpp)
 
 target_link_libraries(FoP-Project-G66
@@ -49,6 +53,7 @@ target_link_libraries(FoP-Project-G66
         SDL2_image
         SDL2_ttf
         SDL2_mixer
+        comdlg32
 )
 
 add_custom_command(TARGET FoP-Project-G66 POST_BUILD

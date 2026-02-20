@@ -14,6 +14,10 @@
 #include "sound_manager.h"
 #include "font_manager.h"
 #include "ui_block.h"
+#include "file_dialog.h"
+#include "debug_logger.h"
+#include "image_editor.h"
+#include "interpreter.h"
 
 namespace app {
 
@@ -91,6 +95,11 @@ namespace app {
         gfx :: pen_state pen {} ;
         gfx :: backdrop_manager backdrops {} ;
         snd :: sound_manager sounds {} ;
+        gfx :: image_editor img_editor {} ;
+
+        dbg :: debug_logger logger {} ;
+
+        core :: interpreter interp {} ;
         bool sound_dragging = false ;
 
         fnt :: font_manager fonts {} ;
@@ -138,7 +147,12 @@ namespace app {
 
         st.menu_help.title = "Help" ;
         st.menu_help.items = {
-                { "Debug Logger" , true , [&]{ /* TODO: open logger panel */ } } ,
+                { "Debug Logger" , true , [&]{
+                    int ww , wh ;
+                    SDL_GetWindowSize ( st.window , &ww , &wh ) ;
+                    dbg :: logger_open ( st.logger , ww , wh ) ;
+                    close_all_menus ( st ) ;
+                } } ,
                 { "Step-by-Step" , true , [&] { /* TODO: toggle debug mode */ } } ,
                 { "About" , true , [&] { /* TODO: show about dialog */ } } ,
         } ;
@@ -156,16 +170,58 @@ namespace app {
                     close_all_menus ( st ) ;  }  } ,
                 { "Background: Green Field" , true , [&]{ gfx :: backdrop_set_active_by_name ( st.backdrops , "Green Field" ) ;
                     close_all_menus ( st ) ; } } ,
-                { "Add Sprite..." , true , [&] { /* TODO: sprite picker */ } } ,
-                { "Add Sound..." , true , [&] { /* TODO: file dialog -> sound_add(st.sounds, path, name) */
-                    close_all_menus ( st ) ; } } ,
+                { "Load Backdrop Image..." , true , [&] {
+                    close_all_menus ( st ) ;
+                    std :: string path = dlg :: open_image_dialog () ;
+                    if ( !path.empty() ) {
+                        int w = 0 , h = 0 ;
+                        SDL_Texture * tex = gfx :: load_texture ( st.renderer , path , w , h ) ;
+                        if ( tex ) {
+                            gfx :: backdrop_add_texture ( st.backdrops , path , tex , w , h ) ;
+                            gfx :: backdrop_set_active ( st.backdrops ,
+                                 static_cast <int> ( st.backdrops.backdrops.size() ) -1 ) ;
+                        }
+                    }
+                } } ,
+                { "Add Sprite Image..." , true , [&] {
+                    close_all_menus ( st ) ;
+                    std :: string path = dlg :: open_image_dialog () ;
+                    if ( !path.empty() ) {
+                        int w = 0 , h = 0 ;
+                        SDL_Texture * tex = gfx ::load_texture ( st.renderer , path , w , h ) ;
+                        if ( tex ) {
+                            gfx :: sprite s = gfx ::sprite_make (
+                                    static_cast <int> ( st.sprite_mgr.sprites.size() ) , path.c_str() ) ;
+                            s.draggable = true ;
+                            gfx :: sprite_add_costume ( s , tex , w , h , "default" ) ;
+                            gfx :: sprite_set_position ( s , 100.f , 100.0f ) ;
+                            gfx :: sprite_manager_add ( st.sprite_mgr , s ) ;
+                        }
+                    }
+                } } ,
+                { "Add Sound..." , true , [&] {
+                    close_all_menus ( st ) ;
+                    std :: string path = dlg :: open_audio_dialog () ;
+                    if ( !path.empty() ) {
+                        snd ::sound_add ( st.sounds , path , path ) ;
+                    }
+                } } ,
         };
 
         st.menu_run.title = "Run" ;
         st.menu_run.items = {
-                { "Run" , true , [&] { st.is_paused = false ; } } ,
-                { "Pause" , true , [&] { st.is_paused = true ; } } ,
-                { "Stop" , true , [&] { st.is_paused = false ; /* TODO: reset interpreter PC */ } } ,
+                { "Run" , true , [&] {
+                    core :: interpreter_run ( st.interp ) ;
+                    close_all_menus ( st ) ;
+                } } ,
+                { "Pause" , true , [&] {
+                    core :: interpreter_pause ( st.interp ) ;
+                    close_all_menus ( st ) ;
+                } } ,
+                { "Stop" , true , [&] {
+                    core :: interpreter_stop ( st.interp ) ;
+                    close_all_menus ( st ) ;
+                } } ,
         } ;
     }
 
@@ -215,6 +271,23 @@ namespace app {
                  e.button.button == SDL_BUTTON_LEFT ) {
                 const int mx = e.button.x ;
                 const int my = e.button.y ;
+
+                if ( gfx :: editor_handle_click ( st.img_editor , mx , my ) ) {
+                    return ;
+                }
+                if ( dbg :: logger_handle_click ( st.logger , mx , my ) ) {
+                    return ;
+                }
+
+                if ( e.button.clicks == 2 &&
+                     ui :: point_in_rect ( mx , my , st.lay.spriteBar ) ) {
+                    if ( st.sprite_mgr.active >= 0 ) {
+                        int ww , wh ;
+                        SDL_GetWindowSize ( st.window , &ww , &wh ) ;
+                        gfx::editor_open ( st.img_editor , st.renderer , ww , wh , st.sprite_mgr.active ) ;
+                    }
+                    return ;
+                }
 
                 bool menu_consumed = false ;
 
@@ -304,6 +377,7 @@ namespace app {
                                                 e.motion.x , e.motion.y , sr ) ;
                 }
 
+                gfx :: editor_handle_drag ( st.img_editor , e.motion.x , e.motion.y ) ;
                 snd :: sound_handle_drag ( st.sounds , st.lay.spriteBar ,
                                            e.motion.x , e.motion.y , st.sound_dragging ) ;
 
@@ -319,7 +393,12 @@ namespace app {
 
                 st.sound_dragging = false ;
 
+                gfx :: editor_handle_up ( st.img_editor , st.sprite_mgr , st.renderer ) ;
                 ui :: block_drag_end ( st.workspace ) ;
+            }
+
+            if ( e.type == SDL_MOUSEWHEEL ) {
+                dbg :: logger_handle_scroll ( st.logger , -e.wheel.y ) ;
             }
         }
     }
@@ -387,6 +466,10 @@ namespace app {
                               clr :: item_fill , clr :: item_border ,
                               clr :: item_dis ) ;
         }
+
+
+        dbg :: logger_render ( st.renderer , st.logger , st.fonts.small ) ;
+        gfx :: editor_render ( st.renderer , st.img_editor , st.fonts.medium ) ;
 
         SDL_RenderPresent ( st.renderer ) ;
 

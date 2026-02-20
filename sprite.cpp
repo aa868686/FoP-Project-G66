@@ -208,7 +208,7 @@ namespace gfx {
 
 
 
-    void sprite_draw ( SDL_Renderer *ren , const sprite &s , const stage_rectangle stage ) {
+    void sprite_draw ( SDL_Renderer *ren , const sprite &s , const stage_rectangle & stage ) {
         if ( !ren || !s.visible || !has_valid_costume ( s ) ) {
             return ;
         }
