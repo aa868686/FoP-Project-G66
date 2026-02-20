@@ -3,7 +3,7 @@ project(FoP-Project-G66)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include_directories(C:/Program Files/JetBrains/MinGW)
+include_directories("C:/Program Files/JetBrains/MinGW")
 
 add_executable(FoP-Project-G66
         sprite.h
@@ -28,7 +28,9 @@ add_executable(FoP-Project-G66
         font_manager.h
         font_manager.cpp
         ui_block.h
-        ui_block.cpp)
+        ui_block.cpp
+        image_editor.h
+        image_editor.cpp)
 
 target_link_libraries(FoP-Project-G66
         mingw32
