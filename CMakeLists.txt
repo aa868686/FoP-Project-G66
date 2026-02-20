@@ -43,7 +43,7 @@ add_executable(
         image_editor.cpp
         debug_logger.h
         debug_logger.cpp
-
+        logger.h
         logger.cpp)
 
 target_link_libraries(FoP-Project-G66

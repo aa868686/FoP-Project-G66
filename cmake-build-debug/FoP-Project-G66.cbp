@@ -93,6 +93,12 @@
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/block.h">
 			<Option target="FoP-Project-G66"/>
 		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/debug_logger.cpp">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/debug_logger.h">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/file_dialog.cpp">
 			<Option target="FoP-Project-G66"/>
 		</Unit>
@@ -103,6 +109,12 @@
 			<Option target="FoP-Project-G66"/>
 		</Unit>
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/font_manager.h">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/image_editor.cpp">
+			<Option target="FoP-Project-G66"/>
+		</Unit>
+		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/image_editor.h">
 			<Option target="FoP-Project-G66"/>
 		</Unit>
 		<Unit filename="C:/Users/amirf/Desktop/FProject/FoP-Project-G66/interpreter.cpp">

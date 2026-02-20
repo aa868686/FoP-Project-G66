@@ -152,6 +152,30 @@ backdrop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/backdrop.cpp.s
 .PHONY : backdrop.cpp.s
 
+debug_logger.obj: debug_logger.cpp.obj
+.PHONY : debug_logger.obj
+
+# target to build an object file
+debug_logger.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/debug_logger.cpp.obj
+.PHONY : debug_logger.cpp.obj
+
+debug_logger.i: debug_logger.cpp.i
+.PHONY : debug_logger.i
+
+# target to preprocess a source file
+debug_logger.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/debug_logger.cpp.i
+.PHONY : debug_logger.cpp.i
+
+debug_logger.s: debug_logger.cpp.s
+.PHONY : debug_logger.s
+
+# target to generate assembly for a file
+debug_logger.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/debug_logger.cpp.s
+.PHONY : debug_logger.cpp.s
+
 file_dialog.obj: file_dialog.cpp.obj
 .PHONY : file_dialog.obj
 
@@ -199,6 +223,30 @@ font_manager.s: font_manager.cpp.s
 font_manager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/font_manager.cpp.s
 .PHONY : font_manager.cpp.s
+
+image_editor.obj: image_editor.cpp.obj
+.PHONY : image_editor.obj
+
+# target to build an object file
+image_editor.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/image_editor.cpp.obj
+.PHONY : image_editor.cpp.obj
+
+image_editor.i: image_editor.cpp.i
+.PHONY : image_editor.i
+
+# target to preprocess a source file
+image_editor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/image_editor.cpp.i
+.PHONY : image_editor.cpp.i
+
+image_editor.s: image_editor.cpp.s
+.PHONY : image_editor.s
+
+# target to generate assembly for a file
+image_editor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\FoP-Project-G66.dir\build.make CMakeFiles/FoP-Project-G66.dir/image_editor.cpp.s
+.PHONY : image_editor.cpp.s
 
 interpreter.obj: interpreter.cpp.obj
 .PHONY : interpreter.obj
@@ -548,12 +596,18 @@ help:
 	@echo ... backdrop.obj
 	@echo ... backdrop.i
 	@echo ... backdrop.s
+	@echo ... debug_logger.obj
+	@echo ... debug_logger.i
+	@echo ... debug_logger.s
 	@echo ... file_dialog.obj
 	@echo ... file_dialog.i
 	@echo ... file_dialog.s
 	@echo ... font_manager.obj
 	@echo ... font_manager.i
 	@echo ... font_manager.s
+	@echo ... image_editor.obj
+	@echo ... image_editor.i
+	@echo ... image_editor.s
 	@echo ... interpreter.obj
 	@echo ... interpreter.i
 	@echo ... interpreter.s

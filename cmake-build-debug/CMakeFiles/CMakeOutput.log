@@ -28,18 +28,18 @@ The CXX compiler identification is GNU, found in "C:/Users/amirf/Desktop/FProjec
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_b677a/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_b677a.dir\build.make CMakeFiles/cmTC_b677a.dir/build
+Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_a17e0/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_a17e0.dir\build.make CMakeFiles/cmTC_a17e0.dir/build
 mingw32-make.exe[1]: Entering directory 'C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b677a.dir/CMakeCCompilerABI.c.obj
-C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe   -v -o CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c"
+Building C object CMakeFiles/cmTC_a17e0.dir/CMakeCCompilerABI.c.obj
+C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe   -v -o CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c"
 Using built-in specs.
 COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe
 Target: mingw32
 Configured with: ../../../src/gcc-5.1.0/configure --build=mingw32 --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --disable-symvers --enable-cxx-flags='-fno-function-sections -fno-data-sections -DWINPTHREAD_STATIC' --prefix=/mingw32tdm --with-local-prefix=/mingw32tdm --with-pkgversion=tdm-1 --enable-sjlj-exceptions --with-bugurl=http://tdm-gcc.tdragon.net/bugs
 Thread model: posix
 gcc version 5.1.0 (tdm-1) 
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro'
- C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj -version -o C:\Users\amirf\AppData\Local\Temp\ccftkeb9.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro'
+ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj -version -o C:\Users\amirf\AppData\Local\Temp\ccQggxMU.s
 GNU C11 (tdm-1) version 5.1.0 (mingw32)
 	compiled by GNU C version 5.1.0, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.2
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -58,17 +58,17 @@ GNU C11 (tdm-1) version 5.1.0 (mingw32)
 	compiled by GNU C version 5.1.0, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.2
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: 2682432a7094ac8df846b6a707cdc762
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro'
- C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj C:\Users\amirf\AppData\Local\Temp\ccftkeb9.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro'
+ C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj C:\Users\amirf\AppData\Local\Temp\ccQggxMU.s
 GNU assembler version 2.24 (mingw32) using BFD version (GNU Binutils) 2.24
 COMPILER_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/
 LIBRARY_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro'
-Linking C executable cmTC_b677a.exe
-"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_b677a.dir\link.txt --verbose=1
-"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_b677a.dir/objects.a
-C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_b677a.dir/objects.a @CMakeFiles\cmTC_b677a.dir\objects1.rsp
-C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe  -v -Wl,--whole-archive CMakeFiles\cmTC_b677a.dir/objects.a -Wl,--no-whole-archive -o cmTC_b677a.exe -Wl,--out-implib,libcmTC_b677a.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro'
+Linking C executable cmTC_a17e0.exe
+"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_a17e0.dir\link.txt --verbose=1
+"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_a17e0.dir/objects.a
+C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_a17e0.dir/objects.a @CMakeFiles\cmTC_a17e0.dir\objects1.rsp
+C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe  -v -Wl,--whole-archive CMakeFiles\cmTC_a17e0.dir/objects.a -Wl,--no-whole-archive -o cmTC_a17e0.exe -Wl,--out-implib,libcmTC_a17e0.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
 Using built-in specs.
 COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe
 COLLECT_LTO_WRAPPER=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe
@@ -78,8 +78,8 @@ Thread model: posix
 gcc version 5.1.0 (tdm-1) 
 COMPILER_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/
 LIBRARY_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_b677a.exe' '-mtune=generic' '-march=pentiumpro'
- C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccW4HBpP.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_b677a.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_b677a.dir/objects.a --no-whole-archive --out-implib libcmTC_b677a.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a17e0.exe' '-mtune=generic' '-march=pentiumpro'
+ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccrlDlOl.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_a17e0.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_a17e0.dir/objects.a --no-whole-archive --out-implib libcmTC_a17e0.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o
 mingw32-make.exe[1]: Leaving directory 'C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
@@ -101,18 +101,18 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_b677a/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_b677a.dir\build.make CMakeFiles/cmTC_b677a.dir/build]
+  ignore line: [Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_a17e0/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_a17e0.dir\build.make CMakeFiles/cmTC_a17e0.dir/build]
   ignore line: [mingw32-make.exe[1]: Entering directory 'C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_b677a.dir/CMakeCCompilerABI.c.obj]
-  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe   -v -o CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c"]
+  ignore line: [Building C object CMakeFiles/cmTC_a17e0.dir/CMakeCCompilerABI.c.obj]
+  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe   -v -o CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c"]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe]
   ignore line: [Target: mingw32]
   ignore line: [Configured with: ../../../src/gcc-5.1.0/configure --build=mingw32 --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --disable-symvers --enable-cxx-flags='-fno-function-sections -fno-data-sections -DWINPTHREAD_STATIC' --prefix=/mingw32tdm --with-local-prefix=/mingw32tdm --with-pkgversion=tdm-1 --enable-sjlj-exceptions --with-bugurl=http://tdm-gcc.tdragon.net/bugs]
   ignore line: [Thread model: posix]
   ignore line: [gcc version 5.1.0 (tdm-1) ]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro']
-  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj -version -o C:\Users\amirf\AppData\Local\Temp\ccftkeb9.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro']
+  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCCompilerABI.c -quiet -dumpbase CMakeCCompilerABI.c -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj -version -o C:\Users\amirf\AppData\Local\Temp\ccQggxMU.s]
   ignore line: [GNU C11 (tdm-1) version 5.1.0 (mingw32)]
   ignore line: [	compiled by GNU C version 5.1.0  GMP version 4.3.2  MPFR version 2.4.2  MPC version 0.8.2]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
@@ -131,8 +131,8 @@ Parsed C implicit link information from above output:
   ignore line: [	compiled by GNU C version 5.1.0  GMP version 4.3.2  MPFR version 2.4.2  MPC version 0.8.2]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
   ignore line: [Compiler executable checksum: 2682432a7094ac8df846b6a707cdc762]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro']
-  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj C:\Users\amirf\AppData\Local\Temp\ccftkeb9.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro']
+  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj C:\Users\amirf\AppData\Local\Temp\ccQggxMU.s]
   ignore line: [GNU assembler version 2.24 (mingw32) using BFD version (GNU Binutils) 2.24]
   ignore line: [COMPILER_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/]
@@ -141,12 +141,12 @@ Parsed C implicit link information from above output:
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_b677a.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro']
-  ignore line: [Linking C executable cmTC_b677a.exe]
-  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_b677a.dir\link.txt --verbose=1]
-  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_b677a.dir/objects.a]
-  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_b677a.dir/objects.a @CMakeFiles\cmTC_b677a.dir\objects1.rsp]
-  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe  -v -Wl --whole-archive CMakeFiles\cmTC_b677a.dir/objects.a -Wl --no-whole-archive -o cmTC_b677a.exe -Wl --out-implib libcmTC_b677a.dll.a -Wl --major-image-version 0 --minor-image-version 0 ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_a17e0.dir\CMakeCCompilerABI.c.obj' '-c' '-mtune=generic' '-march=pentiumpro']
+  ignore line: [Linking C executable cmTC_a17e0.exe]
+  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_a17e0.dir\link.txt --verbose=1]
+  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_a17e0.dir/objects.a]
+  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_a17e0.dir/objects.a @CMakeFiles\cmTC_a17e0.dir\objects1.rsp]
+  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe  -v -Wl --whole-archive CMakeFiles\cmTC_a17e0.dir/objects.a -Wl --no-whole-archive -o cmTC_a17e0.exe -Wl --out-implib libcmTC_a17e0.dll.a -Wl --major-image-version 0 --minor-image-version 0 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\gcc.exe]
   ignore line: [COLLECT_LTO_WRAPPER=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe]
@@ -161,13 +161,13 @@ Parsed C implicit link information from above output:
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_b677a.exe' '-mtune=generic' '-march=pentiumpro']
-  link line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccW4HBpP.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_b677a.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_b677a.dir/objects.a --no-whole-archive --out-implib libcmTC_b677a.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_a17e0.exe' '-mtune=generic' '-march=pentiumpro']
+  link line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccrlDlOl.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_a17e0.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_a17e0.dir/objects.a --no-whole-archive --out-implib libcmTC_a17e0.dll.a --major-image-version 0 --minor-image-version 0 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o]
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe] ==> ignore
     arg [-plugin] ==> ignore
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll] ==> ignore
     arg [-plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe] ==> ignore
-    arg [-plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccW4HBpP.res] ==> ignore
+    arg [-plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccrlDlOl.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
@@ -186,7 +186,7 @@ Parsed C implicit link information from above output:
     arg [--exclude-libs=libpthread.a] ==> ignore
     arg [-Bdynamic] ==> search dynamic
     arg [-o] ==> ignore
-    arg [cmTC_b677a.exe] ==> ignore
+    arg [cmTC_a17e0.exe] ==> ignore
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o] ==> obj [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o]
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o] ==> obj [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o]
     arg [-LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0] ==> dir [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0]
@@ -194,10 +194,10 @@ Parsed C implicit link information from above output:
     arg [-LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib] ==> dir [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib]
     arg [-LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../..] ==> dir [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../..]
     arg [--whole-archive] ==> ignore
-    arg [CMakeFiles\cmTC_b677a.dir/objects.a] ==> ignore
+    arg [CMakeFiles\cmTC_a17e0.dir/objects.a] ==> ignore
     arg [--no-whole-archive] ==> ignore
     arg [--out-implib] ==> ignore
-    arg [libcmTC_b677a.dll.a] ==> ignore
+    arg [libcmTC_a17e0.dll.a] ==> ignore
     arg [--major-image-version] ==> ignore
     arg [0] ==> ignore
     arg [--minor-image-version] ==> ignore
@@ -236,18 +236,18 @@ Parsed C implicit link information from above output:
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp
 
-Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_54c32/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_54c32.dir\build.make CMakeFiles/cmTC_54c32.dir/build
+Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_5ce7e/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_5ce7e.dir\build.make CMakeFiles/cmTC_5ce7e.dir/build
 mingw32-make.exe[1]: Entering directory 'C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_54c32.dir/CMakeCXXCompilerABI.cpp.obj
-C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE   -v -o CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp"
+Building CXX object CMakeFiles/cmTC_5ce7e.dir/CMakeCXXCompilerABI.cpp.obj
+C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE   -v -o CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp"
 Using built-in specs.
 COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE
 Target: mingw32
 Configured with: ../../../src/gcc-5.1.0/configure --build=mingw32 --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --disable-symvers --enable-cxx-flags='-fno-function-sections -fno-data-sections -DWINPTHREAD_STATIC' --prefix=/mingw32tdm --with-local-prefix=/mingw32tdm --with-pkgversion=tdm-1 --enable-sjlj-exceptions --with-bugurl=http://tdm-gcc.tdragon.net/bugs
 Thread model: posix
 gcc version 5.1.0 (tdm-1) 
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro'
- C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1plus.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj -version -o C:\Users\amirf\AppData\Local\Temp\ccq7LoBT.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro'
+ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1plus.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj -version -o C:\Users\amirf\AppData\Local\Temp\cc801rZf.s
 GNU C++ (tdm-1) version 5.1.0 (mingw32)
 	compiled by GNU C version 5.1.0, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.2
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
@@ -272,17 +272,17 @@ GNU C++ (tdm-1) version 5.1.0 (mingw32)
 	compiled by GNU C version 5.1.0, GMP version 4.3.2, MPFR version 2.4.2, MPC version 0.8.2
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 Compiler executable checksum: 2e47d181020f054da881eda9fc3e9f75
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro'
- C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj C:\Users\amirf\AppData\Local\Temp\ccq7LoBT.s
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro'
+ C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj C:\Users\amirf\AppData\Local\Temp\cc801rZf.s
 GNU assembler version 2.24 (mingw32) using BFD version (GNU Binutils) 2.24
 COMPILER_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/
 LIBRARY_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../
-COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro'
-Linking CXX executable cmTC_54c32.exe
-"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_54c32.dir\link.txt --verbose=1
-"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_54c32.dir/objects.a
-C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_54c32.dir/objects.a @CMakeFiles\cmTC_54c32.dir\objects1.rsp
-C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE  -v -Wl,--whole-archive CMakeFiles\cmTC_54c32.dir/objects.a -Wl,--no-whole-archive -o cmTC_54c32.exe -Wl,--out-implib,libcmTC_54c32.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
+COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro'
+Linking CXX executable cmTC_5ce7e.exe
+"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_5ce7e.dir\link.txt --verbose=1
+"C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_5ce7e.dir/objects.a
+C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_5ce7e.dir/objects.a @CMakeFiles\cmTC_5ce7e.dir\objects1.rsp
+C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE  -v -Wl,--whole-archive CMakeFiles\cmTC_5ce7e.dir/objects.a -Wl,--no-whole-archive -o cmTC_5ce7e.exe -Wl,--out-implib,libcmTC_5ce7e.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
 Using built-in specs.
 COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE
 COLLECT_LTO_WRAPPER=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe
@@ -292,8 +292,8 @@ Thread model: posix
 gcc version 5.1.0 (tdm-1) 
 COMPILER_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/
 LIBRARY_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/;C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_54c32.exe' '-mtune=generic' '-march=pentiumpro'
- C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccAjdsbe.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_54c32.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_54c32.dir/objects.a --no-whole-archive --out-implib libcmTC_54c32.dll.a --major-image-version 0 --minor-image-version 0 -Bstatic -lstdc++ -Bdynamic -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5ce7e.exe' '-mtune=generic' '-march=pentiumpro'
+ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccOKVd5N.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_5ce7e.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_5ce7e.dir/objects.a --no-whole-archive --out-implib libcmTC_5ce7e.dll.a --major-image-version 0 --minor-image-version 0 -Bstatic -lstdc++ -Bdynamic -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o
 mingw32-make.exe[1]: Leaving directory 'C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp'
 
 
@@ -321,18 +321,18 @@ Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld\.exe|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_54c32/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_54c32.dir\build.make CMakeFiles/cmTC_54c32.dir/build]
+  ignore line: [Run Build Command(s):C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe -f Makefile cmTC_5ce7e/fast && C:/PROGRA~1/JETBRA~1/MinGW/bin/mingw32-make.exe  -f CMakeFiles\cmTC_5ce7e.dir\build.make CMakeFiles/cmTC_5ce7e.dir/build]
   ignore line: [mingw32-make.exe[1]: Entering directory 'C:/Users/amirf/Desktop/FProject/FoP-Project-G66/cmake-build-debug/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_54c32.dir/CMakeCXXCompilerABI.cpp.obj]
-  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE   -v -o CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp"]
+  ignore line: [Building CXX object CMakeFiles/cmTC_5ce7e.dir/CMakeCXXCompilerABI.cpp.obj]
+  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE   -v -o CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj -c "C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp"]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE]
   ignore line: [Target: mingw32]
   ignore line: [Configured with: ../../../src/gcc-5.1.0/configure --build=mingw32 --enable-languages=ada,c,c++,fortran,lto,objc,obj-c++ --enable-libgomp --enable-lto --enable-graphite --enable-libstdcxx-debug --enable-threads=posix --enable-version-specific-runtime-libs --enable-fully-dynamic-string --enable-libstdcxx-threads --enable-libstdcxx-time --with-gnu-ld --disable-werror --disable-nls --disable-win32-registry --disable-symvers --enable-cxx-flags='-fno-function-sections -fno-data-sections -DWINPTHREAD_STATIC' --prefix=/mingw32tdm --with-local-prefix=/mingw32tdm --with-pkgversion=tdm-1 --enable-sjlj-exceptions --with-bugurl=http://tdm-gcc.tdragon.net/bugs]
   ignore line: [Thread model: posix]
   ignore line: [gcc version 5.1.0 (tdm-1) ]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro']
-  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1plus.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj -version -o C:\Users\amirf\AppData\Local\Temp\ccq7LoBT.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro']
+  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/cc1plus.exe -quiet -v -iprefix C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/ -D_REENTRANT C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\share\cmake-3.23\Modules\CMakeCXXCompilerABI.cpp -quiet -dumpbase CMakeCXXCompilerABI.cpp -mtune=generic -march=pentiumpro -auxbase-strip CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj -version -o C:\Users\amirf\AppData\Local\Temp\cc801rZf.s]
   ignore line: [GNU C++ (tdm-1) version 5.1.0 (mingw32)]
   ignore line: [	compiled by GNU C version 5.1.0  GMP version 4.3.2  MPFR version 2.4.2  MPC version 0.8.2]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
@@ -357,8 +357,8 @@ Parsed CXX implicit link information from above output:
   ignore line: [	compiled by GNU C version 5.1.0  GMP version 4.3.2  MPFR version 2.4.2  MPC version 0.8.2]
   ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
   ignore line: [Compiler executable checksum: 2e47d181020f054da881eda9fc3e9f75]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro']
-  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj C:\Users\amirf\AppData\Local\Temp\ccq7LoBT.s]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro']
+  ignore line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/bin/as.exe -v -o CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj C:\Users\amirf\AppData\Local\Temp\cc801rZf.s]
   ignore line: [GNU assembler version 2.24 (mingw32) using BFD version (GNU Binutils) 2.24]
   ignore line: [COMPILER_PATH=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/]
@@ -367,12 +367,12 @@ Parsed CXX implicit link information from above output:
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_54c32.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro']
-  ignore line: [Linking CXX executable cmTC_54c32.exe]
-  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_54c32.dir\link.txt --verbose=1]
-  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_54c32.dir/objects.a]
-  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_54c32.dir/objects.a @CMakeFiles\cmTC_54c32.dir\objects1.rsp]
-  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE  -v -Wl --whole-archive CMakeFiles\cmTC_54c32.dir/objects.a -Wl --no-whole-archive -o cmTC_54c32.exe -Wl --out-implib libcmTC_54c32.dll.a -Wl --major-image-version 0 --minor-image-version 0 ]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles\cmTC_5ce7e.dir\CMakeCXXCompilerABI.cpp.obj' '-c' '-mtune=generic' '-march=pentiumpro']
+  ignore line: [Linking CXX executable cmTC_5ce7e.exe]
+  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E cmake_link_script CMakeFiles\cmTC_5ce7e.dir\link.txt --verbose=1]
+  ignore line: ["C:\Program Files\JetBrains\CLion 2022.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\cmTC_5ce7e.dir/objects.a]
+  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\ar.exe qc CMakeFiles\cmTC_5ce7e.dir/objects.a @CMakeFiles\cmTC_5ce7e.dir\objects1.rsp]
+  ignore line: [C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE  -v -Wl --whole-archive CMakeFiles\cmTC_5ce7e.dir/objects.a -Wl --no-whole-archive -o cmTC_5ce7e.exe -Wl --out-implib libcmTC_5ce7e.dll.a -Wl --major-image-version 0 --minor-image-version 0 ]
   ignore line: [Using built-in specs.]
   ignore line: [COLLECT_GCC=C:\PROGRA~1\JETBRA~1\MinGW\bin\G__~1.EXE]
   ignore line: [COLLECT_LTO_WRAPPER=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe]
@@ -387,13 +387,13 @@ Parsed CXX implicit link information from above output:
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib/]
   ignore line: [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_54c32.exe' '-mtune=generic' '-march=pentiumpro']
-  link line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccAjdsbe.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_54c32.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_54c32.dir/objects.a --no-whole-archive --out-implib libcmTC_54c32.dll.a --major-image-version 0 --minor-image-version 0 -Bstatic -lstdc++ -Bdynamic -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_5ce7e.exe' '-mtune=generic' '-march=pentiumpro']
+  link line: [ C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe -plugin C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll -plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe -plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccOKVd5N.res -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt -plugin-opt=-pass-through=-lpthread -plugin-opt=-pass-through=-ladvapi32 -plugin-opt=-pass-through=-lshell32 -plugin-opt=-pass-through=-luser32 -plugin-opt=-pass-through=-lkernel32 -plugin-opt=-pass-through=-lmingw32 -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lmoldname -plugin-opt=-pass-through=-lmingwex -plugin-opt=-pass-through=-lmsvcrt --exclude-libs=libpthread.a -Bdynamic -o cmTC_5ce7e.exe C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0 -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib -LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../.. --whole-archive CMakeFiles\cmTC_5ce7e.dir/objects.a --no-whole-archive --out-implib libcmTC_5ce7e.dll.a --major-image-version 0 --minor-image-version 0 -Bstatic -lstdc++ -Bdynamic -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt -lpthread -ladvapi32 -lshell32 -luser32 -lkernel32 -lmingw32 -lgcc -lmoldname -lmingwex -lmsvcrt C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtend.o]
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/collect2.exe] ==> ignore
     arg [-plugin] ==> ignore
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/liblto_plugin-0.dll] ==> ignore
     arg [-plugin-opt=C:/PROGRA~1/JETBRA~1/MinGW/bin/../libexec/gcc/mingw32/5.1.0/lto-wrapper.exe] ==> ignore
-    arg [-plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccAjdsbe.res] ==> ignore
+    arg [-plugin-opt=-fresolution=C:\Users\amirf\AppData\Local\Temp\ccOKVd5N.res] ==> ignore
     arg [-plugin-opt=-pass-through=-lmingw32] ==> ignore
     arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
     arg [-plugin-opt=-pass-through=-lmoldname] ==> ignore
@@ -412,7 +412,7 @@ Parsed CXX implicit link information from above output:
     arg [--exclude-libs=libpthread.a] ==> ignore
     arg [-Bdynamic] ==> search dynamic
     arg [-o] ==> ignore
-    arg [cmTC_54c32.exe] ==> ignore
+    arg [cmTC_5ce7e.exe] ==> ignore
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o] ==> obj [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../crt2.o]
     arg [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o] ==> obj [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/crtbegin.o]
     arg [-LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0] ==> dir [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0]
@@ -420,10 +420,10 @@ Parsed CXX implicit link information from above output:
     arg [-LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib] ==> dir [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../../../mingw32/lib]
     arg [-LC:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../..] ==> dir [C:/PROGRA~1/JETBRA~1/MinGW/bin/../lib/gcc/mingw32/5.1.0/../../..]
     arg [--whole-archive] ==> ignore
-    arg [CMakeFiles\cmTC_54c32.dir/objects.a] ==> ignore
+    arg [CMakeFiles\cmTC_5ce7e.dir/objects.a] ==> ignore
     arg [--no-whole-archive] ==> ignore
     arg [--out-implib] ==> ignore
-    arg [libcmTC_54c32.dll.a] ==> ignore
+    arg [libcmTC_5ce7e.dll.a] ==> ignore
     arg [--major-image-version] ==> ignore
     arg [0] ==> ignore
     arg [--minor-image-version] ==> ignore
