@@ -93,6 +93,7 @@ namespace compiler {
             return b ;
         }
 
+
         if ( lbl.find ( "go to" ) != std :: string :: npos ) {
             b->type = core :: block_type :: go_to_xy ;
             core :: Parameter px {} , py {} ;
