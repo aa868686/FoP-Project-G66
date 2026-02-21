@@ -53,8 +53,8 @@ namespace ui {
             return ;
         }
 
-        SDL_Color t_fill = m.title_hovered ? SDL_Color { 70 , 70 , 70 , 255 } : title_fill ;
-        SDL_SetRenderDrawColor ( r , t_fill.r , t_fill.g , t_fill.b , t_fill.a ) ;
+        //Title button
+        SDL_SetRenderDrawColor ( r , title_fill.r , title_fill.g , title_fill.b , title_fill.a ) ;
         SDL_RenderFillRect ( r , &m.title_rect ) ;
         SDL_SetRenderDrawColor ( r , title_border.r , title_border.g , title_border.b , title_border.a ) ;
         SDL_RenderDrawRect ( r , &m.title_rect ) ;
@@ -68,14 +68,17 @@ namespace ui {
             return ;
         }
 
+
+        // Panel
         SDL_SetRenderDrawColor ( r , panel_fill.r , panel_fill.g , panel_fill.b , panel_fill.a ) ;
         SDL_RenderFillRect ( r , &m.panel_rect ) ;
         SDL_SetRenderDrawColor ( r , panel_border.r , panel_border.g , panel_border.b , panel_border.a ) ;
         SDL_RenderDrawRect ( r , &m.panel_rect ) ;
 
 
+        // Items
         for ( const auto & it : m.items ) {
-            SDL_Color fill = !it.enabled ? item_disabled_fill : it.hovered ? SDL_Color { 80 , 80 , 80 , 255 } : item_fill ;
+            const SDL_Color fill = it.enabled ? item_fill : item_disabled_fill ;
 
             SDL_SetRenderDrawColor ( r , fill.r , fill.g , fill.b , fill.a ) ;
             SDL_RenderFillRect ( r , &it.rect ) ;

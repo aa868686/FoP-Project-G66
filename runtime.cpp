@@ -5,7 +5,6 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL.h>
 #include <cstdio>
-#include <cstring>
 #include <vector>
 #include <string>
 #include "layout.h"
@@ -20,7 +19,6 @@
 #include "image_editor.h"
 #include "interpreter.h"
 #include "block_compiler.h"
-#include "block.h"
 
 namespace app {
 
@@ -90,14 +88,6 @@ namespace app {
         SDL_Window *window = nullptr;
         SDL_Renderer *renderer = nullptr;
 
-        struct sprite_info_input {
-            SDL_Rect rect {} ;
-            std :: string value {} ;
-            bool focused = false ;
-            enum field_type { field_x , field_y , field_size , field_direction } ;
-            field_type target = field_x ;
-        };
-
         ui::layout lay{};
 
         ui :: block_palette_state palette_state {} ;
@@ -117,7 +107,6 @@ namespace app {
 
         fnt::font_manager fonts{};
 
-
         ui::menu menu_file{};
         ui::menu menu_help{};
         ui::menu menu_code{};
@@ -130,21 +119,11 @@ namespace app {
         bool running = true;
         bool is_paused = false;
 
-        bool sprite_clicked = false ;
-        bool sprite_dragged = false ;
-
-
-
         bool context_menu_open = false ;
         int context_menu_block_idx = -1 ;
         SDL_Rect context_menu_rect {} ;
 
         ui::menu *open_menu = nullptr;
-
-        bool making_block = false ;
-        char making_block_name[64] = {} ;
-
-        std :: vector < sprite_info_input > info_inputs {} ;
 
         ui::block_workspace workspace{};
     };
@@ -300,30 +279,6 @@ namespace app {
         ui::menu_layout(st.menu_code, st.fonts.medium);
         ui::menu_layout(st.menu_settings, st.fonts.medium);
         ui::menu_layout(st.menu_run, st.fonts.medium);
-
-        st.info_inputs.clear() ;
-
-        if ( st.sprite_mgr.active >= 0 ) {
-            gfx :: sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
-            SDL_Rect p = st.lay.spriteInfo ;
-            char buf[16] ;
-
-            auto make = [&]( app_state :: sprite_info_input :: field_type f , float val , int lx , int ly ) {
-                app_state :: sprite_info_input inp ;
-                inp.target = f ;
-                inp.rect = { p.x + lx + 32 , p.y + ly - 2 , 52 , 20 } ;
-                snprintf ( buf , 16 , "%.0f" , val ) ;
-                inp.value = buf ;
-                st.info_inputs.push_back ( inp ) ;
-            } ;
-
-            make ( app_state :: sprite_info_input :: field_x , s.x , 6 , 8 ) ;
-            make ( app_state :: sprite_info_input :: field_y , s.y , 100 , 8 ) ;
-            make ( app_state :: sprite_info_input :: field_size , s.size_percent , 6 , 36 ) ;
-            make ( app_state :: sprite_info_input :: field_direction , s.direction_deg, 100 , 36 ) ;
-        }
-
-
     }
 
 
@@ -344,93 +299,23 @@ namespace app {
             }
 
             if ( e.type == SDL_TEXTINPUT ) {
-                if ( st.making_block ) {
-                    if ( std :: strlen ( st.making_block_name ) < 63 ) {
-                        std :: strncat ( st.making_block_name , e.text.text , 1 ) ;
-                    }
-                } else {
-                    ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
-
-                    for ( auto & inp : st.info_inputs ) {
-                        if ( inp.focused && inp.value.size() < 6 ) {
-                            inp.value += e.text.text ;
-                        }
-                    }
-                }
+                ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
             }
 
             if ( e.type == SDL_KEYDOWN ) {
-                if ( st.making_block ) {
-                    if ( e.key.keysym.sym == SDLK_BACKSPACE ) {
-                        int len = std :: strlen ( st.making_block_name ) ;
-                        if ( len > 0 ) st.making_block_name[len-1] = '\0' ;
-                    } else if ( e.key.keysym.sym == SDLK_RETURN ) {
-                        if ( std :: strlen ( st.making_block_name ) > 0 ) {
-                            ui :: custom_block_add ( st.workspace , st.making_block_name ) ;
-                        }
-                        st.making_block = false ;
-                    } else if ( e.key.keysym.sym == SDLK_ESCAPE ) {
-                        st.making_block = false ;
-                    }
-                } else {
-                    if ( e.key.keysym.sym == SDLK_BACKSPACE ||
-                         e.key.keysym.sym == SDLK_RETURN ||
-                         e.key.keysym.sym == SDLK_ESCAPE
-                            ) {
-                        ui :: block_input_handle_key ( st.workspace , e.key.keysym.sym , nullptr ) ;
-                    }
-
-                    for ( auto & inp: st.info_inputs ) {
-                        if ( !inp.focused ) {
-                            continue ;
-                        }
-                        if ( e.key.keysym.sym == SDLK_BACKSPACE ) {
-                            if ( !inp.value.empty() ) inp.value.pop_back() ;
-                        }
-                        if ( e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_ESCAPE ) {
-                            if ( st.sprite_mgr.active >= 0 && !inp.value.empty() ) {
-                                gfx::sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
-                                try {
-                                    float val = std :: stof ( inp.value ) ;
-                                    switch ( inp.target ) {
-                                        case app_state :: sprite_info_input :: field_x : s.x = val ; break ;
-                                        case app_state :: sprite_info_input :: field_y : s.y = val ; break ;
-                                        case app_state :: sprite_info_input :: field_size : gfx :: sprite_set_size ( s , val ) ; break ;
-                                        case app_state :: sprite_info_input :: field_direction : gfx :: sprite_set_direction ( s , val ) ; break ;
-                                    }
-                                } catch (...) {}
-                            }
-                            inp.focused = false ;
-                            SDL_StopTextInput() ;
-                        }
-                    }
+                if ( e.key.keysym.sym == SDLK_BACKSPACE ||
+                     e.key.keysym.sym == SDLK_RETURN ||
+                     e.key.keysym.sym == SDLK_ESCAPE
+                ) {
+                    ui :: block_input_handle_key ( st.workspace , e.key.keysym.sym , nullptr ) ;
                 }
             }
-
 
             if (e.type == SDL_MOUSEBUTTONDOWN &&
                 e.button.button == SDL_BUTTON_LEFT) {
 
                 const int mx = e.button.x;
                 const int my = e.button.y;
-
-                if ( st.making_block ) {
-                    int ww = 0 , wh = 0 ;
-                    SDL_GetWindowSize ( st.window , &ww , &wh ) ;
-                    SDL_Rect dlg { ww/2 - 160 , wh/2 - 60 , 320 , 120 } ;
-                    SDL_Rect ok_btn { dlg.x + dlg.w - 130 , dlg.y + dlg.h - 34 , 56 , 26 } ;
-                    SDL_Rect cancel_btn { dlg.x + dlg.w - 68  , dlg.y + dlg.h - 34 , 56 , 26 } ;
-
-                    if ( ui :: point_in_rect ( mx , my , ok_btn ) ) {
-                        if ( std :: strlen ( st.making_block_name ) > 0 ) {
-                            ui :: custom_block_add ( st.workspace , st.making_block_name ) ;
-                        }
-                        st.making_block = false ;
-                    } else if ( ui :: point_in_rect ( mx , my , cancel_btn ) ) {
-                        st.making_block = false ;
-                    }
-                    continue ;
-                }
 
 
                 if ( st.context_menu_open ) {
@@ -452,19 +337,8 @@ namespace app {
 
                 ui :: block_input_handle_click ( st.workspace , st.lay.workspace , mx , my ) ;
 
-                for ( auto & inp : st.info_inputs ) {
-                    inp.focused = false ;
-                }
-                for ( auto & inp : st.info_inputs ) {
-                    if ( ui :: point_in_rect ( mx , my , inp.rect ) ) {
-                        inp.focused = true ;
-                        inp.value = "" ;
-                        SDL_StartTextInput () ;
-                        break ;
-                    }
-                }
 
-                if ( dbg :: logger_handle_click(st.logger, mx, my)) {
+                if (dbg::logger_handle_click(st.logger, mx, my)) {
                     return;
                 }
 
@@ -518,10 +392,12 @@ namespace app {
                     if (st.sprite_mgr.active >= 0) {
                         const gfx::stage_rectangle sr{
                                 st.lay.stage.x, st.lay.stage.y, st.lay.stage.w, st.lay.stage.h
-                        } ;
+                        };
                         gfx::sprite_drag_begin(st.sprite_mgr.sprites[st.sprite_mgr.active],
                                                mx, my, sr);
-                        st.sprite_clicked = true ;
+                        if ( !st.sounds.sounds.empty() ) {
+                            snd ::sound_play ( st.sounds.sounds[0] ) ;
+                        }
                     }
                     menu_consumed = true;
                 }
@@ -538,51 +414,15 @@ namespace app {
                     if ( ui :: block_palette_handle_click ( st.lay.leftPanel , mx , my , st.palette_state ) ) {
                         menu_consumed = true ;
                     } else {
-                        if ( st.palette_state.selected_category == ui :: block_category :: my_blocks ) {
-                            SDL_Rect make_btn {
-                                st.lay.leftPanel.x + 64 ,
-                                st.lay.leftPanel.y + 4 ,
-                                st.lay.leftPanel.w - 88 , 32
-                            } ;
+                        ui :: block_category cat {} ;
+                        std :: string label {} ;
 
-                            if ( ui :: point_in_rect ( mx , my , make_btn ) ) {
-                                st.making_block = true ;
-                                std :: memset ( st.making_block_name , 0 , sizeof ( st.making_block_name ) ) ;
-                                menu_consumed = true ;
-                            } else {
-                                int cy = st.lay.leftPanel.y + 40 ;
-                                for ( auto & def : st.workspace.custom_blocks ) {
-                                    SDL_Rect del { st.lay.leftPanel.x + st.lay.leftPanel.w - 24 ,
-                                        cy + 8 , 16 , 16 } ;
-                                    if ( ui :: point_in_rect ( mx , my , del ) ) {
-                                        ui :: custom_block_remove ( st.workspace , def.id ) ;
-                                        menu_consumed = true ;
-                                        break ;
-                                    }
+                        if ( ui :: block_palette_click ( st.lay.leftPanel, mx, my, cat, label , st.palette_state ) ) {
+                            ui::block_workspace_add(st.workspace, label, cat,
+                                                    80, 80 + static_cast <int> ( st.workspace.blocks.size()) * 44
+                            );
 
-                                    SDL_Rect r { st.lay.leftPanel.x + 84 , cy , st.lay.leftPanel.w - 88 , 32 } ;
-
-                                    if ( ui :: point_in_rect ( mx , my , r ) ) {
-                                        ui :: block_workspace_add ( st.workspace , def.name ,
-                                              ui :: block_category :: my_blocks ,
-                                              80 , 80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
-                                        menu_consumed = true ;
-                                        break ;
-                                    }
-                                    cy += 36 ;
-                                }
-                            }
-                        }
-
-                        if ( !menu_consumed ) {
-                            ui :: block_category cat {} ;
-                            std :: string label {} ;
-                            if ( ui :: block_palette_click ( st.lay.leftPanel , mx , my , cat , label , st.palette_state ) ) {
-                                ui :: block_workspace_add ( st.workspace , label , cat ,
-                                                            80 , 80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
-
-                                menu_consumed = true ;
-                            }
+                            menu_consumed = true;
                         }
 
                     }
@@ -624,9 +464,6 @@ namespace app {
                     };
                     gfx::sprite_drag_update(st.sprite_mgr.sprites[st.sprite_mgr.active],
                                             e.motion.x, e.motion.y, sr);
-                    if ( st.sprite_clicked ) {
-                        st.sprite_dragged = true ;
-                    }
                 }
 
                 gfx::editor_handle_drag(st.img_editor, e.motion.x, e.motion.y);
@@ -635,33 +472,13 @@ namespace app {
 
                 ui::block_drag_update(st.workspace, e.motion.x, e.motion.y);
 
-                for ( auto * m : all_menus ( st ) ) {
-                    m -> title_hovered = ui :: point_in_rect ( e.motion.x , e.motion.y , m -> title_rect ) ;
-                    if ( !m -> open ) {
-                        continue ;
-                    }
-
-                    for ( auto & item : m -> items ) {
-                        item.hovered = ui :: point_in_rect ( e.motion.x , e.motion.y , item.rect ) ;
-                    }
-                }
             }
-
-
 
             if (e.type == SDL_MOUSEBUTTONUP &&
                 e.button.button == SDL_BUTTON_LEFT) {
                 if (st.sprite_mgr.active >= 0) {
                     gfx::sprite_drag_end(st.sprite_mgr.sprites[st.sprite_mgr.active]);
                 }
-                if ( st.sprite_clicked && !st.sprite_dragged ) {
-                    if ( !st.sounds.sounds.empty() ) {
-                        snd :: sound_play ( st.sounds.sounds[0] ) ;
-                    }
-                }
-
-                st.sprite_clicked = false ;
-                st.sprite_dragged = false ;
 
                 st.sound_dragging = false;
 
@@ -696,7 +513,7 @@ namespace app {
         SDL_RenderClear(st.renderer);
 
         ui::render_layout(st.renderer, st.lay);
-        ui::block_palette_render( st.renderer , st.lay.leftPanel , st.fonts.medium , st.palette_state , st.workspace ) ;
+        ui::block_palette_render( st.renderer , st.lay.leftPanel , st.fonts.medium , st.palette_state ) ;
         ui::block_workspace_render(st.renderer, st.workspace, st.lay.workspace, st.fonts.medium);
         gfx::backdrop_render(st.renderer, st.backdrops, st.lay.stage);
 
@@ -753,34 +570,6 @@ namespace app {
             fnt :: draw_text_left ( st.renderer , st.fonts.medium , "Delete Block" , r , { 220 , 80 , 80 , 255 } ) ;
 
         }
-
-
-        if ( st.sprite_mgr.active >= 0 && (int)st.info_inputs.size() >= 4 ) {
-            SDL_Rect panel = st.lay.spriteInfo ;
-
-            auto draw_field = [&]( const char* lbl , int idx , int lx , int ly ) {
-                SDL_Rect lr { panel.x + lx , panel.y + ly , 30 , 18 } ;
-                fnt::draw_text_left ( st.renderer , st.fonts.small , lbl , lr , { 150 , 150 , 150 , 255 } ) ;
-                auto & inp = st.info_inputs[idx] ;
-                SDL_Rect vr = inp.rect ;
-                SDL_Color bg = inp.focused ? SDL_Color { 55 , 55 , 90 , 255 } : SDL_Color { 45 , 45 , 45 , 255 } ;
-                SDL_Color border = inp.focused ? SDL_Color { 100 , 140 , 255 , 255 } : SDL_Color{ 80 , 80 , 80 , 255 } ;
-                SDL_SetRenderDrawColor ( st.renderer , bg.r,bg.g,bg.b,255 ) ;
-                SDL_RenderFillRect ( st.renderer , &vr ) ;
-                SDL_SetRenderDrawColor ( st.renderer , border.r , border.g , border.b , 255 ) ;
-                SDL_RenderDrawRect ( st.renderer , &vr ) ;
-                std::string display = inp.value ;
-                if ( inp.focused ) display += "|" ;
-                fnt :: draw_text_left ( st.renderer , st.fonts.small , display.c_str() , vr , {220,220,220,255} ) ;
-            } ;
-
-            draw_field ( "x" , 0 , 6 , 8 ) ;
-            draw_field ( "y" , 1 , 100 , 8 ) ;
-            draw_field ( "Size" , 2 , 6 , 36 ) ;
-            draw_field ( "Dir" , 3 , 100 , 36 ) ;
-        }
-
-
 
         SDL_RenderPresent(st.renderer);
 
