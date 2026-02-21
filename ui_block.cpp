@@ -93,6 +93,7 @@ namespace ui {
             case block_category :: sound : return { 180 , 80 , 200 , 255 } ;
             case block_category :: variables : return { 220 , 120 , 20  , 255 } ;
             case block_category :: sensing : return { 20  , 180 , 200 , 255 } ;
+            case block_category :: my_blocks : return { 255 , 100 , 150 , 255 } ;
         }
         return { 100 , 100 , 100 , 255 } ;
     }
@@ -412,17 +413,20 @@ namespace ui {
             { block_category :: operators , "Operators" } ,
             { block_category :: sound , "Sound" } ,
             { block_category :: variables , "Variables" } ,
-            { block_category :: sensing , "Sensing"   } ,
+            { block_category :: sensing , "Sensing" } ,
+            { block_category :: my_blocks , "My Blocks" } ,
     } ;
 
-    static constexpr int cat_count = 8 ;
+    static constexpr int cat_count = 9 ;
     static constexpr int cat_w = 80 ;
     static constexpr int cat_item_h = 48 ;
 
-    void block_palette_render ( SDL_Renderer * ren , SDL_Rect panel , TTF_Font * font , block_palette_state & state ) {
+    void block_palette_render ( SDL_Renderer * ren , SDL_Rect panel , TTF_Font * font , block_palette_state & state , block_workspace & ws ) {
         if ( !ren ) {
             return ;
         }
+
+        block_workspace & ws_ref = ws ;
 
         SDL_Rect sidebar { panel.x , panel.y , cat_w , panel.h } ;
         SDL_SetRenderDrawColor ( ren , 30 , 30 , 30 , 255 ) ;
@@ -472,6 +476,41 @@ namespace ui {
             }
 
             y += palette_item_h + palette_pad ;
+        }
+
+        if ( state.selected_category == block_category :: my_blocks ) {
+            SDL_Rect make_btn { blocks_panel.x + palette_pad , y ,
+                                blocks_panel.w - ( palette_pad * 2 ) , palette_item_h } ;
+            SDL_SetRenderDrawColor ( ren , 255 , 100 , 150 , 255 ) ;
+            SDL_RenderFillRect ( ren , &make_btn ) ;
+            SDL_SetRenderDrawColor ( ren , 200 , 60 , 100 , 255 ) ;
+            SDL_RenderDrawRect ( ren , &make_btn ) ;
+            if ( font ) {
+                fnt :: draw_text_centered ( ren , font , "Make a Block" , make_btn , { 255,255,255,255 } ) ;
+            }
+            y += palette_item_h + palette_pad ;
+
+            for ( const auto & def : ws_ref.custom_blocks ) {
+                SDL_Rect r { blocks_panel.x + palette_pad , y , blocks_panel.w - ( palette_pad * 2 ) , palette_item_h } ;
+                SDL_SetRenderDrawColor ( ren , 255 , 100 , 150 , 255 ) ;
+                SDL_RenderFillRect ( ren , &r ) ;
+                SDL_SetRenderDrawColor ( ren , 200 , 60 , 100 , 255 ) ;
+                SDL_RenderDrawRect ( ren , &r ) ;
+
+                if ( font ) {
+                    fnt :: draw_text_left ( ren , font , def.name.c_str() , r , { 255,255,255,255 } , pad ) ;
+                }
+
+
+                SDL_Rect del { r.x + r.w - 20 , r.y + ( ( r.h - 16 ) / 2 ) , 16 , 16 } ;
+                SDL_SetRenderDrawColor ( ren , 160 , 40 , 40 , 255 ) ;
+                SDL_RenderFillRect ( ren , &del ) ;
+                if ( font ) {
+                    fnt :: draw_text_centered ( ren , font , "x" , del , { 255,255,255,255 } ) ;
+                }
+
+                y += palette_item_h + palette_pad ;
+            }
         }
 
         SDL_RenderSetClipRect ( ren , nullptr ) ;
@@ -570,6 +609,7 @@ namespace ui {
                     return true ;
                 }
 
+
                 draw_x += inp_w + 2 ;
                 ++input_idx ;
                 pos = under + 1 ;
@@ -611,6 +651,27 @@ namespace ui {
         } else if ( text && text[0] >= 32 ) {
             if ( val.size() < 8 ) val += text[0] ;
         }
+    }
+
+    int custom_block_add ( block_workspace & ws , const std :: string & name ) {
+        custom_block_def def {} ;
+        def.id = ws.next_custom_id++ ;
+        def.name = name ;
+        ws.custom_blocks.push_back ( def ) ;
+        return def.id ;
+    }
+
+    void custom_block_remove ( block_workspace & ws , int id ) {
+        ws.custom_blocks.erase (
+                std :: remove_if ( ws.custom_blocks.begin() , ws.custom_blocks.end() ,
+                                   [id]( const custom_block_def & d ){ return d.id == id ; } ) ,
+                ws.custom_blocks.end() ) ;
+
+        ws.blocks.erase ( std :: remove_if ( ws.blocks.begin() , ws.blocks.end() ,
+                                   [&name = ws.custom_blocks]( const ui_block & b ){
+                                       return b.category == block_category :: my_blocks ;
+                                   } ) ,
+                ws.blocks.end() ) ;
     }
 
 }

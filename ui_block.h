@@ -47,10 +47,17 @@ namespace ui {
         int drag_dy = 0 ;
     };
 
+    struct custom_block_def {
+        int id = -1 ;
+        std :: string name {} ;
+    };
+
 
     struct block_workspace {
         std :: vector <ui_block> blocks {} ;
+        std :: vector < custom_block_def > custom_blocks {} ;
         int next_id = 0 ;
+        int next_custom_id = 0 ;
 
         int scroll_x = 0 ;
         int scroll_y = 0 ;
@@ -60,6 +67,8 @@ namespace ui {
 
         int drag_idx = -1 ;
     };
+
+
 
     SDL_Color block_category_color ( block_category cat ) ;
 
@@ -102,8 +111,10 @@ namespace ui {
     void block_palette_render ( SDL_Renderer * ren ,
                                 SDL_Rect panel ,
                                 TTF_Font * font ,
-                                block_palette_state & state
+                                block_palette_state & state ,
+                                block_workspace & ws
                                 ) ;
+    
 
     bool block_palette_handle_click ( SDL_Rect panel , int mx , int my , block_palette_state & state ) ;
 
@@ -114,6 +125,10 @@ namespace ui {
                                std :: string & out_label ,
                                const block_palette_state & state
                                ) ;
+
+    int custom_block_add ( block_workspace & ws , const std :: string & name ) ;
+
+    void custom_block_remove ( block_workspace & ws , int id ) ;
 
 
 }
