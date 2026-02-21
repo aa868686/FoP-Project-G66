@@ -93,7 +93,7 @@ namespace ui {
     void block_drag_end ( block_workspace & ws ) ;
 
     bool block_input_handle_click ( block_workspace & ws , SDL_Rect clip , int mx , int my ) ;
-    void block_input_handle_key ( block_workspace & ws , SDL_KeyCode key , const char * text ) ;
+    void block_input_handle_key ( block_workspace & ws , SDL_Keycode key , const char * text ) ;
 
 
     void block_try_snap ( block_workspace & ws , int idx ) ;
@@ -111,7 +111,8 @@ namespace ui {
     bool block_palette_click ( SDL_Rect panel ,
                                int mx , int my ,
                                block_category & out_cat ,
-                               std :: string & out_label
+                               std :: string & out_label ,
+                               const block_palette_state & state
                                ) ;
 
 

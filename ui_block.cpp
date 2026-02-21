@@ -52,6 +52,11 @@ namespace ui {
             { block_category :: operators , "_ and _" } ,
             { block_category :: operators , "_ or _" } ,
             { block_category :: operators , "not _" } ,
+
+            { block_category :: sound , "play sound _" } ,
+            { block_category :: sound , "stop all sounds" } ,
+            { block_category :: sound , "set volume to _%"} ,
+            { block_category :: sound , "change volume by _" } ,
     } ;
 
     static constexpr int palette_count = static_cast <int> ( sizeof(PALETTE) / sizeof ( PALETTE[0] ) ) ;
@@ -70,6 +75,7 @@ namespace ui {
             case block_category :: control : return { 220 , 180 , 20  , 255 } ;
             case block_category :: events : return { 200 , 130 , 20  , 255 } ;
             case block_category :: operators : return { 60  , 170 , 80  , 255 } ;
+            case block_category :: sound : return { 180 , 80 , 200 , 255 } ;
         }
         return { 100 , 100 , 100 , 255 } ;
     }
@@ -387,8 +393,9 @@ namespace ui {
             { block_category :: events , "Events" } ,
             { block_category :: control , "Control" } ,
             { block_category :: operators , "Operators" } ,
+            { block_category :: sound , "Sound" } ,
     } ;
-    static constexpr int cat_count = 5 ;
+    static constexpr int cat_count = 6 ;
     static constexpr int cat_w = 80 ;
     static constexpr int cat_item_h = 48 ;
 
