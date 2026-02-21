@@ -119,6 +119,10 @@ namespace app {
         bool running = true;
         bool is_paused = false;
 
+        bool context_menu_open = false ;
+        int context_menu_block_idx = -1 ;
+        SDL_Rect context_menu_rect {} ;
+
         ui::menu *open_menu = nullptr;
 
         ui::block_workspace workspace{};
@@ -309,8 +313,23 @@ namespace app {
 
             if (e.type == SDL_MOUSEBUTTONDOWN &&
                 e.button.button == SDL_BUTTON_LEFT) {
+
                 const int mx = e.button.x;
                 const int my = e.button.y;
+
+
+                if ( st.context_menu_open ) {
+                    if ( ui :: point_in_rect ( mx , my , st.context_menu_rect ) ) {
+                        if ( st.context_menu_block_idx >= 0 &&
+                             st.context_menu_block_idx < (int)st.workspace.blocks.size()
+                        ) {
+                            ui :: block_workspace_remove ( st.workspace , st.workspace.blocks[st.context_menu_block_idx].id ) ;
+                        }
+                    }
+                    st.context_menu_open = false ;
+                    st.context_menu_block_idx = -1 ;
+                    return ;
+                }
 
                 if (gfx :: editor_handle_click (st.img_editor, mx, my )) {
                     return;
@@ -421,6 +440,22 @@ namespace app {
 
             }
 
+            if ( e.type == SDL_MOUSEBUTTONDOWN &&
+                 e.button.button == SDL_BUTTON_RIGHT ) {
+                const int mx = e.button.x ;
+                const int my = e.button.y ;
+                if ( ui :: point_in_rect ( mx , my , st.lay.workspace ) ) {
+                    int idx = ui :: block_hit_test ( st.workspace , st.lay.workspace , mx , my ) ;
+                    if ( idx >= 0 ) {
+                        st.context_menu_open = true ;
+                        st.context_menu_block_idx = idx ;
+                        st.context_menu_rect = { mx , my , 100 , 28 } ;
+                    } else {
+                        st.context_menu_open = false ;
+                    }
+                }
+            }
+
             if (e.type == SDL_MOUSEMOTION) {
 
                 if (st.sprite_mgr.active >= 0) {
@@ -525,6 +560,16 @@ namespace app {
 
         dbg::logger_render(st.renderer, st.logger, st.fonts.small);
         gfx::editor_render(st.renderer, st.img_editor, st.fonts.medium);
+
+        if ( st.context_menu_open ) {
+            SDL_Rect r = st.context_menu_rect ;
+            SDL_SetRenderDrawColor ( st.renderer , 45 , 45 , 45 , 255 ) ;
+            SDL_RenderFillRect ( st.renderer , &r ) ;
+            SDL_SetRenderDrawColor ( st.renderer , 100 , 100 , 100 , 255 ) ;
+            SDL_RenderDrawRect ( st.renderer , &r ) ;
+            fnt :: draw_text_left ( st.renderer , st.fonts.medium , "Delete Block" , r , { 220 , 80 , 80 , 255 } ) ;
+
+        }
 
         SDL_RenderPresent(st.renderer);
 
