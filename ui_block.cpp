@@ -466,24 +466,39 @@ namespace ui {
     bool block_palette_click ( SDL_Rect panel ,
                                int mx , int my ,
                                block_category & out_cat ,
-                               std :: string & out_label
+                               std :: string & out_label ,
+                               const block_palette_state & state
                                ) {
-        if ( mx < panel.x || mx > panel.x + panel.w ||
-             my < panel.y || my > panel.y + panel.h ) {
+
+        const SDL_Rect blocks_panel { panel.x + cat_w , panel.y , panel.w - cat_w , panel.h } ;
+        if ( mx < blocks_panel.x || mx > blocks_panel.x + blocks_panel.w ||
+             my < blocks_panel.y || my > blocks_panel.y + blocks_panel.h ) {
             return false ;
         }
 
-        const int rel_y = my - panel.y - palette_pad ;
-        const int idx = rel_y / ( palette_item_h + palette_pad ) ;
+        int y = blocks_panel.y - palette_pad ;
 
-        if ( idx < 0 || idx >= palette_count ) {
-            return false ;
+        for ( int i = 0 ; i < palette_count ; ++i ) {
+            if ( PALETTE[i].cat != state.selected_category ) {
+                continue ;
+            }
+
+            SDL_Rect r { blocks_panel.x + palette_pad , y ,
+                         blocks_panel.w - ( palette_pad * 2 ) , palette_item_h } ;
+
+            if ( mx >= r.x && mx < r.x + r.w &&
+                 my >= r.y && my < r.y + r.h
+                 ) {
+                out_cat = PALETTE[i].cat ;
+                out_label = PALETTE[i].label ;
+                return true ;
+            }
+
+            y += palette_item_h + palette_pad ;
         }
 
-        out_cat   = PALETTE[idx].cat ;
-        out_label = PALETTE[idx].label ;
+        return false ;
 
-        return true ;
     }
 
 

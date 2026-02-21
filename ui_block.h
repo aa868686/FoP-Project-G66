@@ -82,6 +82,7 @@ namespace ui {
                                   TTF_Font * font
                                   ) ;
 
+
     int block_hit_test ( const block_workspace & ws ,
                          SDL_Rect clip ,
                          int mx , int my
