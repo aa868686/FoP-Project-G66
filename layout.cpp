@@ -10,11 +10,15 @@ namespace ui {
         const int stageW = static_cast <int> ( w * cfg.stage_width_ratio ) ;
         const int spriteH = static_cast <int> ( h * cfg.sprite_bar_height_ratio ) ;
 
+        const int infoH = 64 ;
+
         la.topBar = { 0 , 0 , w , topH } ;
         la.leftPanel = { 0 , topH , leftW , h - topH } ;
-        la.stage = { w - stageW , topH , stageW , h - topH - spriteH } ;
+        la.stage = { w - stageW , topH , stageW , h - topH - spriteH - infoH } ;
+        la.spriteInfo = { w - stageW , h - spriteH - infoH , stageW , infoH } ;
         la.spriteBar = { w - stageW , h - spriteH , stageW , spriteH } ;
         la.workspace = { leftW , topH , w - leftW - stageW , h - topH } ;
+
 
         return la ;
     }
@@ -66,7 +70,6 @@ namespace ui {
         }
 
 
-        // Background fills
         SDL_SetRenderDrawColor ( ren , 30 , 30 , 30 , 255 ) ;
         fill_rect ( ren , la.topBar ) ;
 
@@ -82,13 +85,16 @@ namespace ui {
         SDL_SetRenderDrawColor ( ren , 18 , 18 , 18 , 255 ) ;
         fill_rect ( ren , la.stage ) ;
 
+        SDL_SetRenderDrawColor ( ren , 28 , 28 , 28 , 255 ) ;
+        fill_rect ( ren , la.spriteInfo ) ;
 
-        // Panel borders
+
         SDL_SetRenderDrawColor ( ren , 60 , 60 , 60 , 255 ) ;
         draw_rect_outline ( ren , la.topBar ) ;
         draw_rect_outline ( ren , la.leftPanel ) ;
         draw_rect_outline ( ren , la.workspace ) ;
         draw_rect_outline ( ren , la.stage ) ;
+        draw_rect_outline ( ren , la.spriteInfo ) ;
         draw_rect_outline ( ren , la.spriteBar ) ;
 
     }

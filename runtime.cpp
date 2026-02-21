@@ -90,6 +90,14 @@ namespace app {
         SDL_Window *window = nullptr;
         SDL_Renderer *renderer = nullptr;
 
+        struct sprite_info_input {
+            SDL_Rect rect {} ;
+            std :: string value {} ;
+            bool focused = false ;
+            enum field_type { field_x , field_y , field_size , field_direction } ;
+            field_type target = field_x ;
+        };
+
         ui::layout lay{};
 
         ui :: block_palette_state palette_state {} ;
@@ -122,6 +130,9 @@ namespace app {
         bool running = true;
         bool is_paused = false;
 
+        bool sprite_clicked = false ;
+        bool sprite_dragged = false ;
+
 
 
         bool context_menu_open = false ;
@@ -132,6 +143,8 @@ namespace app {
 
         bool making_block = false ;
         char making_block_name[64] = {} ;
+
+        std :: vector < sprite_info_input > info_inputs {} ;
 
         ui::block_workspace workspace{};
     };
@@ -243,21 +256,8 @@ namespace app {
                             st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size())) {
                             st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
                         }
-                        core::logger_clear(st.interp.log);
                         core::interpreter_load(st.interp, compiled);
                         core::interpreter_run(st.interp);
-
-                        for (const auto& entry : st.interp.log.entries) {
-                            std::string msg = "[Line:" + std::to_string(entry.line) + "] "
-                                              + entry.command + " "
-                                              + entry.operation + " "
-                                              + entry.data;
-                            dbg::log_level lvl = dbg::log_level::info;
-                            if (entry.level == core::log_level::warning) lvl = dbg::log_level::warn;
-                            if (entry.level == core::log_level::error)   lvl = dbg::log_level::error;
-                            dbg::logger_log(st.logger, msg, lvl);
-                        }
-
                         compiler::free_compiled(compiled);
                         dbg::logger_log(st.logger, "Program finished.");
                     } else {
@@ -300,6 +300,30 @@ namespace app {
         ui::menu_layout(st.menu_code, st.fonts.medium);
         ui::menu_layout(st.menu_settings, st.fonts.medium);
         ui::menu_layout(st.menu_run, st.fonts.medium);
+
+        st.info_inputs.clear() ;
+
+        if ( st.sprite_mgr.active >= 0 ) {
+            gfx :: sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+            SDL_Rect p = st.lay.spriteInfo ;
+            char buf[16] ;
+
+            auto make = [&]( app_state :: sprite_info_input :: field_type f , float val , int lx , int ly ) {
+                app_state :: sprite_info_input inp ;
+                inp.target = f ;
+                inp.rect = { p.x + lx + 32 , p.y + ly - 2 , 52 , 20 } ;
+                snprintf ( buf , 16 , "%.0f" , val ) ;
+                inp.value = buf ;
+                st.info_inputs.push_back ( inp ) ;
+            } ;
+
+            make ( app_state :: sprite_info_input :: field_x , s.x , 6 , 8 ) ;
+            make ( app_state :: sprite_info_input :: field_y , s.y , 100 , 8 ) ;
+            make ( app_state :: sprite_info_input :: field_size , s.size_percent , 6 , 36 ) ;
+            make ( app_state :: sprite_info_input :: field_direction , s.direction_deg, 100 , 36 ) ;
+        }
+
+
     }
 
 
@@ -326,6 +350,12 @@ namespace app {
                     }
                 } else {
                     ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
+
+                    for ( auto & inp : st.info_inputs ) {
+                        if ( inp.focused && inp.value.size() < 6 ) {
+                            inp.value += e.text.text ;
+                        }
+                    }
                 }
             }
 
@@ -348,6 +378,31 @@ namespace app {
                          e.key.keysym.sym == SDLK_ESCAPE
                             ) {
                         ui :: block_input_handle_key ( st.workspace , e.key.keysym.sym , nullptr ) ;
+                    }
+
+                    for ( auto & inp: st.info_inputs ) {
+                        if ( !inp.focused ) {
+                            continue ;
+                        }
+                        if ( e.key.keysym.sym == SDLK_BACKSPACE ) {
+                            if ( !inp.value.empty() ) inp.value.pop_back() ;
+                        }
+                        if ( e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_ESCAPE ) {
+                            if ( st.sprite_mgr.active >= 0 && !inp.value.empty() ) {
+                                gfx::sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                                try {
+                                    float val = std :: stof ( inp.value ) ;
+                                    switch ( inp.target ) {
+                                        case app_state :: sprite_info_input :: field_x : s.x = val ; break ;
+                                        case app_state :: sprite_info_input :: field_y : s.y = val ; break ;
+                                        case app_state :: sprite_info_input :: field_size : gfx :: sprite_set_size ( s , val ) ; break ;
+                                        case app_state :: sprite_info_input :: field_direction : gfx :: sprite_set_direction ( s , val ) ; break ;
+                                    }
+                                } catch (...) {}
+                            }
+                            inp.focused = false ;
+                            SDL_StopTextInput() ;
+                        }
                     }
                 }
             }
@@ -397,8 +452,19 @@ namespace app {
 
                 ui :: block_input_handle_click ( st.workspace , st.lay.workspace , mx , my ) ;
 
+                for ( auto & inp : st.info_inputs ) {
+                    inp.focused = false ;
+                }
+                for ( auto & inp : st.info_inputs ) {
+                    if ( ui :: point_in_rect ( mx , my , inp.rect ) ) {
+                        inp.focused = true ;
+                        inp.value = "" ;
+                        SDL_StartTextInput () ;
+                        break ;
+                    }
+                }
 
-                if (dbg::logger_handle_click(st.logger, mx, my)) {
+                if ( dbg :: logger_handle_click(st.logger, mx, my)) {
                     return;
                 }
 
@@ -452,12 +518,10 @@ namespace app {
                     if (st.sprite_mgr.active >= 0) {
                         const gfx::stage_rectangle sr{
                                 st.lay.stage.x, st.lay.stage.y, st.lay.stage.w, st.lay.stage.h
-                        };
+                        } ;
                         gfx::sprite_drag_begin(st.sprite_mgr.sprites[st.sprite_mgr.active],
                                                mx, my, sr);
-                        if ( !st.sounds.sounds.empty() ) {
-                            snd ::sound_play ( st.sounds.sounds[0] ) ;
-                        }
+                        st.sprite_clicked = true ;
                     }
                     menu_consumed = true;
                 }
@@ -560,6 +624,9 @@ namespace app {
                     };
                     gfx::sprite_drag_update(st.sprite_mgr.sprites[st.sprite_mgr.active],
                                             e.motion.x, e.motion.y, sr);
+                    if ( st.sprite_clicked ) {
+                        st.sprite_dragged = true ;
+                    }
                 }
 
                 gfx::editor_handle_drag(st.img_editor, e.motion.x, e.motion.y);
@@ -587,6 +654,14 @@ namespace app {
                 if (st.sprite_mgr.active >= 0) {
                     gfx::sprite_drag_end(st.sprite_mgr.sprites[st.sprite_mgr.active]);
                 }
+                if ( st.sprite_clicked && !st.sprite_dragged ) {
+                    if ( !st.sounds.sounds.empty() ) {
+                        snd :: sound_play ( st.sounds.sounds[0] ) ;
+                    }
+                }
+
+                st.sprite_clicked = false ;
+                st.sprite_dragged = false ;
 
                 st.sound_dragging = false;
 
@@ -679,6 +754,34 @@ namespace app {
 
         }
 
+
+        if ( st.sprite_mgr.active >= 0 && (int)st.info_inputs.size() >= 4 ) {
+            SDL_Rect panel = st.lay.spriteInfo ;
+
+            auto draw_field = [&]( const char* lbl , int idx , int lx , int ly ) {
+                SDL_Rect lr { panel.x + lx , panel.y + ly , 30 , 18 } ;
+                fnt::draw_text_left ( st.renderer , st.fonts.small , lbl , lr , { 150 , 150 , 150 , 255 } ) ;
+                auto & inp = st.info_inputs[idx] ;
+                SDL_Rect vr = inp.rect ;
+                SDL_Color bg = inp.focused ? SDL_Color { 55 , 55 , 90 , 255 } : SDL_Color { 45 , 45 , 45 , 255 } ;
+                SDL_Color border = inp.focused ? SDL_Color { 100 , 140 , 255 , 255 } : SDL_Color{ 80 , 80 , 80 , 255 } ;
+                SDL_SetRenderDrawColor ( st.renderer , bg.r,bg.g,bg.b,255 ) ;
+                SDL_RenderFillRect ( st.renderer , &vr ) ;
+                SDL_SetRenderDrawColor ( st.renderer , border.r , border.g , border.b , 255 ) ;
+                SDL_RenderDrawRect ( st.renderer , &vr ) ;
+                std::string display = inp.value ;
+                if ( inp.focused ) display += "|" ;
+                fnt :: draw_text_left ( st.renderer , st.fonts.small , display.c_str() , vr , {220,220,220,255} ) ;
+            } ;
+
+            draw_field ( "x" , 0 , 6 , 8 ) ;
+            draw_field ( "y" , 1 , 100 , 8 ) ;
+            draw_field ( "Size" , 2 , 6 , 36 ) ;
+            draw_field ( "Dir" , 3 , 100 , 36 ) ;
+        }
+
+
+
         SDL_RenderPresent(st.renderer);
 
     }
@@ -707,21 +810,8 @@ namespace app {
                     st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size())) {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
                 }
-                core::logger_clear(st.interp.log);
                 core::interpreter_load(st.interp, compiled);
                 core::interpreter_run(st.interp);
-
-                for (const auto& entry : st.interp.log.entries) {
-                    std::string msg = "[Line:" + std::to_string(entry.line) + "] "
-                                      + entry.command + " "
-                                      + entry.operation + " "
-                                      + entry.data;
-                    dbg::log_level lvl = dbg::log_level::info;
-                    if (entry.level == core::log_level::warning) lvl = dbg::log_level::warn;
-                    if (entry.level == core::log_level::error)   lvl = dbg::log_level::error;
-                    dbg::logger_log(st.logger, msg, lvl);
-                }
-
                 compiler::free_compiled(compiled);
                 dbg::logger_log(st.logger, "Program finished.");
             } else {
