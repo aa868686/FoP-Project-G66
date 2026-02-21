@@ -31,6 +31,20 @@ namespace core {
             interp.line_number++;
         }
     }
+
+    void interpreter_step ( interpreter & interp ) {
+        if ( !interp.running ) {
+            interp.running = true ;
+            safetynet_reset ( interp.safety ) ;
+        }
+        if ( interp.line_number < (int) interp.blocks.size() ) {
+            Block * current = interp.blocks[interp.line_number] ;
+            interpreter_execute_block ( interp , current ) ;
+            interp.line_number++ ;
+        } else {
+            interp.running = false ;
+        }
+    }
     void interpreter_execute_block(interpreter& interp, Block* block) {
         if (!block) return;
 

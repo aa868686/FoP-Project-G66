@@ -27,7 +27,7 @@ namespace core {
     void interpreter_pause(interpreter& interp);
     void interpreter_resume(interpreter& interp);
     void interpreter_stop(interpreter& interp);
-
+    void interpreter_step ( interpreter & interp ) ;
     void interpreter_execute_block(interpreter& interp, Block* block);
 
     }

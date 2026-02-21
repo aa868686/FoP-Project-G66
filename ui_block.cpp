@@ -438,7 +438,7 @@ namespace ui {
     static constexpr int cat_w = 80 ;
     static constexpr int cat_item_h = 48 ;
 
-    void block_palette_render ( SDL_Renderer * ren , SDL_Rect panel , TTF_Font * font , block_palette_state & state ) {
+    void block_palette_render ( SDL_Renderer * ren , SDL_Rect panel , TTF_Font * font , block_palette_state & state , const block_workspace & ws ) {
         if ( !ren ) {
             return ;
         }
@@ -466,7 +466,26 @@ namespace ui {
         }
 
 
+
+
         SDL_Rect blocks_panel { panel.x + cat_w , panel.y , panel.w - cat_w , panel.h } ;
+
+        if ( state.selected_category == block_category :: my_blocks ) {
+            int y = blocks_panel.y + palette_pad ;
+            for ( const auto & def : ws.custom_blocks ) {
+                SDL_Rect r { blocks_panel.x + palette_pad , y ,
+                             blocks_panel.w - ( palette_pad * 2 ) , palette_item_h } ;
+                SDL_Color col = block_category_color ( block_category :: my_blocks ) ;
+                fill_rect ( ren , r , col ) ;
+                draw_rect_outline ( ren , r , darker ( col , 40 ) ) ;
+                if ( font ) {
+                    fnt :: draw_text_left ( ren , font , def.name.c_str() , r , {255,255,255,255} , pad ) ;
+                }
+                y += palette_item_h + palette_pad ;
+            }
+        }
+
+
         SDL_RenderSetClipRect ( ren , &blocks_panel ) ;
 
         int y = blocks_panel.y + palette_pad ;

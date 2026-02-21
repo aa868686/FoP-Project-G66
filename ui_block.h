@@ -110,7 +110,8 @@ namespace ui {
     void block_palette_render ( SDL_Renderer * ren ,
                                 SDL_Rect panel ,
                                 TTF_Font * font ,
-                                block_palette_state & state
+                                block_palette_state & state ,
+                                const block_workspace & ws
                                 ) ;
 
 
