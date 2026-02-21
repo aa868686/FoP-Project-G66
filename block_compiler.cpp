@@ -2,7 +2,6 @@
 #include <sstream>
 #include <algorithm>
 #include <cstdlib>
-#include <map>
 
 namespace compiler {
 
@@ -28,15 +27,6 @@ namespace compiler {
         }
 
         return false ;
-    }
-
-    static core::Value input_value(const ui::ui_block& ub, int index) {
-        if (index < (int)ub.inputs.size() && !ub.inputs[index].value.empty()) {
-            core::Value v;
-            if (parse_number(ub.inputs[index].value, v)) return v;
-            return core::value_make_string(ub.inputs[index].value);
-        }
-        return core::value_make_int(0);
     }
 
 
@@ -90,7 +80,7 @@ namespace compiler {
         if ( lbl.find ( "move" ) != std :: string :: npos && lbl.find ( "step" ) != std :: string :: npos ) {
             b->type = core :: block_type :: move ;
             core :: Parameter p {} ;
-            p.data = input_value(ub, 0);
+            p.data = extract_first_number ( ub.label ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -98,7 +88,7 @@ namespace compiler {
         if ( lbl.find ( "turn" ) != std :: string :: npos && lbl.find ( "degree" ) != std :: string :: npos ) {
             b->type = core :: block_type :: turn ;
             core :: Parameter p {} ;
-            p.data = input_value(ub, 0);
+            p.data = extract_first_number ( ub.label ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -109,8 +99,8 @@ namespace compiler {
             b->type = core :: block_type :: go_to_xy ;
             core :: Parameter px {} , py {} ;
             auto nums = extract_numbers ( ub.label ) ;
-            px.data = input_value(ub, 0);
-            py.data = input_value(ub, 1);
+            px.data = nums.size() >= 1 ? nums[0] : core :: value_make_int ( 0 ) ;
+            py.data = nums.size() >= 2 ? nums[1] : core :: value_make_int ( 0 ) ;
             b->parameters.push_back ( px ) ;
             b->parameters.push_back ( py ) ;
             return b ;
@@ -119,7 +109,7 @@ namespace compiler {
         if ( lbl.find ( "point in direction" ) != std :: string :: npos ) {
             b->type = core :: block_type :: point_in_direction ;
             core :: Parameter p {} ;
-            p.data = input_value(ub, 0);
+            p.data = extract_first_number ( ub.label ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -128,7 +118,13 @@ namespace compiler {
             b->type = core :: block_type :: say ;
 
             core :: Parameter p {} ;
-            p.data = input_value(ub, 0);
+            auto q1 = ub.label.find ( '"' ) ;
+            auto q2 = ub.label.rfind ( '"' ) ;
+            if ( q1 != std :: string :: npos && q2 != q1 ) {
+                p.data = core :: value_make_string ( ub.label.substr ( q1+1 , q2-q1-1 ) ) ;
+            } else {
+                p.data = core :: value_make_string ( ub.label ) ;
+            }
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -146,7 +142,7 @@ namespace compiler {
         if ( lbl.find ( "set size" ) != std :: string :: npos ) {
             b->type = core :: block_type :: set_size ;
             core :: Parameter p {} ;
-            p.data = input_value(ub, 0);
+            p.data = extract_first_number ( ub.label ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -155,7 +151,7 @@ namespace compiler {
         if ( lbl.find ( "wait" ) != std :: string :: npos && lbl.find ( "sec" ) != std :: string :: npos ) {
             b->type = core :: block_type :: wait ;
             core :: Parameter p {} ;
-            p.data = input_value(ub, 0);
+            p.data = extract_first_number ( ub.label ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -163,7 +159,7 @@ namespace compiler {
         if ( lbl.find ( "repeat" ) != std :: string :: npos && lbl.find ( "forever" ) == std :: string :: npos ) {
             b->type = core :: block_type :: repeat ;
             core :: Parameter p {} ;
-            p.data = input_value(ub, 0);
+            p.data = extract_first_number ( ub.label ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -202,8 +198,8 @@ namespace compiler {
             b->type = core :: block_type :: op_add ;
             auto nums = extract_numbers ( ub.label ) ;
             core :: Parameter a {} , bb2 {} ;
-            a.data   = input_value(ub, 0);
-            bb2.data = input_value(ub, 1);
+            a.data   = nums.size() >= 1 ? nums[0] : core :: value_make_int(0) ;
+            bb2.data = nums.size() >= 2 ? nums[1] : core :: value_make_int(0) ;
             b->parameters.push_back ( a ) ;
             b->parameters.push_back ( bb2 ) ;
             return b ;
@@ -214,69 +210,28 @@ namespace compiler {
     }
 
 
-    std::vector<core::Block*> compile_workspace(const ui::block_workspace& ws) {
-        std::vector<core::Block*> result;
+    std :: vector < core :: Block * > compile_workspace ( const ui :: block_workspace & ws ) {
+        std :: vector < core :: Block * > result ;
 
-        // Step 1: compile all blocks into a map by their ui id
-        std::map<int, core::Block*> compiled_map;
-        std::map<int, int> snap_map; // ui_block id -> snap_to id
+        std :: vector < const ui :: ui_block * > ordered ;
+        for ( const auto & b: ws.blocks ) {
+            ordered.push_back ( &b ) ;
+        }
 
-        for (const auto& ub : ws.blocks) {
-            core::Block* cb = compile_block(ub);
-            if (cb) {
-                compiled_map[ub.id] = cb;
-                snap_map[ub.id] = ub.snap_to;
+        std :: sort ( ordered.begin() , ordered.end() ,
+                      [] ( const ui :: ui_block * a , const ui :: ui_block * b ) {
+                          if ( a->y != b->y ) return a->y < b->y ;
+                          return a->x < b->x ;
+                      } ) ;
+
+        for ( const auto * ub : ordered ) {
+            core :: Block * cb = compile_block ( *ub ) ;
+            if ( cb ) {
+                result.push_back ( cb ) ;
             }
         }
 
-        // Step 2: build parent-child relationships
-        for (const auto& ub : ws.blocks) {
-            if (ub.snap_to >= 0) {
-                auto parent_it = compiled_map.find(ub.snap_to);
-                auto child_it  = compiled_map.find(ub.id);
-                if (parent_it != compiled_map.end() &&
-                    child_it  != compiled_map.end()) {
-                    core::Block* parent = parent_it->second;
-                    core::Block* child  = child_it->second;
-                    // if parent is a container block, add as nested
-                    if (parent->type == core::block_type::repeat   ||
-                        parent->type == core::block_type::forever  ||
-                        parent->type == core::block_type::if_then  ||
-                        parent->type == core::block_type::if_then_else) {
-                        parent->nested_blocks.push_back(child);
-                    }
-                }
-            }
-        }
-
-        // Step 3: top-level blocks are those with no parent (snap_to == -1)
-        // sort by y position
-        std::vector<const ui::ui_block*> roots;
-        for (const auto& ub : ws.blocks) {
-            bool is_nested_in_container = false;
-            if (ub.snap_to >= 0 && compiled_map.count(ub.snap_to)) {
-                core::Block* parent = compiled_map[ub.snap_to];
-                if (parent->type == core::block_type::repeat  ||
-                    parent->type == core::block_type::forever ||
-                    parent->type == core::block_type::if_then ||
-                    parent->type == core::block_type::if_then_else) {
-                    is_nested_in_container = true;
-                }
-            }
-            if (!is_nested_in_container && compiled_map.count(ub.id)) {
-                roots.push_back(&ub);
-            }
-        }
-        std::sort(roots.begin(), roots.end(),
-                  [](const ui::ui_block* a, const ui::ui_block* b) {
-                      return a->y != b->y ? a->y < b->y : a->x < b->x;
-                  });
-
-        for (const auto* ub : roots) {
-            result.push_back(compiled_map[ub->id]);
-        }
-
-        return result;
+        return result ;
     }
 
 

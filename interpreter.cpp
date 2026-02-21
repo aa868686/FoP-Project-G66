@@ -4,7 +4,6 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
-#include <SDL2/SDL.h>
 namespace core {
     void interpreter_load(interpreter& interp, const std::vector<Block*>& blocks) {
         interp.blocks = blocks;
@@ -38,24 +37,8 @@ namespace core {
         log_entry entry;
         entry.cycle = interp.cycle++;
         entry.line = interp.line_number;
+        entry.command = "BLOCK";
         entry.level = log_level::info;
-
-        switch(block->type) {
-            case block_type::move:     entry.command = "MOVE";     entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + " steps" : ""; break;
-            case block_type::turn:     entry.command = "TURN";     entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + " deg" : ""; break;
-            case block_type::go_to_xy: entry.command = "GO_TO_XY"; entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + "," + value_to_string(block->parameters[1].data) : ""; break;
-            case block_type::show:     entry.command = "SHOW";     break;
-            case block_type::hide:     entry.command = "HIDE";     break;
-            case block_type::set_size: entry.command = "SET_SIZE"; entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + "%" : ""; break;
-            case block_type::wait:     entry.command = "WAIT";     entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + "s" : ""; break;
-            case block_type::repeat:   entry.command = "REPEAT";   entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + "x" : ""; break;
-            case block_type::forever:  entry.command = "FOREVER";  break;
-            case block_type::if_then:  entry.command = "IF";       break;
-            case block_type::stop_all: entry.command = "STOP";     break;
-            case block_type::say:      entry.command = "SAY";      entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
-            default:                   entry.command = "BLOCK";    break;
-        }
-
         logger_log(interp.log, entry);
         if (!safetynet_check(interp.safety)) {
             interpreter_stop(interp);
@@ -103,7 +86,6 @@ namespace core {
                     for (auto b: block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
-                    SDL_Delay(16); // ~60fps
                 }
                 break;
             }
@@ -120,7 +102,6 @@ namespace core {
                     for (auto b : block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
-                    SDL_Delay(16);
                 }
                 break;
             }
@@ -207,20 +188,6 @@ namespace core {
                     }
                 }
                 break ;
-            }
-            case block_type::say: {
-                if (block->parameters.empty()) break;
-                std::string text = value_to_string(block->parameters[0].data);
-                // log it for now
-                log_entry e;
-                e.cycle = interp.cycle;
-                e.line = interp.line_number;
-                e.command = "SAY";
-                e.operation = "says";
-                e.data = text;
-                e.level = log_level::info;
-                logger_log(interp.log, e);
-                break;
             }
         }
     }
