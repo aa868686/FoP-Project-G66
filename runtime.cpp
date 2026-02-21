@@ -472,6 +472,17 @@ namespace app {
 
                 ui::block_drag_update(st.workspace, e.motion.x, e.motion.y);
 
+                for ( auto * m : all_menus ( st ) ) {
+                    m -> title_hovered = ui :: point_in_rect ( e.motion.x , e.motion.y , m -> title_rect ) ;
+                    if ( !m -> open ) {
+                        continue ;
+                    }
+
+                    for ( auto & item : m -> items ) {
+                        item.hovered = ui :: point_in_rect ( e.motion.x , e.motion.y , item.rect ) ;
+                    }
+                }
+
             }
 
             if (e.type == SDL_MOUSEBUTTONUP &&
