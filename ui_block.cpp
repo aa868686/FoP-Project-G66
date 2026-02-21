@@ -384,6 +384,7 @@ namespace ui {
 
 
 
+
     static constexpr int palette_item_h = 32 ;
     static constexpr int palette_pad = 4  ;
 

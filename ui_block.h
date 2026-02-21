@@ -11,7 +11,7 @@
 namespace ui {
 
     enum struct block_category {
-        motion , looks , control , events , operators ,
+        motion , looks , control , events , operators , sound
     } ;
 
     struct block_palette_state {
