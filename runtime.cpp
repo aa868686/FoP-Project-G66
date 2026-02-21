@@ -243,8 +243,21 @@ namespace app {
                             st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size())) {
                             st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
                         }
+                        core::logger_clear(st.interp.log);
                         core::interpreter_load(st.interp, compiled);
                         core::interpreter_run(st.interp);
+
+                        for (const auto& entry : st.interp.log.entries) {
+                            std::string msg = "[Line:" + std::to_string(entry.line) + "] "
+                                              + entry.command + " "
+                                              + entry.operation + " "
+                                              + entry.data;
+                            dbg::log_level lvl = dbg::log_level::info;
+                            if (entry.level == core::log_level::warning) lvl = dbg::log_level::warn;
+                            if (entry.level == core::log_level::error)   lvl = dbg::log_level::error;
+                            dbg::logger_log(st.logger, msg, lvl);
+                        }
+
                         compiler::free_compiled(compiled);
                         dbg::logger_log(st.logger, "Program finished.");
                     } else {
@@ -694,8 +707,21 @@ namespace app {
                     st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size())) {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
                 }
+                core::logger_clear(st.interp.log);
                 core::interpreter_load(st.interp, compiled);
                 core::interpreter_run(st.interp);
+
+                for (const auto& entry : st.interp.log.entries) {
+                    std::string msg = "[Line:" + std::to_string(entry.line) + "] "
+                                      + entry.command + " "
+                                      + entry.operation + " "
+                                      + entry.data;
+                    dbg::log_level lvl = dbg::log_level::info;
+                    if (entry.level == core::log_level::warning) lvl = dbg::log_level::warn;
+                    if (entry.level == core::log_level::error)   lvl = dbg::log_level::error;
+                    dbg::logger_log(st.logger, msg, lvl);
+                }
+
                 compiler::free_compiled(compiled);
                 dbg::logger_log(st.logger, "Program finished.");
             } else {
