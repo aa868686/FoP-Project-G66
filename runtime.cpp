@@ -162,7 +162,14 @@ namespace app {
         st.menu_code.title = "Code";
         st.menu_code.items = {
                 {"Add Block ",   true, [&] { /* TODO: show block picker */ }},
-                {"Clear Script", true, [&] { /* TODO: clear script */ }},
+                {"Clear Script", true, [&] {
+                    st.workspace.blocks.clear() ;
+                    st.workspace.next_id = 0 ;
+                    st.workspace.drag_idx = -1 ;
+                    st.workspace.focused_block = -1 ;
+                    st.workspace.focused_input = -1 ;
+                    close_all_menus ( st ) ;
+                }},
         };
 
 
