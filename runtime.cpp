@@ -287,6 +287,19 @@ namespace app {
                 }
             }
 
+            if ( e.type == SDL_TEXTINPUT ) {
+                ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
+            }
+
+            if ( e.type == SDL_KEYDOWN ) {
+                if ( e.key.keysym.sym == SDLK_BACKSPACE ||
+                     e.key.keysym.sym == SDLK_RETURN ||
+                     e.key.keysym.sym == SDLK_ESCAPE
+                ) {
+                    ui :: block_input_handle_key ( st.workspace , e.key.keysym.sym , nullptr ) ;
+                }
+            }
+
             if (e.type == SDL_MOUSEBUTTONDOWN &&
                 e.button.button == SDL_BUTTON_LEFT) {
                 const int mx = e.button.x;
@@ -295,6 +308,10 @@ namespace app {
                 if (gfx::editor_handle_click(st.img_editor, mx, my)) {
                     return;
                 }
+
+                ui :: block_input_handle_click ( st.workspace , st.lay.workspace , mx , my ) ;
+
+
                 if (dbg::logger_handle_click(st.logger, mx, my)) {
                     return;
                 }

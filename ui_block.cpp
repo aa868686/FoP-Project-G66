@@ -94,6 +94,20 @@ namespace ui {
         b.y = y ;
         b.w = block_w ;
         b.h = block_h ;
+
+        if ( label.find ( "_") != std :: string :: npos ) {
+            block_input inp {} ;
+            inp.value = "10" ;
+            b.inputs.push_back ( inp ) ;
+        }
+
+        size_t first = label.find ( "_" ) ;
+        size_t second = label.find ( "_" , first + 1 ) ;
+        if ( first != std :: string :: npos && second != std :: string :: npos ) {
+            block_input inp2 {} ;
+            inp2.value = "0" ;
+            b.inputs.push_back ( inp2 ) ;
+        }
         return b ;
     }
 
@@ -164,11 +178,58 @@ namespace ui {
 
         draw_notch ( ren , r , col ) ;
 
-
-        if ( font ) {
-            fnt :: draw_text_left ( ren , font , b.label.c_str() , r ,
-                                  { 255 , 255 , 255 , 255 } , pad ) ;
+        if ( !font ) {
+            return ;
         }
+
+        std :: string lbl = b.label ;
+        int draw_x = sx + pad ;
+        const int inp_h = 20 ;
+        const int inp_w = 36 ;
+        const int text_y = sy + ( ( b.h - inp_h ) / 2 ) ;
+        int input_idx = 0 ;
+        size_t pos = 0 ;
+
+        while ( pos <= lbl.size() ) {
+            size_t under = lbl.find ( '_' , pos ) ;
+            std :: string part = lbl.substr ( pos , under == std :: string :: npos ? std :: string :: npos : under - pos ) ;
+
+            if ( !part.empty() ) {
+                SDL_Surface * surf = TTF_RenderText_Blended ( font , part.c_str() , { 255,255,255,255 } ) ;
+                if ( surf ) {
+                    SDL_Texture * tex = SDL_CreateTextureFromSurface ( ren , surf ) ;
+                    SDL_FreeSurface ( surf ) ;
+                    if ( tex ) {
+                        int tw = 0 , th = 0 ;
+                        SDL_QueryTexture ( tex , nullptr , nullptr , &tw , &th ) ;
+                        SDL_Rect dst { draw_x , sy + ( ( b.h - th ) / 2 ) , tw , th } ;
+                        SDL_RenderCopy ( ren , tex , nullptr , &dst ) ;
+                        SDL_DestroyTexture ( tex ) ;
+                        draw_x += tw ;
+                    }
+                }
+            }
+
+            if ( under == std :: string :: npos ) break ;
+
+            if ( input_idx < static_cast <int> ( b.inputs.size() ) ) {
+                const block_input & inp = b.inputs[input_idx] ;
+                SDL_Rect inp_r { draw_x , text_y , inp_w , inp_h } ;
+
+
+                SDL_SetRenderDrawColor ( ren , 255 , 255 , 255 , inp.focused ? 255 : 210 ) ;
+                SDL_RenderFillRect ( ren , &inp_r ) ;
+                SDL_SetRenderDrawColor ( ren , inp.focused ? 0 : 80 , inp.focused ? 120 : 80 , inp.focused ? 255 : 80 , 255 ) ;
+                SDL_RenderDrawRect ( ren , &inp_r ) ;
+
+                fnt :: draw_text_centered ( ren , font , inp.value.c_str() , inp_r , { 0,0,0,255 } ) ;
+                draw_x += inp_w + 2 ;
+                ++input_idx ;
+            }
+
+            pos = under + 1 ;
+        }
+
     }
 
 
@@ -423,6 +484,91 @@ namespace ui {
         out_label = PALETTE[idx].label ;
 
         return true ;
+    }
+
+
+    bool block_input_handle_click ( block_workspace & ws , SDL_Rect clip , int mx , int my ) {
+        const int inp_h = 20 ;
+        const int inp_w = 36 ;
+
+        for ( int i = 0 ; i < static_cast <int> ( ws.blocks.size() ) ; ++i ) {
+            ui_block & b = ws.blocks[i] ;
+            if ( b.inputs.empty() ) {
+                continue ;
+            }
+
+            const int sx = clip.x + b.x + ws.scroll_x ;
+            const int sy = clip.y + b.y + ws.scroll_y ;
+            const int text_y = sy + ( ( b.h - inp_h ) / 2 ) ;
+
+            int draw_x = sx + pad ;
+            int input_idx = 0 ;
+            size_t pos = 0 ;
+            std :: string lbl = b.label ;
+
+            while ( pos <= lbl.size() && input_idx < static_cast <int> ( b.inputs.size() ) ) {
+                size_t under = lbl.find ( '_' , pos ) ;
+                std :: string part = lbl.substr ( pos , under == std :: string :: npos ? std :: string :: npos : under - pos ) ;
+                draw_x += static_cast <int> ( part.size() ) * 7 ;
+
+                if ( under == std :: string :: npos ) break ;
+
+                SDL_Rect inp_r { draw_x , text_y , inp_w , inp_h } ;
+                if ( mx >= inp_r.x && mx < inp_r.x + inp_r.w &&
+                     my >= inp_r.y && my < inp_r.y + inp_r.h ) {
+
+                    for ( auto & blk : ws.blocks ) {
+                        for (auto &in: blk.inputs) {
+                            in.focused = false;
+                        }
+                    }
+                    b.inputs[input_idx].focused = true ;
+                    ws.focused_block = i ;
+                    ws.focused_input = input_idx ;
+                    return true ;
+                }
+
+                draw_x += inp_w + 2 ;
+                ++input_idx ;
+                pos = under + 1 ;
+            }
+        }
+
+        for ( auto & blk : ws.blocks ) {
+            for (auto &in: blk.inputs) {
+                in.focused = false;
+            }
+        }
+        ws.focused_block = -1 ;
+        ws.focused_input = -1 ;
+        return false ;
+    }
+
+    void block_input_handle_key ( block_workspace & ws , SDL_Keycode key , const char * text ) {
+        if ( ws.focused_block < 0 || ws.focused_block >= static_cast <int> ( ws.blocks.size() ) ) {
+            return ;
+        }
+
+        if ( ws.focused_input < 0 ) {
+            return ;
+        }
+
+        ui_block & b = ws.blocks[ws.focused_block] ;
+        if ( ws.focused_input >= static_cast <int> ( b.inputs.size() ) ) {
+            return ;
+        }
+
+        std :: string & val = b.inputs[ws.focused_input].value ;
+
+        if ( key == SDLK_BACKSPACE ) {
+            if ( !val.empty() ) val.pop_back() ;
+        } else if ( key == SDLK_RETURN || key == SDLK_ESCAPE ) {
+            b.inputs[ws.focused_input].focused = false ;
+            ws.focused_block = -1 ;
+            ws.focused_input = -1 ;
+        } else if ( text && text[0] >= 32 ) {
+            if ( val.size() < 8 ) val += text[0] ;
+        }
     }
 
 }
