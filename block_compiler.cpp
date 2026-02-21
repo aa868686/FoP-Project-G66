@@ -2,6 +2,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cstdlib>
+#include <map>
 
 namespace compiler {
 
@@ -213,28 +214,59 @@ namespace compiler {
     }
 
 
-    std :: vector < core :: Block * > compile_workspace ( const ui :: block_workspace & ws ) {
-        std :: vector < core :: Block * > result ;
+    std::vector<core::Block*> compile_workspace(const ui::block_workspace& ws) {
+        std::vector<core::Block*> result;
 
-        std :: vector < const ui :: ui_block * > ordered ;
-        for ( const auto & b: ws.blocks ) {
-            ordered.push_back ( &b ) ;
-        }
+        // Step 1: compile all blocks into a map by their ui id
+        std::map<int, core::Block*> compiled_map;
+        std::map<int, int> snap_map; // ui_block id -> snap_to id
 
-        std :: sort ( ordered.begin() , ordered.end() ,
-                      [] ( const ui :: ui_block * a , const ui :: ui_block * b ) {
-                          if ( a->y != b->y ) return a->y < b->y ;
-                          return a->x < b->x ;
-                      } ) ;
-
-        for ( const auto * ub : ordered ) {
-            core :: Block * cb = compile_block ( *ub ) ;
-            if ( cb ) {
-                result.push_back ( cb ) ;
+        for (const auto& ub : ws.blocks) {
+            core::Block* cb = compile_block(ub);
+            if (cb) {
+                compiled_map[ub.id] = cb;
+                snap_map[ub.id] = ub.snap_to;
             }
         }
 
-        return result ;
+        // Step 2: build parent-child relationships
+        for (const auto& ub : ws.blocks) {
+            if (ub.snap_to >= 0) {
+                auto parent_it = compiled_map.find(ub.snap_to);
+                auto child_it  = compiled_map.find(ub.id);
+                if (parent_it != compiled_map.end() &&
+                    child_it  != compiled_map.end()) {
+                    core::Block* parent = parent_it->second;
+                    core::Block* child  = child_it->second;
+                    // if parent is a container block, add as nested
+                    if (parent->type == core::block_type::repeat   ||
+                        parent->type == core::block_type::forever  ||
+                        parent->type == core::block_type::if_then  ||
+                        parent->type == core::block_type::if_then_else) {
+                        parent->nested_blocks.push_back(child);
+                    }
+                }
+            }
+        }
+
+        // Step 3: top-level blocks are those with no parent (snap_to == -1)
+        // sort by y position
+        std::vector<const ui::ui_block*> roots;
+        for (const auto& ub : ws.blocks) {
+            if (ub.snap_to < 0 && compiled_map.count(ub.id)) {
+                roots.push_back(&ub);
+            }
+        }
+        std::sort(roots.begin(), roots.end(),
+                  [](const ui::ui_block* a, const ui::ui_block* b) {
+                      return a->y != b->y ? a->y < b->y : a->x < b->x;
+                  });
+
+        for (const auto* ub : roots) {
+            result.push_back(compiled_map[ub->id]);
+        }
+
+        return result;
     }
 
 
