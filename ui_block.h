@@ -105,6 +105,7 @@ namespace ui {
                                 block_palette_state & state
                                 ) ;
 
+
     bool block_palette_handle_click ( SDL_Rect panel , int mx , int my , block_palette_state & state ) ;
 
 

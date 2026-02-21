@@ -570,6 +570,7 @@ namespace ui {
                     return true ;
                 }
 
+
                 draw_x += inp_w + 2 ;
                 ++input_idx ;
                 pos = under + 1 ;

@@ -109,6 +109,7 @@ namespace app {
 
         fnt::font_manager fonts{};
 
+
         ui::menu menu_file{};
         ui::menu menu_help{};
         ui::menu menu_code{};
@@ -120,6 +121,9 @@ namespace app {
 
         bool running = true;
         bool is_paused = false;
+
+        bool sprite_clicked = false ;
+        bool sprite_dragged = false ;
 
 
 
@@ -438,12 +442,10 @@ namespace app {
                     if (st.sprite_mgr.active >= 0) {
                         const gfx::stage_rectangle sr{
                                 st.lay.stage.x, st.lay.stage.y, st.lay.stage.w, st.lay.stage.h
-                        };
+                        } ;
                         gfx::sprite_drag_begin(st.sprite_mgr.sprites[st.sprite_mgr.active],
                                                mx, my, sr);
-                        if ( !st.sounds.sounds.empty() ) {
-                            snd ::sound_play ( st.sounds.sounds[0] ) ;
-                        }
+                        st.sprite_clicked = true ;
                     }
                     menu_consumed = true;
                 }
@@ -546,6 +548,9 @@ namespace app {
                     };
                     gfx::sprite_drag_update(st.sprite_mgr.sprites[st.sprite_mgr.active],
                                             e.motion.x, e.motion.y, sr);
+                    if ( st.sprite_clicked ) {
+                        st.sprite_dragged = true ;
+                    }
                 }
 
                 gfx::editor_handle_drag(st.img_editor, e.motion.x, e.motion.y);
@@ -572,6 +577,14 @@ namespace app {
                 if (st.sprite_mgr.active >= 0) {
                     gfx::sprite_drag_end(st.sprite_mgr.sprites[st.sprite_mgr.active]);
                 }
+                if ( st.sprite_clicked && !st.sprite_dragged ) {
+                    if ( !st.sounds.sounds.empty() ) {
+                        snd :: sound_play ( st.sounds.sounds[0] ) ;
+                    }
+                }
+
+                st.sprite_clicked = false ;
+                st.sprite_dragged = false ;
 
                 st.sound_dragging = false;
 
