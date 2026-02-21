@@ -68,7 +68,6 @@ namespace ui {
                           int x , int y
                           ) ;
 
-
     int block_workspace_add ( block_workspace & ws ,
                               const std :: string & label ,
                               block_category cat ,

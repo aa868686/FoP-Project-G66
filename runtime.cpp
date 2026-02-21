@@ -482,7 +482,6 @@ namespace app {
                         item.hovered = ui :: point_in_rect ( e.motion.x , e.motion.y , item.rect ) ;
                     }
                 }
-
             }
 
 
