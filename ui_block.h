@@ -19,10 +19,9 @@ namespace ui {
     };
 
     struct block_input {
-        std :: string value = "10" ;
+        std :: string value {} ;
         bool editable = true ;
         SDL_Rect rect {} ;
-        bool focused = false ;
     };
 
 
@@ -54,9 +53,6 @@ namespace ui {
         int scroll_x = 0 ;
         int scroll_y = 0 ;
 
-        int focused_block = -1 ;
-        int focused_input = -1 ;
-
         int drag_idx = -1 ;
     };
 
@@ -82,7 +78,6 @@ namespace ui {
                                   TTF_Font * font
                                   ) ;
 
-
     int block_hit_test ( const block_workspace & ws ,
                          SDL_Rect clip ,
                          int mx , int my
@@ -91,9 +86,6 @@ namespace ui {
     void block_drag_begin ( block_workspace & ws , int idx , int mx , int my ) ;
     void block_drag_update ( block_workspace & ws , int mx , int my ) ;
     void block_drag_end ( block_workspace & ws ) ;
-
-    bool block_input_handle_click ( block_workspace & ws , SDL_Rect clip , int mx , int my ) ;
-    void block_input_handle_key ( block_workspace & ws , SDL_Keycode key , const char * text ) ;
 
 
     void block_try_snap ( block_workspace & ws , int idx ) ;
@@ -111,8 +103,7 @@ namespace ui {
     bool block_palette_click ( SDL_Rect panel ,
                                int mx , int my ,
                                block_category & out_cat ,
-                               std :: string & out_label ,
-                               const block_palette_state & state
+                               std :: string & out_label
                                ) ;
 
 
