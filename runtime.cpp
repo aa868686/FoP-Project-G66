@@ -326,10 +326,10 @@ namespace app {
                 st.info_inputs.push_back ( inp ) ;
             } ;
 
-            make ( app_state :: sprite_info_input :: field_x , s.x , 6 , 8 ) ;
-            make ( app_state :: sprite_info_input :: field_y , s.y , 100 , 8 ) ;
-            make ( app_state :: sprite_info_input :: field_size , s.size_percent , 6 , 36 ) ;
-            make ( app_state ::                      sprite_info_input :: field_direction , s.direction_deg, 100 , 36 ) ;
+            make ( app_state :: sprite_info_input :: field_x , s.x , 20 , 8 ) ;
+            make ( app_state :: sprite_info_input :: field_y , s.y , 140 , 8 ) ;
+            make ( app_state :: sprite_info_input :: field_size , s.size_percent , 20 , 38 ) ;
+            make ( app_state :: sprite_info_input :: field_direction , s.direction_deg, 140 , 38 ) ;
         }
 
 
@@ -795,10 +795,10 @@ namespace app {
                 fnt :: draw_text_left ( st.renderer , st.fonts.small , display.c_str() , vr , {220,220,220,255} ) ;
             } ;
 
-            draw_field ( "x" , 0 , 6 , 8 ) ;
-            draw_field ( "y" , 1 , 100 , 8 ) ;
-            draw_field ( "Size" , 2 , 6 , 36 ) ;
-            draw_field ( "Dir" , 3 , 100 , 36 ) ;
+            draw_field ( "x" , 0 , 4 , 8 ) ;
+            draw_field ( "y" , 1 , 124 , 8 ) ;
+            draw_field ( "Size" , 2 , 4 , 38 ) ;
+            draw_field ( "Dir" , 3 , 124 , 38 ) ;
         }
 
 
