@@ -414,6 +414,7 @@ namespace ui {
             { block_category :: variables , "Variables" } ,
             { block_category :: sensing , "Sensing"   } ,
     } ;
+
     static constexpr int cat_count = 8 ;
     static constexpr int cat_w = 80 ;
     static constexpr int cat_item_h = 48 ;
