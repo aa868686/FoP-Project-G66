@@ -253,7 +253,17 @@ namespace compiler {
         // sort by y position
         std::vector<const ui::ui_block*> roots;
         for (const auto& ub : ws.blocks) {
-            if (ub.snap_to < 0 && compiled_map.count(ub.id)) {
+            bool is_nested_in_container = false;
+            if (ub.snap_to >= 0 && compiled_map.count(ub.snap_to)) {
+                core::Block* parent = compiled_map[ub.snap_to];
+                if (parent->type == core::block_type::repeat  ||
+                    parent->type == core::block_type::forever ||
+                    parent->type == core::block_type::if_then ||
+                    parent->type == core::block_type::if_then_else) {
+                    is_nested_in_container = true;
+                }
+            }
+            if (!is_nested_in_container && compiled_map.count(ub.id)) {
                 roots.push_back(&ub);
             }
         }

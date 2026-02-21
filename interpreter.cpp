@@ -4,6 +4,7 @@
 #include <chrono>
 #include <thread>
 #include <algorithm>
+#include <SDL2/SDL.h>
 namespace core {
     void interpreter_load(interpreter& interp, const std::vector<Block*>& blocks) {
         interp.blocks = blocks;
@@ -102,6 +103,7 @@ namespace core {
                     for (auto b: block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
+                    SDL_Delay(16); // ~60fps
                 }
                 break;
             }
@@ -118,6 +120,7 @@ namespace core {
                     for (auto b : block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
+                    SDL_Delay(16);
                 }
                 break;
             }
