@@ -93,6 +93,7 @@ namespace ui {
             case block_category :: sound : return { 180 , 80 , 200 , 255 } ;
             case block_category :: variables : return { 220 , 120 , 20  , 255 } ;
             case block_category :: sensing : return { 20  , 180 , 200 , 255 } ;
+            case block_category :: my_blocks : return { 220 , 80 , 150 , 255 } ;
         }
         return { 100 , 100 , 100 , 255 } ;
     }
@@ -149,6 +150,22 @@ namespace ui {
                 std :: remove_if ( ws.blocks.begin() , ws.blocks.end() ,
                                  [id]( const ui_block & b ){ return b.id == id ; } ) ,
                 ws.blocks.end() ) ;
+    }
+
+    void custom_block_add ( block_workspace & ws , const char * name ) {
+        custom_block_def def ;
+        def.id = ws.next_custom_id++ ;
+        def.name = name ;
+        ws.custom_blocks.push_back ( def ) ;
+        block_workspace_add ( ws , name , block_category :: my_blocks , 80 ,
+                              80 + (int)ws.blocks.size() * 44 ) ;
+    }
+
+    void custom_block_remove ( block_workspace & ws , int id ) {
+        ws.custom_blocks.erase (
+                std :: remove_if ( ws.custom_blocks.begin() , ws.custom_blocks.end() ,
+                                   [id]( const custom_block_def & d ){ return d.id == id ; } ) ,
+                ws.custom_blocks.end() ) ;
     }
 
 
@@ -413,9 +430,11 @@ namespace ui {
             { block_category :: sound , "Sound" } ,
             { block_category :: variables , "Variables" } ,
             { block_category :: sensing , "Sensing"   } ,
+            { block_category :: my_blocks , "My Blocks" } ,
+
     } ;
 
-    static constexpr int cat_count = 8 ;
+    static constexpr int cat_count = 9 ;
     static constexpr int cat_w = 80 ;
     static constexpr int cat_item_h = 48 ;
 

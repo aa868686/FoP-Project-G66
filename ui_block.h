@@ -11,7 +11,7 @@
 namespace ui {
 
     enum struct block_category {
-        motion , looks , control , events , operators , sound , variables , sensing ,
+        motion , looks , control , events , operators , sound , variables , sensing , my_blocks ,
     } ;
 
     struct block_palette_state {
@@ -47,9 +47,17 @@ namespace ui {
         int drag_dy = 0 ;
     };
 
+    struct custom_block_def {
+        int id = -1 ;
+        std :: string name {} ;
+    };
+
 
     struct block_workspace {
+
         std :: vector <ui_block> blocks {} ;
+        std :: vector <custom_block_def> custom_blocks {} ;
+        int next_custom_id = 0 ;
         int next_id = 0 ;
 
         int scroll_x = 0 ;
@@ -115,6 +123,10 @@ namespace ui {
                                std :: string & out_label ,
                                const block_palette_state & state
                                ) ;
+
+    void custom_block_add ( block_workspace & ws , const char * name ) ;
+
+    void custom_block_remove ( block_workspace & ws , int id ) ;
 
 
 }
