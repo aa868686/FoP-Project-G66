@@ -485,6 +485,7 @@ namespace app {
 
             }
 
+
             if (e.type == SDL_MOUSEBUTTONUP &&
                 e.button.button == SDL_BUTTON_LEFT) {
                 if (st.sprite_mgr.active >= 0) {

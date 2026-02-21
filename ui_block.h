@@ -18,6 +18,7 @@ namespace ui {
         block_category selected_category = block_category :: motion ;
     };
 
+
     struct block_input {
         std :: string value = "10" ;
         bool editable = true ;
