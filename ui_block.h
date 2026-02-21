@@ -11,12 +11,13 @@
 namespace ui {
 
     enum struct block_category {
-        motion , looks , control , events , operators , sound
+        motion , looks , control , events , operators , sound , variables , sensing , my_blocks ,
     } ;
 
     struct block_palette_state {
         block_category selected_category = block_category :: motion ;
     };
+
 
     struct block_input {
         std :: string value = "10" ;
@@ -66,7 +67,6 @@ namespace ui {
                           block_category cat ,
                           int x , int y
                           ) ;
-
 
     int block_workspace_add ( block_workspace & ws ,
                               const std :: string & label ,

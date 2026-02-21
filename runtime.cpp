@@ -19,6 +19,7 @@
 #include "image_editor.h"
 #include "interpreter.h"
 #include "block_compiler.h"
+#include "block.h"
 
 namespace app {
 
@@ -482,8 +483,8 @@ namespace app {
                         item.hovered = ui :: point_in_rect ( e.motion.x , e.motion.y , item.rect ) ;
                     }
                 }
-
             }
+
 
 
             if (e.type == SDL_MOUSEBUTTONUP &&

@@ -67,7 +67,7 @@ namespace ui {
         if ( !m.open ) {
             return ;
         }
-        
+
         SDL_SetRenderDrawColor ( r , panel_fill.r , panel_fill.g , panel_fill.b , panel_fill.a ) ;
         SDL_RenderFillRect ( r , &m.panel_rect ) ;
         SDL_SetRenderDrawColor ( r , panel_border.r , panel_border.g , panel_border.b , panel_border.a ) ;
