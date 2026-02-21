@@ -8,7 +8,6 @@ namespace gfx {
         return std :: min ( std :: max ( v, lo ) , hi ) ;
     }
 
-    // Draw a "thick" line by drawing multiple parallel lines around the center line.
     static void draw_thick_line ( SDL_Renderer * ren ,
                                   float x0 , float y0 ,
                                   float x1 , float y1 ,
@@ -28,12 +27,11 @@ namespace gfx {
             return ;
         }
 
-        // Compute a perpendicular unit vector to offset parallel lines.
         float dx = x1 - x0 ;
         float dy = y1 - y0 ;
         float len = std :: sqrt ( dx * dx + dy * dy ) ;
 
-        // If the line is too short, draw a small filled square
+
         if ( len < 1e-4f ) {
             float half = ( float )( thickness) * 0.5f ;
             SDL_FRect r { x0 - half , y0 - half , ( float ) thickness , ( float ) thickness } ;
@@ -48,7 +46,6 @@ namespace gfx {
         int r = thickness / 2 ;
 
 
-        // Draw multiple offset lines
         for ( int i = -r ; i <= r ; ++i ) {
             float ox = nx * ( float ) i ;
             float oy = ny * ( float ) i ;
@@ -73,6 +70,13 @@ namespace gfx {
         pen . has_last = false ;
     }
 
+    void pen_erase_all ( pen_state & pen ) {
+        pen . segment . clear() ;
+        pen . stamps . clear() ;
+        pen . has_last = false ;
+        pen . is_down = false ;
+    }
+
 
     void pen_down ( pen_state & pen , float x , float y ) {
         pen . is_down = true ;
@@ -84,7 +88,7 @@ namespace gfx {
 
     void pen_up ( pen_state & pen ) {
         pen . is_down = false ;
-        pen . has_last = false ; // avoids connecting the next down to an old point
+        pen . has_last = false ;
     }
 
     void pen_set_color ( pen_state & pen , SDL_Color c ) {
@@ -153,7 +157,6 @@ namespace gfx {
             return ;
         }
 
-        // 1) Render stamps
         for ( const auto & st : pen . stamps ) {
             if ( !st.texture ) {
                 continue ;
@@ -163,9 +166,8 @@ namespace gfx {
             SDL_RenderCopyExF ( ren , st.texture , nullptr , &dst , st.angle_deg , &st.center , SDL_FLIP_NONE ) ;
         }
 
-        // 2) Render line segments
+
         for ( const auto & seg : pen . segment ) {
-            // Convert stage-local to screen space
             float x0 = seg.x0 + ( float ) stage . x ;
             float y0 = seg.y0 + ( float ) stage . y ;
             float x1 = seg.x1 + ( float ) stage . x ;
