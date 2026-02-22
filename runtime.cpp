@@ -841,25 +841,36 @@ namespace app {
         };
         st.btn_stop.on_click = [&] {
             core::interpreter_stop(st.interp);
+            compiler :: free_compiled ( st.interp.blocks ) ;
             dbg::logger_log(st.logger, "Stopped.");
         };
 
         st.btn_step.on_click = [&] {
             if ( !st.step_mode ) return ;
-            auto compiled = compiler :: compile_workspace ( st.workspace ) ;
-            if ( !compiled.empty() ) {
+            if ( !st.interp.running ) {
+                compiler :: free_compiled ( st.interp.blocks ) ;
+                auto compiled = compiler :: compile_workspace ( st.workspace ) ;
+                if ( compiled.empty() ) {
+                    dbg :: logger_log ( st.logger , "No blocks to run." , dbg :: log_level :: warn ) ;
+                    return ;
+                }
                 if ( st.sprite_mgr.active >= 0 &&
                      st.sprite_mgr.active < (int)st.sprite_mgr.sprites.size() ) {
-                    st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                    st.interp.active_sprite = & st.sprite_mgr.sprites[st.sprite_mgr.active] ;
                 }
-                if ( !st.interp.running ) {
-                    core :: interpreter_load ( st.interp , compiled ) ;
-                }
-                core :: interpreter_step ( st.interp ) ;
-                char buf[64] ;
-                snprintf ( buf , sizeof(buf) , "Step: line %d" , st.interp.line_number ) ;
-                dbg :: logger_log ( st.logger , buf ) ;
+                core :: interpreter_load ( st.interp , compiled ) ;
             }
+            if ( st.interp.line_number >= (int)st.interp.blocks.size() ) {
+                dbg :: logger_log ( st.logger , "Program ended. Reset to step again." ) ;
+                st.interp.running = false ;
+                return ;
+            }
+            core :: interpreter_step ( st.interp ) ;
+
+            char buf[64] ;
+            snprintf ( buf , sizeof (buf) , "Step %d / %d" , st.interp.line_number , (int) st.interp.blocks.size() ) ;
+            dbg :: logger_log ( st.logger , buf ) ;
+
         } ;
 
 

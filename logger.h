@@ -1,7 +1,3 @@
-//
-// Created by amirf on 2/20/2026.
-//
-
 #ifndef FOP_PROJECT_G66_LOGGER_H
 #define FOP_PROJECT_G66_LOGGER_H
 #include <string>

@@ -2,6 +2,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cstdlib>
+#include <map>
 
 namespace compiler {
 
@@ -73,6 +74,15 @@ namespace compiler {
 
 
 
+    static core :: Value get_input ( const ui :: ui_block & ub , int idx ) {
+        if ( idx < (int)ub.inputs.size() && !ub.inputs[idx].value.empty() ) {
+            core :: Value v ;
+            if ( parse_number ( ub.inputs[idx].value , v ) ) return v ;
+            return core :: value_make_string ( ub.inputs[idx].value ) ;
+        }
+        return core :: value_make_int ( 0 ) ;
+    }
+
     core :: Block * compile_block ( const ui :: ui_block & ub ) {
         const std :: string lbl = lower ( ub.label ) ;
         auto * b = new core :: Block {} ;
@@ -80,7 +90,7 @@ namespace compiler {
         if ( lbl.find ( "move" ) != std :: string :: npos && lbl.find ( "step" ) != std :: string :: npos ) {
             b->type = core :: block_type :: move ;
             core :: Parameter p {} ;
-            p.data = extract_first_number ( ub.label ) ;
+            p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -88,7 +98,7 @@ namespace compiler {
         if ( lbl.find ( "turn" ) != std :: string :: npos && lbl.find ( "degree" ) != std :: string :: npos ) {
             b->type = core :: block_type :: turn ;
             core :: Parameter p {} ;
-            p.data = extract_first_number ( ub.label ) ;
+            p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -98,9 +108,8 @@ namespace compiler {
         if ( lbl.find ( "go to" ) != std :: string :: npos ) {
             b->type = core :: block_type :: go_to_xy ;
             core :: Parameter px {} , py {} ;
-            auto nums = extract_numbers ( ub.label ) ;
-            px.data = nums.size() >= 1 ? nums[0] : core :: value_make_int ( 0 ) ;
-            py.data = nums.size() >= 2 ? nums[1] : core :: value_make_int ( 0 ) ;
+            px.data = get_input ( ub , 0 ) ;
+            py.data = get_input ( ub , 1 ) ;
             b->parameters.push_back ( px ) ;
             b->parameters.push_back ( py ) ;
             return b ;
@@ -109,7 +118,7 @@ namespace compiler {
         if ( lbl.find ( "point in direction" ) != std :: string :: npos ) {
             b->type = core :: block_type :: point_in_direction ;
             core :: Parameter p {} ;
-            p.data = extract_first_number ( ub.label ) ;
+            p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -118,13 +127,7 @@ namespace compiler {
             b->type = core :: block_type :: say ;
 
             core :: Parameter p {} ;
-            auto q1 = ub.label.find ( '"' ) ;
-            auto q2 = ub.label.rfind ( '"' ) ;
-            if ( q1 != std :: string :: npos && q2 != q1 ) {
-                p.data = core :: value_make_string ( ub.label.substr ( q1+1 , q2-q1-1 ) ) ;
-            } else {
-                p.data = core :: value_make_string ( ub.label ) ;
-            }
+            p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -142,7 +145,7 @@ namespace compiler {
         if ( lbl.find ( "set size" ) != std :: string :: npos ) {
             b->type = core :: block_type :: set_size ;
             core :: Parameter p {} ;
-            p.data = extract_first_number ( ub.label ) ;
+            p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -151,7 +154,7 @@ namespace compiler {
         if ( lbl.find ( "wait" ) != std :: string :: npos && lbl.find ( "sec" ) != std :: string :: npos ) {
             b->type = core :: block_type :: wait ;
             core :: Parameter p {} ;
-            p.data = extract_first_number ( ub.label ) ;
+            p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }
@@ -159,7 +162,7 @@ namespace compiler {
         if ( lbl.find ( "repeat" ) != std :: string :: npos && lbl.find ( "forever" ) == std :: string :: npos ) {
             b->type = core :: block_type :: repeat ;
             core :: Parameter p {} ;
-            p.data = extract_first_number ( ub.label ) ;
+            p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ;
             return b ;
         }

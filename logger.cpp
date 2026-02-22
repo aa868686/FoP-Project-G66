@@ -1,6 +1,3 @@
-//
-// Created by amirf on 2/20/2026.
-//
 #include "logger.h"
 #include <string>
 #include <vector>
