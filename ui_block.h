@@ -48,6 +48,11 @@ namespace ui {
         bool dragging = false ;
         int drag_dx = 0 ;
         int drag_dy = 0 ;
+
+        bool is_container = false ;
+        std :: vector <int> children {} ;
+        int container_h = 48 ;
+        int parent_id = -1 ;
     };
 
     struct custom_block_def {
