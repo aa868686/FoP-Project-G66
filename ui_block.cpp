@@ -417,7 +417,6 @@ namespace ui {
             }
         }
 
-
         for ( int i = static_cast <int> ( ws.blocks.size() ) - 1 ; i >= 0 ; --i ) {
             const ui_block & b = ws.blocks[i] ;
             if ( !b.is_container ) continue ;

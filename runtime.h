@@ -13,7 +13,6 @@ namespace app {
         int window_w = 1280 ;
         int window_h = 720 ;
         std :: string window_title = "Scratch Engine" ;
-
     };
 
     int run ( const runtimeConfig & cfg ) ;

@@ -71,6 +71,7 @@ namespace core {
             default:                   entry.command = "BLOCK";    break;
         }
 
+
         logger_log(interp.log, entry);
         if (!safetynet_check(interp.safety)) {
             interpreter_stop(interp);
