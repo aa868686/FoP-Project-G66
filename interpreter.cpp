@@ -67,6 +67,7 @@ namespace core {
             case block_type::if_then:  entry.command = "IF";       break;
             case block_type::stop_all: entry.command = "STOP";     break;
             case block_type::say:      entry.command = "SAY";      entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
+            case block_type::point_in_direction: entry.command = "POINT"; entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + " deg" : ""; break;
             default:                   entry.command = "BLOCK";    break;
         }
 
