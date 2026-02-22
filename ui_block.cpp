@@ -569,6 +569,10 @@ namespace ui {
             const int sy = clip.y + b.y + ws.scroll_y ;
             const int text_y = sy + ( ( b.h - inp_h ) / 2 ) ;
 
+            if (mx < sx || mx >= sx + b.w || my < sy || my >= sy + b.h) {
+                continue;
+            }
+
             int draw_x = sx + pad ;
             int input_idx = 0 ;
             size_t pos = 0 ;
