@@ -265,7 +265,15 @@ namespace app {
                             st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
                         }
                         core::interpreter_load(st.interp, compiled);
+                        core::logger_clear(st.interp.log);
                         core::interpreter_run(st.interp);
+                        for (const auto& e : st.interp.log.entries) {
+                            std::string msg = "[Line:" + std::to_string(e.line) + "] " + e.command + " " + e.data;
+                            dbg::log_level lvl = dbg::log_level::info;
+                            if (e.level == core::log_level::warning) lvl = dbg::log_level::warn;
+                            if (e.level == core::log_level::error)   lvl = dbg::log_level::error;
+                            dbg::logger_log(st.logger, msg, lvl);
+                        }
                         compiler::free_compiled(compiled);
                         dbg::logger_log(st.logger, "Program finished.");
                     } else {
@@ -825,7 +833,15 @@ namespace app {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
                 }
                 core::interpreter_load(st.interp, compiled);
+                core::logger_clear(st.interp.log);
                 core::interpreter_run(st.interp);
+                for (const auto& e : st.interp.log.entries) {
+                    std::string msg = "[Line:" + std::to_string(e.line) + "] " + e.command + " " + e.data;
+                    dbg::log_level lvl = dbg::log_level::info;
+                    if (e.level == core::log_level::warning) lvl = dbg::log_level::warn;
+                    if (e.level == core::log_level::error)   lvl = dbg::log_level::error;
+                    dbg::logger_log(st.logger, msg, lvl);
+                }
                 compiler::free_compiled(compiled);
                 dbg::logger_log(st.logger, "Program finished.");
             } else {
