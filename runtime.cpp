@@ -320,12 +320,26 @@ namespace app {
             char buf[16] ;
 
             auto make = [&]( app_state :: sprite_info_input :: field_type f , float val , int lx , int ly ) {
+                for ( auto & existing : st.info_inputs ) {
+                    if ( existing.target == f && existing.focused ) {
+                        app_state :: sprite_info_input inp ;
+                        inp.target = f ;
+                        inp.rect = { p.x + lx + 32 , p.y + ly - 2 , 52 , 20 } ;
+                        inp.value = existing.value ;
+                        inp.focused = true ;
+                        st.info_inputs.push_back ( inp ) ;
+                       return ;
+                    }
+                }
                 app_state :: sprite_info_input inp ;
                 inp.target = f ;
                 inp.rect = { p.x + lx + 32 , p.y + ly - 2 , 52 , 20 } ;
-                snprintf ( buf , 16 , "%.0f" , val ) ;
+                char buf[16] ;
+                snprintf ( buf , 16 , "%0.f" , val ) ;
                 inp.value = buf ;
                 st.info_inputs.push_back ( inp ) ;
+
+
             } ;
 
             make ( app_state :: sprite_info_input :: field_x , s.x , 20 , 8 ) ;
@@ -481,7 +495,6 @@ namespace app {
                 for ( auto & inp : st.info_inputs ) {
                     if ( ui :: point_in_rect ( mx , my , inp.rect ) ) {
                         inp.focused = true ;
-                        inp.value = "" ;
                         SDL_StartTextInput () ;
                         break ;
                     }
