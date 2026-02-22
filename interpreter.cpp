@@ -21,6 +21,7 @@ namespace core {
         interp.running = false;
         interp.is_paused = false;
         interp.line_number = 0;
+        interp.blocks.clear() ;
     }
     void interpreter_run(interpreter& interp) {
         interp.running = true;
