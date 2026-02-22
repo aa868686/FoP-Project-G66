@@ -347,6 +347,18 @@ namespace app {
                 return;
             }
 
+            if ( e.type == SDL_KEYDOWN ) {
+                if ( e.key.keysym.sym == SDLK_BACKSPACE ||
+                     e.key.keysym.sym == SDLK_RETURN ||
+                     e.key.keysym.sym == SDLK_ESCAPE ||
+                     e.key.keysym.sym == SDLK_LEFT ||
+                     e.key.keysym.sym == SDLK_RIGHT ||
+                     e.key.keysym.sym == SDLK_DELETE
+                     ) {
+                    ui :: block_input_handle_key ( st.workspace , e.key.keysym.sym , nullptr ) ;
+                }
+            }
+
             if (e.type == SDL_KEYDOWN) {
                 if (e.key.keysym.sym == SDLK_ESCAPE) {
                     st.running = false;

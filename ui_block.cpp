@@ -263,6 +263,27 @@ namespace ui {
                 SDL_RenderDrawRect ( ren , &inp_r ) ;
 
                 fnt :: draw_text_centered ( ren , font , inp.value.c_str() , inp_r , { 0,0,0,255 } ) ;
+
+                const int char_w = 7 ;
+
+                if ( inp.focused && inp.sel_start >= 0 && inp.sel_end > inp.sel_start ) {
+                    int sx2 = inp_r.x + 2 + ( inp.sel_start * char_w ) ;
+                    int sw = ( inp.sel_end - inp.sel_start ) * char_w ;
+                    SDL_Rect sel { sx2 , inp_r.y + 2 , sw , inp_r.h - 4 } ;
+
+                    SDL_SetRenderDrawBlendMode ( ren , SDL_BLENDMODE_BLEND ) ;
+                    SDL_SetRenderDrawColor ( ren , 50 , 100 , 200 , 150 ) ;
+                    SDL_RenderFillRect ( ren , &sel ) ;
+                    SDL_SetRenderDrawBlendMode ( ren , SDL_BLENDMODE_NONE ) ;
+                }
+
+                if ( inp.focused ) {
+                    int cx = inp_r.x +2 + ( inp.cursor_pos * char_w ) ;
+                    SDL_SetRenderDrawColor ( ren , 0 , 0 , 0 , 255 ) ;
+                    SDL_RenderDrawLine ( ren , cx , inp_r.y + 2 , cx , inp_r.y + inp_r.h - 2 ) ;
+                }
+
+
                 draw_x += inp_w + 2 ;
                 ++input_idx ;
             }
@@ -603,6 +624,11 @@ namespace ui {
                         }
                     }
                     b.inputs[input_idx].focused = true ;
+                    b.inputs[input_idx].cursor_pos = (int) b.inputs[input_idx].value.size() ;
+                    b.inputs[input_idx].sel_start = 0 ;
+                    b.inputs[input_idx].sel_end = (int) b.inputs[input_idx].value.size() ;
+
+
                     ws.focused_block = i ;
                     ws.focused_input = input_idx ;
                     return true ;
@@ -639,17 +665,64 @@ namespace ui {
             return ;
         }
 
-        std :: string & val = b.inputs[ws.focused_input].value ;
+        block_input & inp = b.inputs[ws.focused_input] ;
+        std :: string & val = inp.value ;
+
+        bool has_sel = ( inp.sel_start >= 0 && inp.sel_end > inp.sel_start ) ;
+
+
 
         if ( key == SDLK_BACKSPACE ) {
-            if ( !val.empty() ) val.pop_back() ;
+            if ( has_sel ) {
+                val.erase ( inp.sel_start , inp.sel_end - inp.sel_start ) ;
+                inp.cursor_pos = inp.sel_start ;
+                inp.sel_start = inp.sel_end = -1 ;
+            } else if ( inp.cursor_pos > 0 ) {
+                val.erase ( inp.cursor_pos - 1 , 1 ) ;
+                inp.cursor_pos-- ;
+            }
+        } else if ( key == SDLK_DELETE ) {
+            if ( has_sel ) {
+                val.erase ( inp.sel_start , inp.sel_end - inp.sel_start ) ;
+                inp.cursor_pos = inp.sel_start ;
+                inp.sel_start = inp.sel_end = -1 ;
+            } else if ( inp.cursor_pos < (int)val.size() ) {
+                val.erase ( inp.cursor_pos , 1 ) ;
+            }
+        } else if ( key == SDLK_LEFT ) {
+            if ( inp.cursor_pos > 0 ) {
+                inp.cursor_pos-- ;
+            }
+
+            inp.sel_start = inp.sel_end = -1 ;
+        } else if ( key == SDLK_RIGHT ) {
+            if ( inp.cursor_pos < (int)val.size() ) {
+                inp.cursor_pos++ ;
+            }
+
+            inp.sel_start = inp.sel_end = -1 ;
+        } else if ( key == SDLK_HOME || key == SDLK_a ) {
+            inp.cursor_pos = 0 ;
+            inp.sel_start = inp.sel_end = -1 ;
+        } else if ( key == SDLK_END ) {
+            inp.cursor_pos = (int)val.size() ;
+            inp.sel_start = inp.sel_end = -1 ;
         } else if ( key == SDLK_RETURN || key == SDLK_ESCAPE ) {
-            b.inputs[ws.focused_input].focused = false ;
+            inp.focused = false ;
             ws.focused_block = -1 ;
             ws.focused_input = -1 ;
         } else if ( text && text[0] >= 32 ) {
-            if ( val.size() < 8 ) val += text[0] ;
+            if ( has_sel ) {
+                val.erase ( inp.sel_start , inp.sel_end - inp.sel_start ) ;
+                inp.cursor_pos = inp.sel_start ;
+                inp.sel_start = inp.sel_end = -1 ;
+            }
+            if ( val.size() < 8 ) {
+                val.insert ( inp.cursor_pos , 1 , text[0] ) ;
+                inp.cursor_pos++ ;
+            }
         }
+
     }
 
 }

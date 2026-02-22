@@ -24,6 +24,9 @@ namespace ui {
         bool editable = true ;
         SDL_Rect rect {} ;
         bool focused = false ;
+        int cursor_pos = 0 ;
+        int sel_start = -1 ;
+        int sel_end = -1 ;
     };
 
 
@@ -51,6 +54,7 @@ namespace ui {
         int id = -1 ;
         std :: string name {} ;
     };
+
 
 
     struct block_workspace {
