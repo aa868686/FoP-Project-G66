@@ -405,12 +405,35 @@ namespace ui {
                          SDL_Rect clip ,
                          int mx , int my ) {
 
+
         for ( int i = static_cast <int> ( ws.blocks.size() ) - 1 ; i >= 0 ; --i ) {
             const ui_block & b = ws.blocks[i] ;
+            if ( b.is_container ) continue ;
             const int sx = clip.x + b.x + ws.scroll_x ;
             const int sy = clip.y + b.y + ws.scroll_y ;
             if ( mx >= sx && mx < sx + b.w &&
                  my >= sy && my < sy + b.h ) {
+                return i ;
+            }
+        }
+
+
+        for ( int i = static_cast <int> ( ws.blocks.size() ) - 1 ; i >= 0 ; --i ) {
+            const ui_block & b = ws.blocks[i] ;
+            if ( !b.is_container ) continue ;
+            const int sx = clip.x + b.x + ws.scroll_x ;
+            const int sy = clip.y + b.y + ws.scroll_y ;
+
+
+            SDL_Rect header { sx , sy , b.w , block_h } ;
+
+            SDL_Rect footer { sx , sy + block_h + b.container_h , b.w , block_h } ;
+
+            SDL_Rect arm { sx , sy + block_h , 16 , b.container_h } ;
+
+            if ( ( mx >= header.x && mx < header.x + header.w && my >= header.y && my < header.y + header.h ) ||
+                 ( mx >= footer.x && mx < footer.x + footer.w && my >= footer.y && my < footer.y + footer.h ) ||
+                 ( mx >= arm.x    && mx < arm.x    + arm.w    && my >= arm.y    && my < arm.y    + arm.h    ) ) {
                 return i ;
             }
         }
@@ -443,8 +466,24 @@ namespace ui {
         }
 
         ui_block & b = ws.blocks[ws.drag_idx] ;
+        int old_x = b.x ;
+        int old_y = b.y ;
         b.x = mx - b.drag_dx ;
         b.y = my - b.drag_dy ;
+        int dx = b.x - old_x ;
+        int dy = b.y - old_y ;
+
+        if ( b.is_container ) {
+            for ( int cid : b.children ) {
+                for ( auto & cb : ws.blocks ) {
+                    if ( cb.id == cid ) {
+                        cb.x += dx ;
+                        cb.y += dy ;
+                        break ;
+                    }
+                }
+            }
+        }
     }
 
     void block_drag_end ( block_workspace & ws ) {
