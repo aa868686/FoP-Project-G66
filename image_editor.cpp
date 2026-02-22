@@ -233,6 +233,8 @@ namespace gfx {
         ed.btn_circle = { bx , by , ed_btn_w , ed_btn_h } ; bx += ed_btn_w + ed_pad ;
         ed.btn_rect_tool = { bx , by , ed_btn_w , ed_btn_h } ; bx += ed_btn_w + ed_pad ;
         ed.btn_fill = { bx , by , ed_btn_w , ed_btn_h } ; bx += ed_btn_w + ( ed_pad * 3 ) ;
+        ed.btn_size_down = { bx , by , 24 , ed_btn_h } ; bx += 24 + 4 ;
+        ed.btn_size_up   = { bx , by , 24 , ed_btn_h } ; bx += 24 + ed_pad ;
 
         ed.color_picker.rect = { bx , by , ed_btn_h , ed_btn_h } ;
 
@@ -285,7 +287,7 @@ namespace gfx {
         ed.target_sprite = sprite_idx ;
         ed.tool = editor_tool :: pen ;
         ed.color = { 0 , 0 , 0 , 255 } ;
-        ed.brush_size = 3 ;
+        ed.brush_size = 0.75 ;
         ed.drawing = false ;
         ed.open = true ;
     }
@@ -345,6 +347,21 @@ namespace gfx {
             }
         }
 
+        const int by = ed.toolbar.y + ( ed_toolbar_h - ed_btn_h ) / 2 ;
+        ed_fill    ( ren , ed.btn_size_down , 55 , 55 , 55 ) ;
+        ed_outline ( ren , ed.btn_size_down , 90 , 90 , 90 ) ;
+        if ( font ) fnt :: draw_text_centered ( ren , font , "-" , ed.btn_size_down , { 220,220,220,255 } ) ;
+
+        ed_fill    ( ren , ed.btn_size_up , 55 , 55 , 55 ) ;
+        ed_outline ( ren , ed.btn_size_up , 90 , 90 , 90 ) ;
+        if ( font ) fnt :: draw_text_centered ( ren , font , "+" , ed.btn_size_up , { 220,220,220,255 } ) ;
+
+// Show current size
+        char sz_buf[8] ;
+        snprintf ( sz_buf , sizeof(sz_buf) , "%d" , ed.brush_size ) ;
+        SDL_Rect sz_lbl { ed.btn_size_down.x - 24 , by , 22 , ed_btn_h } ;
+        if ( font ) fnt :: draw_text_centered ( ren , font , sz_buf , sz_lbl , { 180,180,180,255 } ) ;
+
 
         ed_fill ( ren , ed.color_picker.rect , ed.color.r , ed.color.g , ed.color.b ) ;
         ed_outline ( ren , ed.color_picker.rect , 200 , 200 , 200 ) ;
@@ -367,6 +384,44 @@ namespace gfx {
             SDL_RenderCopy ( ren , ed.canvas , nullptr , &ed.canvas_rect ) ;
         }
         ed_outline ( ren , ed.canvas_rect , 100 , 100 , 100 ) ;
+        if ( ed.drawing ) {
+            const float sx = (float)ed.canvas_rect.w / ed.canvas_w ;
+            const float sy = (float)ed.canvas_rect.h / ed.canvas_h ;
+
+            auto to_screen_x = [&]( int cx ) { return ed.canvas_rect.x + (int)(cx * sx) ; } ;
+            auto to_screen_y = [&]( int cy ) { return ed.canvas_rect.y + (int)(cy * sy) ; } ;
+
+            SDL_SetRenderDrawBlendMode ( ren , SDL_BLENDMODE_BLEND ) ;
+            SDL_SetRenderDrawColor ( ren , ed.color.r , ed.color.g , ed.color.b , 180 ) ;
+
+            if ( ed.tool == editor_tool :: line ) {
+                SDL_RenderDrawLine ( ren ,
+                                     to_screen_x ( ed.start_x ) , to_screen_y ( ed.start_y ) ,
+                                     to_screen_x ( ed.last_x  ) , to_screen_y ( ed.last_y  ) ) ;
+
+            } else if ( ed.tool == editor_tool :: rect ) {
+                int rx = to_screen_x ( std :: min ( ed.start_x , ed.last_x ) ) ;
+                int ry = to_screen_y ( std :: min ( ed.start_y , ed.last_y ) ) ;
+                int rw = (int)( std :: abs ( ed.last_x - ed.start_x ) * sx ) ;
+                int rh = (int)( std :: abs ( ed.last_y - ed.start_y ) * sy ) ;
+                SDL_Rect pr { rx , ry , rw , rh } ;
+                SDL_RenderDrawRect ( ren , &pr ) ;
+
+            } else if ( ed.tool == editor_tool :: circle ) {
+                int r  = std :: max ( std :: abs ( ed.last_x - ed.start_x ) ,
+                                      std :: abs ( ed.last_y - ed.start_y ) ) ;
+                int cx = to_screen_x ( ed.start_x ) ;
+                int cy = to_screen_y ( ed.start_y ) ;
+                int rs = (int)( r * sx ) ;
+                for ( int deg = 0 ; deg < 360 ; deg += 2 ) {
+                    float a1 = deg       * 3.14159f / 180.0f ;
+                    float a2 = (deg + 2) * 3.14159f / 180.0f ;
+                    SDL_RenderDrawLine ( ren ,
+                                         cx + (int)( rs * cosf(a1) ) , cy + (int)( rs * sinf(a1) ) ,
+                                         cx + (int)( rs * cosf(a2) ) , cy + (int)( rs * sinf(a2) ) ) ;
+                }
+            }
+        }
     }
 
 
@@ -431,6 +486,15 @@ namespace gfx {
             return true ;
         }
 
+
+        if ( ed_hit ( ed.btn_size_down , mx , my ) ) {
+            if ( ed.brush_size > 1 ) ed.brush_size-- ;
+            return true ;
+        }
+        if ( ed_hit ( ed.btn_size_up , mx , my ) ) {
+            if ( ed.brush_size < 20 ) ed.brush_size++ ;
+            return true ;
+        }
 
         int cx = 0 , cy = 0 ;
         if ( screen_to_canvas ( ed , mx , my , cx , cy ) ) {
