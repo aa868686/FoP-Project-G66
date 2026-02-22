@@ -134,6 +134,13 @@ namespace core {
                 gfx::sprite_turn_degree(*interp.active_sprite, value_to_float(block->parameters[0].data));
                 break;
             }
+            case block_type :: point_in_direction : {
+                if ( !interp.active_sprite ) {
+                    break ;
+                }
+                gfx :: sprite_set_direction ( *interp.active_sprite , value_to_float ( block -> parameters[0].data ) ) ;
+                break ;
+            }
             case block_type::set_x: {
                 if (!interp.active_sprite) break;
                 interp.active_sprite->x = value_to_float(block->parameters[0].data);
