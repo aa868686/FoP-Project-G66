@@ -147,8 +147,6 @@ namespace app {
 
         ui::menu *open_menu = nullptr;
 
-        bool making_block = false ;
-        char making_block_name[64] = {} ;
 
         std :: vector < sprite_info_input > info_inputs {} ;
 
@@ -398,35 +396,16 @@ namespace app {
             }
 
             if ( e.type == SDL_TEXTINPUT ) {
-                if ( st.making_block ) {
-                    if ( std :: strlen ( st.making_block_name ) < 63 ) {
-                        std :: strncat ( st.making_block_name , e.text.text , 1 ) ;
-                    }
-                } else {
-                    ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
-
-                    for ( auto & inp : st.info_inputs ) {
-                        if ( inp.focused && inp.value.size() < 6 ) {
-                            inp.value += e.text.text ;
-                        }
+                ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
+                for ( auto & inp: st.info_inputs ) {
+                    if ( inp.focused && inp.value.size() < 6 ) {
+                        inp.value += e.text.text ;
                     }
                 }
             }
 
             if ( e.type == SDL_KEYDOWN ) {
-                if ( st.making_block ) {
-                    if ( e.key.keysym.sym == SDLK_BACKSPACE ) {
-                        int len = std :: strlen ( st.making_block_name ) ;
-                        if ( len > 0 ) st.making_block_name[len-1] = '\0' ;
-                    } else if ( e.key.keysym.sym == SDLK_RETURN ) {
-                        if ( std :: strlen ( st.making_block_name ) > 0 ) {
-                            ui :: custom_block_add ( st.workspace , st.making_block_name ) ;
-                        }
-                        st.making_block = false ;
-                    } else if ( e.key.keysym.sym == SDLK_ESCAPE ) {
-                        st.making_block = false ;
-                    }
-                } else {
+                if ( e.type == SDL_KEYDOWN ) {
                     if ( e.key.keysym.sym == SDLK_BACKSPACE ||
                          e.key.keysym.sym == SDLK_RETURN ||
                          e.key.keysym.sym == SDLK_ESCAPE
@@ -447,13 +426,18 @@ namespace app {
                                 try {
                                     float val = std :: stof ( inp.value ) ;
                                     switch ( inp.target ) {
-                                        case app_state :: sprite_info_input :: field_x : s.x = val ; break ;
-                                        case app_state :: sprite_info_input :: field_y : s.y = val ; break ;
-                                        case app_state :: sprite_info_input :: field_size : gfx :: sprite_set_size ( s , val ) ; break ;
-                                        case app_state :: sprite_info_input :: field_direction : gfx :: sprite_set_direction ( s , val ) ; break ;
+                                        case app_state :: sprite_info_input :: field_x : s.x = val ;
+                                            break ;
+                                        case app_state :: sprite_info_input :: field_y : s.y = val ;
+                                            break ;
+                                        case app_state :: sprite_info_input :: field_size : gfx :: sprite_set_size ( s , val ) ;
+                                            break ;
+                                        case app_state :: sprite_info_input :: field_direction : gfx :: sprite_set_direction ( s , val ) ;
+                                            break ;
                                     }
                                 } catch (...) {}
                             }
+
                             inp.focused = false ;
                             SDL_StopTextInput() ;
                         }
@@ -467,25 +451,6 @@ namespace app {
 
                 const int mx = e.button.x;
                 const int my = e.button.y;
-
-                if ( st.making_block ) {
-                    int ww = 0 , wh = 0 ;
-                    SDL_GetWindowSize ( st.window , &ww , &wh ) ;
-                    SDL_Rect dlg { ww/2 - 160 , wh/2 - 60 , 320 , 120 } ;
-                    SDL_Rect ok_btn { dlg.x + dlg.w - 130 , dlg.y + dlg.h - 34 , 56 , 26 } ;
-                    SDL_Rect cancel_btn { dlg.x + dlg.w - 68  , dlg.y + dlg.h - 34 , 56 , 26 } ;
-
-                    if ( ui :: point_in_rect ( mx , my , ok_btn ) ) {
-                        if ( std :: strlen ( st.making_block_name ) > 0 ) {
-                            ui :: custom_block_add ( st.workspace , st.making_block_name ) ;
-                        }
-                        st.making_block = false ;
-                    } else if ( ui :: point_in_rect ( mx , my , cancel_btn ) ) {
-                        st.making_block = false ;
-                    }
-                    continue ;
-                }
-
 
                 if ( st.context_menu_open ) {
                     if ( ui :: point_in_rect ( mx , my , st.context_menu_rect ) ) {
@@ -617,55 +582,16 @@ namespace app {
                     if ( ui :: block_palette_handle_click ( st.lay.leftPanel , mx , my , st.palette_state ) ) {
                         menu_consumed = true ;
                     } else {
-                        if ( st.palette_state.selected_category == ui :: block_category :: my_blocks ) {
-                            SDL_Rect make_btn {
-                                st.lay.leftPanel.x + 64 ,
-                                st.lay.leftPanel.y + 4 ,
-                                st.lay.leftPanel.w - 88 , 32
-                            } ;
+                        ui :: block_category cat {} ;
+                        std :: string label {} ;
 
-                            if ( ui :: point_in_rect ( mx , my , make_btn ) ) {
-                                st.making_block = true ;
-                                std :: memset ( st.making_block_name , 0 , sizeof ( st.making_block_name ) ) ;
-                                menu_consumed = true ;
-                            } else {
-                                int cy = st.lay.leftPanel.y + 40 ;
-                                for ( auto & def : st.workspace.custom_blocks ) {
-                                    SDL_Rect del { st.lay.leftPanel.x + st.lay.leftPanel.w - 24 ,
-                                        cy + 8 , 16 , 16 } ;
-                                    if ( ui :: point_in_rect ( mx , my , del ) ) {
-                                        ui :: custom_block_remove ( st.workspace , def.id ) ;
-                                        menu_consumed = true ;
-                                        break ;
-                                    }
+                        if ( ui :: block_palette_click ( st.lay.leftPanel , mx , my , cat , label , st.palette_state ) ) {
+                            ui :: block_workspace_add ( st.workspace , label , cat , 80 ,
+                                                        80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
 
-                                    SDL_Rect r { st.lay.leftPanel.x + 84 , cy , st.lay.leftPanel.w - 88 , 32 } ;
-
-                                    if ( ui :: point_in_rect ( mx , my , r ) ) {
-                                        ui :: block_workspace_add ( st.workspace , def.name ,
-                                              ui :: block_category :: my_blocks ,
-                                              80 , 80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
-                                        menu_consumed = true ;
-                                        break ;
-                                    }
-                                    cy += 36 ;
-                                }
-                            }
+                            menu_consumed = true ;
                         }
-
-                        if ( !menu_consumed ) {
-                            ui :: block_category cat {} ;
-                            std :: string label {} ;
-                            if ( ui :: block_palette_click ( st.lay.leftPanel , mx , my , cat , label , st.palette_state ) ) {
-                                ui :: block_workspace_add ( st.workspace , label , cat ,
-                                                            80 , 80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
-
-                                menu_consumed = true ;
-                            }
-                        }
-
                     }
-
                 }
 
                 if (!menu_consumed &&
