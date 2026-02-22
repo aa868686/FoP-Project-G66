@@ -963,5 +963,4 @@ namespace app {
         shutdown_sdl(st.window, st.renderer);
         return 0;
     }
-
 }

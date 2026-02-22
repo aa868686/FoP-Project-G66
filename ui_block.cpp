@@ -118,6 +118,16 @@ namespace ui {
         b.w = block_w ;
         b.h = block_h ;
 
+        std :: string low = label ;
+        std :: transform ( low.begin() , low.end() , low.begin() , ::tolower ) ;
+        if ( low.find ( "repeat" ) != std :: string :: npos ||
+             low.find ( "forever" ) != std :: string :: npos ||
+              low.find ( "if" ) != std :: string :: npos ) {
+            b.is_container = true ;
+            b.container_h = 48 ;
+            b.h = block_h + b.container_h + block_h ;
+        }
+
         if ( label.find ( "_") != std :: string :: npos ) {
             block_input inp {} ;
             inp.value = "10" ;
@@ -183,23 +193,88 @@ namespace ui {
                              int sx , int sy ,
                              TTF_Font * font
                              ) {
-        SDL_Rect r { sx , sy , b.w , b.h } ;
 
         SDL_Color col  = block_category_color ( b.category ) ;
         SDL_Color dark = darker ( col ) ;
 
+        if ( b.is_container ) {
+            SDL_Rect header { sx , sy , b.w , block_h } ;
+            SDL_Rect shadow_h { sx + 2 , sy + 2 , b.w , block_h } ;
+            SDL_SetRenderDrawColor ( ren , 0 , 0 , 0 , 60 ) ;
+            SDL_RenderFillRect ( ren , &shadow_h ) ;
+            fill_rect ( ren , header , col ) ;
+            draw_rect_outline ( ren , header , darker ( col , 50 ) ) ;
+            draw_notch ( ren , header , col ) ;
+
+            SDL_Rect left_arm { sx , sy + block_h , 16 , b.container_h } ;
+            fill_rect ( ren , left_arm , col ) ;
+
+            SDL_Rect inner_bottom { sx , sy + block_h + b.container_h , b.w , block_h } ;
+            fill_rect ( ren , inner_bottom , col ) ;
+            SDL_Rect ib_dark { sx , sy + block_h + b.container_h + block_h - 4 , b.w , 4 } ;
+            fill_rect ( ren , ib_dark , dark ) ;
+            draw_rect_outline ( ren , inner_bottom , darker (col,50) ) ;
+
+            SDL_Rect inner_notch { sx + 20 , sy + block_h + b.container_h - 4 , 20 , 5 } ;
+            fill_rect ( ren , inner_notch , darker ( col,40 ) ) ;
+
+
+            if ( font ) {
+                std :: string lbl = b.label ;
+                int draw_x = sx + pad ;
+                const int inp_h = 20 , inp_w = 36 ;
+                const int text_y = sy + ( ( block_h - inp_h ) / 2 ) ;
+                int input_idx = 0 ;
+                size_t pos = 0 ;
+                while ( pos <= lbl.size() ) {
+                    size_t under = lbl.find ( '_' , pos ) ;
+                    std :: string part = lbl.substr ( pos , under == std :: string :: npos ? std :: string :: npos : under - pos ) ;
+                    if ( !part.empty() ) {
+                        SDL_Surface * surf = TTF_RenderText_Blended ( font , part.c_str() , { 255 , 255 , 255 , 255 } ) ;
+                        if ( surf ) {
+                            SDL_Texture * tex = SDL_CreateTextureFromSurface ( ren , surf ) ;
+                            SDL_FreeSurface ( surf ) ;
+                            if ( tex ) {
+                                int tw = 0 , th = 0 ;
+                                SDL_QueryTexture ( tex ,  nullptr , nullptr , &tw , &th ) ;
+                                SDL_Rect dst { draw_x , sy + ( ( block_h - th ) / 2 ) , tw , th } ;
+                                SDL_RenderCopy ( ren , tex , nullptr , &dst ) ;
+                                SDL_DestroyTexture ( tex ) ;
+                                draw_x += tw ;
+                            }
+                        }
+                    }
+
+                    if ( under == std::string::npos ) {
+                        break;
+                    }
+                    if ( input_idx < (int) b.inputs.size() ) {
+                        const block_input & inp = b.inputs[input_idx] ;
+                        SDL_Rect inp_r { draw_x , text_y , inp_w , inp_h } ;
+                        SDL_SetRenderDrawColor ( ren , 255 , 255 , 255 , inp.focused ? 255 : 210 ) ;
+                        SDL_RenderFillRect ( ren , &inp_r ) ;
+                        SDL_SetRenderDrawColor ( ren , inp.focused ? 0 : 80 , inp.focused ? 120 : 80 , inp.focused ? 255 : 80 , 255 ) ;
+                        SDL_RenderDrawRect ( ren , &inp_r ) ;
+                        fnt :: draw_text_centered ( ren , font , inp.value.c_str() , inp_r , { 0 , 0 , 0 , 255 } ) ;
+                        draw_x += inp_w + 2 ;
+                        ++input_idx ;
+                    }
+                    pos = under + 1 ;
+                }
+            }
+            return ;
+        }
+
+
+        SDL_Rect r { sx , sy , b.w , b.h } ;
+
         SDL_Rect shadow { r.x + 2 , r.y + 2 , r.w , r.h } ;
         SDL_SetRenderDrawColor ( ren , 0 , 0 , 0 , 80 ) ;
         SDL_RenderFillRect ( ren , &shadow ) ;
-
         fill_rect ( ren , r , col ) ;
-
         SDL_Rect bottom { r.x , r.y + r.h - 4 , r.w , 4 } ;
         fill_rect ( ren , bottom , dark ) ;
-
         draw_rect_outline ( ren , r , darker ( col , 50 ) ) ;
-
-
         draw_notch ( ren , r , col ) ;
 
         if ( !font ) {
@@ -234,19 +309,20 @@ namespace ui {
                 }
             }
 
-            if ( under == std :: string :: npos ) break ;
+            if ( under == std :: string :: npos ) {
+                break;
+            }
 
             if ( input_idx < static_cast <int> ( b.inputs.size() ) ) {
                 const block_input & inp = b.inputs[input_idx] ;
                 SDL_Rect inp_r { draw_x , text_y , inp_w , inp_h } ;
-
 
                 SDL_SetRenderDrawColor ( ren , 255 , 255 , 255 , inp.focused ? 255 : 210 ) ;
                 SDL_RenderFillRect ( ren , &inp_r ) ;
                 SDL_SetRenderDrawColor ( ren , inp.focused ? 0 : 80 , inp.focused ? 120 : 80 , inp.focused ? 255 : 80 , 255 ) ;
                 SDL_RenderDrawRect ( ren , &inp_r ) ;
 
-                fnt :: draw_text_centered ( ren , font , inp.value.c_str() , inp_r , { 0,0,0,255 } ) ;
+                fnt :: draw_text_centered ( ren , font , inp.value.c_str() , inp_r , { 0 , 0 , 0 , 255 } ) ;
 
                 const int char_w = 7 ;
 
@@ -329,12 +405,34 @@ namespace ui {
                          SDL_Rect clip ,
                          int mx , int my ) {
 
+
         for ( int i = static_cast <int> ( ws.blocks.size() ) - 1 ; i >= 0 ; --i ) {
             const ui_block & b = ws.blocks[i] ;
+            if ( b.is_container ) continue ;
             const int sx = clip.x + b.x + ws.scroll_x ;
             const int sy = clip.y + b.y + ws.scroll_y ;
             if ( mx >= sx && mx < sx + b.w &&
                  my >= sy && my < sy + b.h ) {
+                return i ;
+            }
+        }
+
+        for ( int i = static_cast <int> ( ws.blocks.size() ) - 1 ; i >= 0 ; --i ) {
+            const ui_block & b = ws.blocks[i] ;
+            if ( !b.is_container ) continue ;
+            const int sx = clip.x + b.x + ws.scroll_x ;
+            const int sy = clip.y + b.y + ws.scroll_y ;
+
+
+            SDL_Rect header { sx , sy , b.w , block_h } ;
+
+            SDL_Rect footer { sx , sy + block_h + b.container_h , b.w , block_h } ;
+
+            SDL_Rect arm { sx , sy + block_h , 16 , b.container_h } ;
+
+            if ( ( mx >= header.x && mx < header.x + header.w && my >= header.y && my < header.y + header.h ) ||
+                 ( mx >= footer.x && mx < footer.x + footer.w && my >= footer.y && my < footer.y + footer.h ) ||
+                 ( mx >= arm.x    && mx < arm.x    + arm.w    && my >= arm.y    && my < arm.y    + arm.h    ) ) {
                 return i ;
             }
         }
@@ -367,16 +465,116 @@ namespace ui {
         }
 
         ui_block & b = ws.blocks[ws.drag_idx] ;
+        int old_x = b.x ;
+        int old_y = b.y ;
         b.x = mx - b.drag_dx ;
         b.y = my - b.drag_dy ;
+        int dx = b.x - old_x ;
+        int dy = b.y - old_y ;
+
+        if ( b.is_container ) {
+            for ( int cid : b.children ) {
+                for ( auto & cb : ws.blocks ) {
+                    if ( cb.id == cid ) {
+                        cb.x += dx ;
+                        cb.y += dy ;
+                        break ;
+                    }
+                }
+            }
+        }
     }
 
     void block_drag_end ( block_workspace & ws ) {
         if ( ws.drag_idx < 0 || ws.drag_idx >= static_cast <int> ( ws.blocks.size() ) ) {
             return ;
         }
-        ws.blocks[ws.drag_idx].dragging = false ;
-        block_try_snap ( ws , ws.drag_idx ) ;
+
+        ui_block & dragged = ws.blocks[ws.drag_idx] ;
+        dragged.dragging = false ;
+
+        bool placed_in_container = false ;
+        for ( int i = 0 ; i < (int) ws.blocks.size() ; ++i ) {
+            if ( i == ws.drag_idx ) {
+                continue ;
+            }
+            ui_block & c = ws.blocks[i] ;
+            if ( !c.is_container ) {
+                continue ;
+            }
+
+            SDL_Rect drop_zone { c.x + 16 , c.y + block_h , c.w - 16 , c.container_h } ;
+
+            if ( dragged.x + dragged.w > drop_zone.x &&
+                 dragged.x < drop_zone.x + drop_zone.w &&
+                 dragged.y + dragged.h > drop_zone.y &&
+                 dragged.y < drop_zone.y + drop_zone.h ) {
+
+                if (dragged.parent_id >= 0) {
+                    for (auto &old_parent: ws.blocks) {
+                        if (old_parent.id == dragged.parent_id) {
+                            old_parent.children.erase(
+                                    std::remove(old_parent.children.begin(), old_parent.children.end(), dragged.id),
+                                    old_parent.children.end());
+                            break;
+                        }
+                    }
+                }
+
+                dragged.parent_id = c.id;
+                c.children.push_back(dragged.id);
+
+                int cy = c.y + block_h + 4;
+                for (int cid: c.children) {
+                    for (auto &cb: ws.blocks) {
+                        if (cb.id == cid) {
+                            cb.x = c.x + 20;
+                            cb.y = cy;
+                            cy += cb.h + 2;
+                            break;
+                        }
+                    }
+                }
+
+                int total_h = 0;
+                for (int cid: c.children) {
+                    for (auto &cb: ws.blocks) {
+                        if ( cb.id == cid ) {
+                            total_h += cb.h + 2;
+                            break;
+                        }
+                    }
+                }
+                c.container_h = std :: max ( 48 , total_h + 8) ;
+                c.h = block_h + c.container_h + block_h ;
+
+                placed_in_container = true ;
+                break ;
+            }
+
+            if ( dragged.parent_id >= 0 ) {
+                for ( auto & old_parent : ws.blocks ) {
+                    if ( old_parent.id == dragged.parent_id ) {
+                        old_parent.children.erase (
+                                std :: remove ( old_parent.children.begin() , old_parent.children.end() , dragged.id ) ,
+                                old_parent.children.end() ) ;
+
+                        int total_h = 0 ;
+                        for ( int cid : old_parent.children ) {
+                            for ( auto & cb : ws.blocks ) {
+                                if ( cb.id == cid ) { total_h += cb.h + 2 ; break ; }
+                            }
+                        }
+                        old_parent.container_h = std::max ( 48 , total_h + 8 ) ;
+                        old_parent.h = block_h + old_parent.container_h + block_h ;
+                        break ;
+                    }
+                }
+                dragged.parent_id = -1 ;
+            }
+
+            block_try_snap ( ws , ws.drag_idx ) ;
+        }
         ws.drag_idx = -1 ;
     }
 
