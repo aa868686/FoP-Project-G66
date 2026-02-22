@@ -510,6 +510,19 @@ namespace app {
                     }
                 }
 
+                if ( st.sprite_mgr.active >= 0 ) {
+                    SDL_Rect panel = st.lay.spriteInfo ;
+                    gfx :: sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                    SDL_Rect show_btn { panel.x + panel.w - 120 , panel.y + 8 , 50 , 20 } ;
+                    SDL_Rect hide_btn { panel.x + panel.w - 64  , panel.y + 8 , 50 , 20 } ;
+
+                    if ( ui :: point_in_rect ( mx , my , show_btn ) ) {
+                        gfx :: sprite_set_visible ( s , true ) ;
+                    } else if ( ui :: point_in_rect ( mx , my , hide_btn ) ) {
+                        gfx :: sprite_set_visible ( s , false ) ;
+                    }
+                }
+
                 if ( dbg :: logger_handle_click(st.logger, mx, my)) {
                     return;
                 }
@@ -797,6 +810,24 @@ namespace app {
             draw_field ( "y" , 1 , 124 , 8 ) ;
             draw_field ( "Size" , 2 , 4 , 38 ) ;
             draw_field ( "Dir" , 3 , 124 , 38 ) ;
+
+            if ( st.sprite_mgr.active >= 0 ) {
+                gfx :: sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                SDL_Rect show_btn { panel.x + panel.w - 120 , panel.y + 8 , 50 , 20 } ;
+                SDL_Rect hide_btn { panel.x + panel.w - 64  , panel.y + 8 , 50 , 20 } ;
+
+                SDL_SetRenderDrawColor ( st.renderer , s.visible ? 30:50 , s.visible ? 140:50 , 30 , 255 ) ;
+                SDL_RenderFillRect ( st.renderer , &show_btn ) ;
+                SDL_SetRenderDrawColor ( st.renderer , 80,80,80,255 ) ;
+                SDL_RenderDrawRect ( st.renderer , &show_btn ) ;
+                fnt :: draw_text_centered ( st.renderer , st.fonts.small , "Show" , show_btn , { 255,255,255,255 } ) ;
+
+                SDL_SetRenderDrawColor ( st.renderer , !s.visible ? 140:50 , 30 , 30 , 255 ) ;
+                SDL_RenderFillRect ( st.renderer , &hide_btn ) ;
+                SDL_SetRenderDrawColor ( st.renderer , 80,80,80,255 ) ;
+                SDL_RenderDrawRect ( st.renderer , &hide_btn ) ;
+                fnt :: draw_text_centered ( st.renderer , st.fonts.small , "Hide" , hide_btn , { 255,255,255,255 } ) ;
+            }
         }
 
 

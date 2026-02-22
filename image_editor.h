@@ -7,6 +7,7 @@
 #include "font_manager.h"
 #include "sprite.h"
 #include <vector>
+#include <cmath>
 
 
 
@@ -52,6 +53,8 @@ namespace gfx {
         SDL_Rect btn_fill {} ;
         SDL_Rect btn_close {} ;
         SDL_Rect btn_apply {} ;
+        SDL_Rect btn_size_up {} ;
+        SDL_Rect btn_size_down {} ;
 
         editor_color_picker color_picker {} ;
 

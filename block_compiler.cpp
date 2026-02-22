@@ -218,41 +218,21 @@ namespace compiler {
 
         std :: vector < const ui :: ui_block * > ordered ;
         for ( const auto & b: ws.blocks ) {
-            if ( b.parent_id < 0 ) {
-                ordered.push_back ( &b ) ;
-            }
+            ordered.push_back ( &b ) ;
         }
 
         std :: sort ( ordered.begin() , ordered.end() ,
                       [] ( const ui :: ui_block * a , const ui :: ui_block * b ) {
-                          if ( a -> y != b -> y ) {
-                              return a -> y < b -> y ;
-                          }
-                          return a -> x < b -> x ;
+                          if ( a->y != b->y ) return a->y < b->y ;
+                          return a->x < b->x ;
                       } ) ;
 
         for ( const auto * ub : ordered ) {
             core :: Block * cb = compile_block ( *ub ) ;
-            if ( !cb ) {
-                continue ;
+            if ( cb ) {
+                result.push_back ( cb ) ;
             }
-
-            if ( ub -> is_container ) {
-                for ( int cid : ub -> children ) {
-                    for ( const auto & child : ws.blocks ) {
-                        if ( child.id == cid ) {
-                            core :: Block * child_cb = compile_block ( child ) ;
-                            if ( child_cb ) {
-                                cb -> nested_blocks.push_back ( child_cb ) ;
-                                break ;
-                            }
-                        }
-                    }
-                }
-            }
-            result.push_back ( cb ) ;
         }
-
 
         return result ;
     }
