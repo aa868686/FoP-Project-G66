@@ -312,40 +312,48 @@ namespace app {
         ui::menu_layout(st.menu_settings, st.fonts.medium);
         ui::menu_layout(st.menu_run, st.fonts.medium);
 
-        st.info_inputs.clear() ;
 
         if ( st.sprite_mgr.active >= 0 ) {
             gfx :: sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
             SDL_Rect p = st.lay.spriteInfo ;
-            char buf[16] ;
 
-            auto make = [&]( app_state :: sprite_info_input :: field_type f , float val , int lx , int ly ) {
-                for ( auto & existing : st.info_inputs ) {
-                    if ( existing.target == f && existing.focused ) {
-                        app_state :: sprite_info_input inp ;
-                        inp.target = f ;
-                        inp.rect = { p.x + lx + 32 , p.y + ly - 2 , 52 , 20 } ;
-                        inp.value = existing.value ;
-                        inp.focused = true ;
-                        st.info_inputs.push_back ( inp ) ;
-                       return ;
+            struct field_def {
+                app_state :: sprite_info_input :: field_type f ;
+                float val ;
+                int lx , ly ;
+            };
+
+            field_def fields[4] = {
+                    { app_state :: sprite_info_input :: field_x , s.x , 20 , 8 } ,
+                    { app_state :: sprite_info_input :: field_y , s.y , 140 , 8 } ,
+                    { app_state :: sprite_info_input :: field_size , s.size_percent , 20 ,  38 } ,
+                    { app_state :: sprite_info_input :: field_direction , s.direction_deg , 140 , 38 } ,
+            };
+
+            if ( st.info_inputs.size() != 4 ) {
+                st.info_inputs.clear() ;
+                for ( auto & fd : fields ) {
+                    app_state :: sprite_info_input inp ;
+                    inp.target = fd.f ;
+                    inp.rect = { p.x + fd.lx + 32 , p.y + fd.ly - 2 , 52 , 20 } ;
+                    char buf[16] ;
+                    snprintf ( buf , sizeof ( buf ) , "%.0f" , fd.val ) ;
+                    inp.value = buf ;
+                    st.info_inputs.push_back ( inp ) ;
+                }
+            } else {
+                for ( int i = 0 ; i < 4 ; ++i ) {
+                    st.info_inputs[i].rect = { p.x + fields[i].lx + 32 , p.y + fields[i].ly - 2 , 52 , 20 } ;
+                    if ( !st.info_inputs[i].focused ) {
+                        char buf[16] ;
+                        snprintf ( buf , sizeof ( buf ) , "%.0f" , fields[i].val ) ;
+                        st.info_inputs[i].value = buf ;
                     }
                 }
-                app_state :: sprite_info_input inp ;
-                inp.target = f ;
-                inp.rect = { p.x + lx + 32 , p.y + ly - 2 , 52 , 20 } ;
-                char buf[16] ;
-                snprintf ( buf , 16 , "%0.f" , val ) ;
-                inp.value = buf ;
-                st.info_inputs.push_back ( inp ) ;
+            }
 
-
-            } ;
-
-            make ( app_state :: sprite_info_input :: field_x , s.x , 20 , 8 ) ;
-            make ( app_state :: sprite_info_input :: field_y , s.y , 140 , 8 ) ;
-            make ( app_state :: sprite_info_input :: field_size , s.size_percent , 20 , 38 ) ;
-            make ( app_state :: sprite_info_input :: field_direction , s.direction_deg, 140 , 38 ) ;
+        } else {
+            st.info_inputs.clear() ;
         }
 
 
@@ -375,8 +383,17 @@ namespace app {
 
             if (e.type == SDL_KEYDOWN) {
                 if (e.key.keysym.sym == SDLK_ESCAPE) {
-                    st.running = false;
-                    return;
+                    bool any_focused = false ;
+                    for ( auto & inp : st.info_inputs ) {
+                        if ( inp.focused ) {
+                            any_focused = true ;
+                            break ;
+                        }
+                    }
+                    if ( !any_focused ) {
+                        st.running = false ;
+                        return ;
+                    }
                 }
             }
 
@@ -490,8 +507,28 @@ namespace app {
                 ui :: block_input_handle_click ( st.workspace , st.lay.workspace , mx , my ) ;
 
                 for ( auto & inp : st.info_inputs ) {
-                    inp.focused = false ;
+                    if ( inp.focused && st.sprite_mgr.active >= 0 && !inp.value.empty() ) {
+                        gfx :: sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active ] ;
+                        try {
+                            float val = std :: stof ( inp.value ) ;
+                            switch ( inp.target ) {
+                                case app_state :: sprite_info_input :: field_x : s.x = val ;
+                                    break ;
+                                case app_state :: sprite_info_input :: field_y : s.y = val ;
+                                    break ;
+                                case app_state :: sprite_info_input :: field_size : gfx :: sprite_set_size ( s , val ) ;
+                                    break ;
+                                case app_state :: sprite_info_input :: field_direction : gfx :: sprite_set_direction ( s , val ) ;
+                                    break ;
+                            }
+                        } catch (...) {}
+                    }
+                    for ( auto & inp : st.info_inputs ) {
+                        inp.focused = false;
+                    }
                 }
+
+
                 for ( auto & inp : st.info_inputs ) {
                     if ( ui :: point_in_rect ( mx , my , inp.rect ) ) {
                         inp.focused = true ;
