@@ -19,10 +19,10 @@ namespace ui {
             { block_category :: motion , "point in direction _" } ,
             { block_category :: motion , "if on edge bounce" } ,
 
-
-            { block_category :: looks , "say _ for _ secs" } ,
+            { block_category::looks, "think _" },
+            { block_category::looks, "think _ for _ secs" },
             { block_category :: looks , "say _" } ,
-            { block_category :: looks , "think _ for _ secs" } ,
+            { block_category :: looks , "say _ for _ secs" } ,
             { block_category :: looks , "show" } ,
             { block_category :: looks , "hide" } ,
             { block_category :: looks , "set size to _%" } ,

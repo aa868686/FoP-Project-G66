@@ -123,6 +123,14 @@ namespace compiler {
             return b ;
         }
 
+        if (lbl.find("think") != std::string::npos) {
+            b->type = core::block_type::think;
+            core::Parameter p{};
+            p.data = get_input(ub, 0);
+            b->parameters.push_back(p);
+            return b;
+        }
+
         if ( lbl.find ( "say" ) != std :: string :: npos ) {
             b->type = core :: block_type :: say ;
 

@@ -740,7 +740,7 @@ namespace app {
 
         SDL_RenderSetClipRect ( st.renderer , &st.lay.stage ) ;
         for ( const auto & spr : st.sprite_mgr.sprites ) {
-            gfx :: sprite_draw ( st.renderer , spr , sr ) ;
+            gfx::sprite_draw(st.renderer, spr, sr, st.fonts.medium);
         }
         SDL_RenderSetClipRect ( st.renderer , nullptr ) ;
 

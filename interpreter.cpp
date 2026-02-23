@@ -68,6 +68,7 @@ namespace core {
             case block_type::stop_all: entry.command = "STOP";     break;
             case block_type::say:      entry.command = "SAY";      entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
             case block_type::point_in_direction: entry.command = "POINT"; entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) + " deg" : ""; break;
+            case block_type::think: entry.command = "THINK"; entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
             default:                   entry.command = "BLOCK";    break;
         }
 
@@ -229,6 +230,22 @@ namespace core {
                 }
                 break ;
             }
+
+            case block_type::say: {
+                if (!interp.active_sprite || block->parameters.empty()) break;
+                interp.active_sprite->say_text = value_to_string(block->parameters[0].data);
+                interp.active_sprite->say_visible = true;
+                interp.active_sprite->think_bubble = false;
+                break;
+            }
+            case block_type::think: {
+                if (!interp.active_sprite || block->parameters.empty()) break;
+                interp.active_sprite->say_text = value_to_string(block->parameters[0].data);
+                interp.active_sprite->say_visible = true;
+                interp.active_sprite->think_bubble = true;
+                break;
+            }
+
         }
     }
 }

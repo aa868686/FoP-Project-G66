@@ -42,6 +42,10 @@ namespace gfx {
         int current_costume = 0 ;
 
         dragState drag ;
+
+        std::string say_text = "";
+        bool say_visible = false;
+        bool think_bubble = false;
     };
 
 
@@ -111,8 +115,7 @@ namespace gfx {
 
 
 
-    void sprite_draw ( SDL_Renderer *ren , const sprite &s , const stage_rectangle &stage ) ;
-
+    void sprite_draw(SDL_Renderer *ren, const sprite &s, const stage_rectangle &stage, TTF_Font* font = nullptr);
 
     bool sprite_hit_test_aabb ( const sprite &s , int mouse_px , int mouse_py , const stage_rectangle &stage ) ;
 
