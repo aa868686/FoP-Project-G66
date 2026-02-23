@@ -37,6 +37,7 @@ namespace core {
             interp.running = false ;
             return ;
         }
+        safetynet_reset ( interp.safety ) ;
         Block * current = interp.blocks[interp.line_number] ;
         interpreter_execute_block ( interp , current ) ;
         interp.line_number++ ;
@@ -49,6 +50,7 @@ namespace core {
             safetynet_reset ( interp.safety ) ;
         }
         if ( interp.line_number < (int) interp.blocks.size() ) {
+            safetynet_reset ( interp.safety ) ;
             Block * current = interp.blocks[interp.line_number] ;
             interpreter_execute_block ( interp , current ) ;
             interp.line_number++ ;
