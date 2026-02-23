@@ -23,15 +23,25 @@ namespace core {
         interp.line_number = 0;
         interp.blocks.clear() ;
     }
-    void interpreter_run(interpreter& interp) {
+    void interpreter_run ( interpreter& interp) {
         interp.running = true;
+        interp.line_number = 0 ;
         safetynet_reset(interp.safety);
-        while (interp.running && !interp.is_paused && interp.line_number < (int)interp.blocks.size()) {
-            Block* current = interp.blocks[interp.line_number];
-            interpreter_execute_block(interp, current);
-            interp.line_number++;
-        }
     }
+
+    void interpreter_tick ( interpreter & interp ) {
+        if ( !interp.running || interp.is_paused ) {
+            return ;
+        }
+        if ( interp.line_number >= (int) interp.blocks.size() ) {
+            interp.running = false ;
+            return ;
+        }
+        Block * current = interp.blocks[interp.line_number] ;
+        interpreter_execute_block ( interp , current ) ;
+        interp.line_number++ ;
+    }
+
 
     void interpreter_step ( interpreter & interp ) {
         if ( !interp.running ) {

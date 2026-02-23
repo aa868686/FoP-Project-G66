@@ -124,10 +124,10 @@ namespace app {
         ui::menu menu_help{};
         ui::menu menu_code{};
         ui::menu menu_settings{};
-        ui::menu menu_run{};
 
         ui::button btn_run{};
         ui::button btn_stop{};
+        ui :: button btn_pause {} ;
 
         bool running = true;
         bool is_paused = false;
@@ -155,8 +155,8 @@ namespace app {
 
     static std::vector<ui::menu *> all_menus(app_state &st) {
         return {&st.menu_file, &st.menu_help,
-                &st.menu_code, &st.menu_settings,
-                &st.menu_run};
+                &st.menu_code, &st.menu_settings
+                };
     }
 
 
@@ -254,46 +254,6 @@ namespace app {
                 }},
         };
 
-        st.menu_run.title = "Run";
-        st.menu_run.items = {
-                {"Run",   true, [&] {
-
-                    auto compiled = compiler::compile_workspace(st.workspace);
-                    if (!compiled.empty()) {
-                        if (st.sprite_mgr.active >= 0 &&
-                            st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size())) {
-                            st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
-                        }
-                        core::interpreter_load(st.interp, compiled);
-                        core::logger_clear(st.interp.log);
-                        core::interpreter_run(st.interp);
-                        for (const auto& e : st.interp.log.entries) {
-                            std::string msg = "[Line:" + std::to_string(e.line) + "] " + e.command + " " + e.data;
-                            dbg::log_level lvl = dbg::log_level::info;
-                            if (e.level == core::log_level::warning) lvl = dbg::log_level::warn;
-                            if (e.level == core::log_level::error)   lvl = dbg::log_level::error;
-                            dbg::logger_log(st.logger, msg, lvl);
-                        }
-                        compiler::free_compiled(compiled);
-                        dbg::logger_log(st.logger, "Program finished.");
-                    } else {
-                        dbg::logger_log(st.logger, "No blocks to run.", dbg::log_level::warn);
-                    }
-
-
-                    close_all_menus(st);
-                }},
-                {"Pause", true, [&] {
-                    core::interpreter_pause(st.interp);
-                    dbg::logger_log(st.logger, "Resumed.");
-                    close_all_menus(st);
-                }},
-                {"Stop",  true, [&] {
-                    core::interpreter_stop(st.interp);
-                    dbg::logger_log(st.logger, "Stopped.");
-                    close_all_menus(st);
-                }},
-        };
     }
 
 
@@ -304,19 +264,17 @@ namespace app {
         st.menu_help.title_rect = ui::topbar_menu_rect(tb, 1);
         st.menu_code.title_rect = ui::topbar_menu_rect(tb, 2);
         st.menu_settings.title_rect = ui::topbar_menu_rect(tb, 3);
-        st.menu_run.title_rect = ui::topbar_menu_rect(tb, 4);
 
 
-        st.btn_run.rect = ui :: topbar_right_rect(tb, 1, 60, 26);
-        st.btn_stop.rect = ui :: topbar_right_rect(tb, 0, 60, 26);
-        st.btn_step.rect = ui :: topbar_right_rect ( tb , 2 , 60 , 26 ) ;
-
+        st.btn_stop.rect = ui :: topbar_right_rect (tb, 0, 60, 26);
+        st.btn_pause.rect = ui :: topbar_right_rect ( tb , 1 , 60 , 26 ) ;
+        st.btn_run.rect = ui :: topbar_right_rect (tb, 2, 60, 26);
+        st.btn_step.rect = ui :: topbar_right_rect ( tb , 3 , 100 , 26 ) ;
 
         ui::menu_layout(st.menu_file, st.fonts.medium);
         ui::menu_layout(st.menu_help, st.fonts.medium);
         ui::menu_layout(st.menu_code, st.fonts.medium);
         ui::menu_layout(st.menu_settings, st.fonts.medium);
-        ui::menu_layout(st.menu_run, st.fonts.medium);
 
 
         if ( st.sprite_mgr.active >= 0 ) {
@@ -477,7 +435,6 @@ namespace app {
                     return;
                 }
 
-                ui :: block_input_handle_click ( st.workspace , st.lay.workspace , mx , my ) ;
 
                 for ( auto & inp : st.info_inputs ) {
                     if ( inp.focused && st.sprite_mgr.active >= 0 && !inp.value.empty() ) {
@@ -560,6 +517,10 @@ namespace app {
                     }
                 }
 
+                if ( ui :: button_handle_click ( st.btn_pause , mx , my ) ) {
+                    menu_consumed = true ;
+                }
+
                 if ( st.step_mode ) {
                     if ( ui ::button_handle_click ( st.btn_step , mx , my ) ) {
                         menu_consumed = true ;
@@ -617,10 +578,15 @@ namespace app {
 
                 if (!menu_consumed &&
                     ui::point_in_rect(mx, my, st.lay.workspace)) {
-                    int idx = ui::block_hit_test(st.workspace, st.lay.workspace, mx, my);
-                    if (idx >= 0) {
-                        ui::block_drag_begin(st.workspace, idx, mx, my);
-                        menu_consumed = true;
+
+                    if ( ui :: block_input_handle_click ( st.workspace , st.lay.workspace , mx , my ) ) {
+                        menu_consumed = true ;
+                    } else {
+                        int idx = ui::block_hit_test(st.workspace, st.lay.workspace, mx, my);
+                        if (idx >= 0) {
+                            ui::block_drag_begin(st.workspace, idx, mx, my);
+                            menu_consumed = true;
+                        }
                     }
                 }
 
@@ -701,6 +667,7 @@ namespace app {
     }
 
 
+
     namespace clr {
         constexpr SDL_Color menu_title{45, 45, 45, 255};
         constexpr SDL_Color menu_border{80, 80, 80, 255};
@@ -748,17 +715,27 @@ namespace app {
 
 //        snd :: sound_render ( st.renderer , st.sounds , st.lay.spriteBar , st.fonts.small ) ;
 
-        ui::button_draw(st.renderer, st.btn_run,
-                        st.fonts.medium, "Run",
-                        clr::btn_run, clr::btn_border);
-        ui::button_draw(st.renderer, st.btn_stop,
-                        st.fonts.medium, "Stop",
-                        clr::btn_stop, clr::btn_border);
+        ui :: button_draw ( st.renderer , st.btn_run ,
+                            st.fonts.medium , "Run" ,
+                            clr :: btn_run , clr :: btn_border
+                            ) ;
+        ui :: button_draw ( st.renderer , st.btn_stop ,
+                            st.fonts.medium , "Stop" ,
+                            clr :: btn_stop , clr :: btn_border
+                            ) ;
+
+        SDL_Color pause_col = st.interp.is_paused ? SDL_Color { 60 , 180 , 60 , 255 } : SDL_Color { 200 , 160 , 0 , 255 } ;
+
+        const char * pause_lbl = st.interp.is_paused ? "Resume" : "Pause" ;
+        ui :: button_draw ( st.renderer , st.btn_pause ,
+                            st.fonts.medium , pause_lbl ,
+                            pause_col , clr :: btn_border
+                            ) ;
 
         if ( st.step_mode ) {
             ui :: button_draw ( st.renderer , st.btn_step ,
                                 st.fonts.medium , "Step-by-Step" ,
-                                { 80 , 80 , 180 , 255 } , clr :: btn_border
+                                SDL_Color { 80 , 80 , 180 , 255 } , clr :: btn_border
                                 ) ;
         }
 
@@ -857,24 +834,16 @@ namespace app {
 
 
         st.btn_run.on_click = [&] {
-            auto compiled = compiler::compile_workspace(st.workspace);
+            auto compiled = compiler :: compile_workspace(st.workspace);
             if (!compiled.empty()) {
+                compiler :: free_compiled ( st.compiled_blocks ) ;
+                st.compiled_blocks = compiled ;
                 if (st.sprite_mgr.active >= 0 &&
-                    st.sprite_mgr.active < static_cast <int> ( st.sprite_mgr.sprites.size())) {
+                    st.sprite_mgr.active < (int) ( st.sprite_mgr.sprites.size()) ) {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
                 }
-                core::interpreter_load(st.interp, compiled);
-                core::logger_clear(st.interp.log);
+                core::interpreter_load(st.interp, st.compiled_blocks );
                 core::interpreter_run(st.interp);
-                for (const auto& e : st.interp.log.entries) {
-                    std::string msg = "[Line:" + std::to_string(e.line) + "] " + e.command + " " + e.data;
-                    dbg::log_level lvl = dbg::log_level::info;
-                    if (e.level == core::log_level::warning) lvl = dbg::log_level::warn;
-                    if (e.level == core::log_level::error)   lvl = dbg::log_level::error;
-                    dbg::logger_log(st.logger, msg, lvl);
-                }
-                compiler::free_compiled(compiled);
-                dbg::logger_log(st.logger, "Program finished.");
             } else {
                 dbg::logger_log(st.logger, "No blocks to run.", dbg::log_level::warn);
             }
@@ -886,6 +855,16 @@ namespace app {
             compiler :: free_compiled ( st.compiled_blocks ) ;
             dbg::logger_log(st.logger, "Stopped.");
         };
+
+        st.btn_pause.on_click = [&] {
+            if ( st.interp.is_paused ) {
+                core :: interpreter_resume ( st.interp ) ;
+                dbg :: logger_log ( st.logger , "Resumed." ) ;
+            } else {
+                core :: interpreter_pause ( st.interp ) ;
+                dbg :: logger_log ( st.logger , "Paused." ) ;
+            }
+        } ;
 
         st.btn_step.on_click = [&] {
             if ( !st.step_mode ) {
@@ -953,6 +932,7 @@ namespace app {
 
             update_rects(st);
             handle_events(st);
+            core :: interpreter_tick ( st.interp ) ;
             render_frame(st);
         }
 
