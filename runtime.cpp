@@ -125,6 +125,7 @@ namespace app {
         ui::menu menu_help{};
         ui::menu menu_code{};
         ui::menu menu_settings{};
+        ui :: menu menu_background {} ;
 
         ui::button btn_run{};
         ui::button btn_stop{};
@@ -156,7 +157,8 @@ namespace app {
 
     static std::vector<ui::menu *> all_menus(app_state &st) {
         return {&st.menu_file, &st.menu_help,
-                &st.menu_code, &st.menu_settings
+                &st.menu_code, &st.menu_settings ,
+                &st.menu_background
                 };
     }
 
@@ -287,6 +289,22 @@ namespace app {
                 }},
         };
 
+        st.menu_background.title = "Background" ;
+        st.menu_background.items = {
+                { "backdrop1" , true , [&] {
+                    gfx :: backdrop_set_active ( st.backdrops , 2 ) ;
+                    close_all_menus ( st ) ;
+                }} ,
+                { "backdrop2" , true , [&] {
+                    gfx :: backdrop_set_active ( st.backdrops , 3 ) ;
+                    close_all_menus ( st ) ;
+                }} ,
+                { "backdrop3" , true , [&] {
+                    gfx :: backdrop_set_active ( st.backdrops , 4 ) ;
+                    close_all_menus ( st ) ;
+                }} ,
+        } ;
+
     }
 
 
@@ -297,6 +315,7 @@ namespace app {
         st.menu_help.title_rect = ui::topbar_menu_rect(tb, 1);
         st.menu_code.title_rect = ui::topbar_menu_rect(tb, 2);
         st.menu_settings.title_rect = ui::topbar_menu_rect(tb, 3);
+        st.menu_background.title_rect = ui :: topbar_menu_rect ( tb , 4 ) ;
 
 
         st.btn_stop.rect = ui :: topbar_right_rect (tb, 0, 60, 26);
@@ -308,6 +327,7 @@ namespace app {
         ui::menu_layout(st.menu_help, st.fonts.medium);
         ui::menu_layout(st.menu_code, st.fonts.medium);
         ui::menu_layout(st.menu_settings, st.fonts.medium);
+        ui :: menu_layout ( st.menu_background , st.fonts.medium ) ;
 
 
         if ( st.sprite_mgr.active >= 0 ) {
@@ -858,6 +878,19 @@ namespace app {
 
         st.backdrops = gfx::backdrop_make_defaults();
 
+        const char * default_backdrops[] = {
+                "assets/backdrop1.jpg" ,
+                "assets/backdrop2.jpg" ,
+                "assets/backdrop3.jpg" ,
+        };
+        for ( const char * path : default_backdrops ) {
+            int w = 0 , h = 0 ;
+            SDL_Texture * tex = gfx :: load_texture ( st.renderer , path , w , h ) ;
+            if ( tex ) {
+                gfx :: backdrop_add_texture ( st.backdrops , path , tex , w , h ) ;
+            }
+        }
+
         snd::sound_init();
 
         fnt::font_init(st.fonts, "assets/arial.ttf");
@@ -970,7 +1003,6 @@ namespace app {
             update_rects(st);
             handle_events(st);
 
-            // Tick interpreter
             if ( !st.step_mode ) {
                 core :: interpreter_tick ( st.interp ) ;
             }
