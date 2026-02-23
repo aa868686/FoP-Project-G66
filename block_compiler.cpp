@@ -221,46 +221,12 @@ namespace compiler {
     }
 
 
-    static core :: Block * compile_block_recursive ( const ui :: ui_block & ub , const ui :: block_workspace & ws ) {
-        core :: Block * cb = compile_block ( ub ) ;
-        if ( !cb ) return nullptr ;
-
-        if ( ub.is_container ) {
-            // Sort children by y position
-            std :: vector < const ui :: ui_block * > sorted_children ;
-            for ( int cid : ub.children ) {
-                for ( const auto & child : ws.blocks ) {
-                    if ( child.id == cid ) {
-                        sorted_children.push_back ( &child ) ;
-                        break ;
-                    }
-                }
-            }
-            std :: sort ( sorted_children.begin() , sorted_children.end() ,
-                          [] ( const ui :: ui_block * a , const ui :: ui_block * b ) {
-                              return a->y < b->y ;
-                          } ) ;
-
-            for ( const auto * child : sorted_children ) {
-                core :: Block * child_cb = compile_block_recursive ( *child , ws ) ;
-                if ( child_cb ) {
-                    cb->nested_blocks.push_back ( child_cb ) ;
-                }
-            }
-        }
-
-        return cb ;
-    }
-
     std :: vector < core :: Block * > compile_workspace ( const ui :: block_workspace & ws ) {
         std :: vector < core :: Block * > result ;
 
-        // Only top-level blocks (no parent)
         std :: vector < const ui :: ui_block * > ordered ;
-        for ( const auto & b : ws.blocks ) {
-            if ( b.parent_id < 0 ) {
-                ordered.push_back ( &b ) ;
-            }
+        for ( const auto & b: ws.blocks ) {
+            ordered.push_back ( &b ) ;
         }
 
         std :: sort ( ordered.begin() , ordered.end() ,
@@ -270,7 +236,7 @@ namespace compiler {
                       } ) ;
 
         for ( const auto * ub : ordered ) {
-            core :: Block * cb = compile_block_recursive ( *ub , ws ) ;
+            core :: Block * cb = compile_block ( *ub ) ;
             if ( cb ) {
                 result.push_back ( cb ) ;
             }
@@ -279,20 +245,10 @@ namespace compiler {
         return result ;
     }
 
-    static void free_block_recursive ( core :: Block * b ) {
-        if ( !b ) return ;
-        for ( auto * nested : b->nested_blocks ) {
-            free_block_recursive ( nested ) ;
-        }
-        for ( auto * eb : b->else_blocks ) {
-            free_block_recursive ( eb ) ;
-        }
-        delete b ;
-    }
 
     void free_compiled ( std :: vector < core :: Block * > & blocks ) {
         for ( auto * b : blocks ) {
-            free_block_recursive ( b ) ;
+            delete b ;
         }
         blocks.clear() ;
     }

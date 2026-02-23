@@ -285,7 +285,8 @@ namespace ui {
         int draw_x = sx + pad ;
         const int inp_h = 20 ;
         const int inp_w = 36 ;
-        const int text_y = sy + ( ( b.h - inp_h ) / 2 ) ;
+        const int header_h = b.is_container ? block_h : b.h ;
+        const int text_y = sy + ( ( header_h - inp_h ) / 2 ) ;
         int input_idx = 0 ;
         size_t pos = 0 ;
 
@@ -301,7 +302,7 @@ namespace ui {
                     if ( tex ) {
                         int tw = 0 , th = 0 ;
                         SDL_QueryTexture ( tex , nullptr , nullptr , &tw , &th ) ;
-                        SDL_Rect dst { draw_x , sy + ( ( b.h - th ) / 2 ) , tw , th } ;
+                        SDL_Rect dst { draw_x , sy + ( ( header_h - th ) / 2 ) , tw , th } ;
                         SDL_RenderCopy ( ren , tex , nullptr , &dst ) ;
                         SDL_DestroyTexture ( tex ) ;
                         draw_x += tw ;
@@ -495,13 +496,9 @@ namespace ui {
 
         bool placed_in_container = false ;
         for ( int i = 0 ; i < (int) ws.blocks.size() ; ++i ) {
-            if ( i == ws.drag_idx ) {
-                continue ;
-            }
+            if ( i == ws.drag_idx ) continue ;
             ui_block & c = ws.blocks[i] ;
-            if ( !c.is_container ) {
-                continue ;
-            }
+            if ( !c.is_container ) continue ;
 
             SDL_Rect drop_zone { c.x + 16 , c.y + block_h , c.w - 16 , c.container_h } ;
 
@@ -510,71 +507,70 @@ namespace ui {
                  dragged.y + dragged.h > drop_zone.y &&
                  dragged.y < drop_zone.y + drop_zone.h ) {
 
-                if (dragged.parent_id >= 0) {
-                    for (auto &old_parent: ws.blocks) {
-                        if (old_parent.id == dragged.parent_id) {
-                            old_parent.children.erase(
-                                    std::remove(old_parent.children.begin(), old_parent.children.end(), dragged.id),
-                                    old_parent.children.end());
-                            break;
+                if ( dragged.parent_id >= 0 ) {
+                    for ( auto & old_parent : ws.blocks ) {
+                        if ( old_parent.id == dragged.parent_id ) {
+                            old_parent.children.erase (
+                                    std :: remove ( old_parent.children.begin(), old_parent.children.end(), dragged.id ) ,
+                                    old_parent.children.end()) ;
+                            break ;
                         }
                     }
                 }
 
-                dragged.parent_id = c.id;
-                c.children.push_back(dragged.id);
+                dragged.parent_id = c.id ;
+                c.children.push_back ( dragged.id ) ;
 
-                int cy = c.y + block_h + 4;
-                for (int cid: c.children) {
-                    for (auto &cb: ws.blocks) {
-                        if (cb.id == cid) {
-                            cb.x = c.x + 20;
-                            cb.y = cy;
-                            cy += cb.h + 2;
-                            break;
-                        }
-                    }
-                }
-
-                int total_h = 0;
-                for (int cid: c.children) {
-                    for (auto &cb: ws.blocks) {
+                int cy = c.y + block_h + 4 ;
+                for ( int cid : c.children ) {
+                    for ( auto & cb : ws.blocks ) {
                         if ( cb.id == cid ) {
-                            total_h += cb.h + 2;
-                            break;
+                            cb.x = c.x + 20 ;
+                            cb.y = cy ;
+                            cy += cb.h + 2 ;
+                            break ;
                         }
                     }
                 }
-                c.container_h = std :: max ( 48 , total_h + 8) ;
+
+                int total_h = 0 ;
+                for ( int cid : c.children ) {
+                    for ( auto & cb : ws.blocks ) {
+                        if ( cb.id == cid ) { total_h += cb.h + 2 ; break ; }
+                    }
+                }
+                c.container_h = std::max ( 48 , total_h + 8 ) ;
                 c.h = block_h + c.container_h + block_h ;
 
                 placed_in_container = true ;
                 break ;
             }
+        }
 
-            if ( dragged.parent_id >= 0 ) {
-                for ( auto & old_parent : ws.blocks ) {
-                    if ( old_parent.id == dragged.parent_id ) {
-                        old_parent.children.erase (
-                                std :: remove ( old_parent.children.begin() , old_parent.children.end() , dragged.id ) ,
-                                old_parent.children.end() ) ;
-
-                        int total_h = 0 ;
-                        for ( int cid : old_parent.children ) {
-                            for ( auto & cb : ws.blocks ) {
-                                if ( cb.id == cid ) { total_h += cb.h + 2 ; break ; }
-                            }
+        if ( !placed_in_container && dragged.parent_id >= 0 ) {
+            for ( auto & old_parent : ws.blocks ) {
+                if ( old_parent.id == dragged.parent_id ) {
+                    old_parent.children.erase (
+                            std::remove(old_parent.children.begin(), old_parent.children.end(), dragged.id),
+                            old_parent.children.end()) ;
+                    int total_h = 0 ;
+                    for ( int cid : old_parent.children ) {
+                        for ( auto & cb : ws.blocks ) {
+                            if ( cb.id == cid ) { total_h += cb.h + 2 ; break ; }
                         }
-                        old_parent.container_h = std::max ( 48 , total_h + 8 ) ;
-                        old_parent.h = block_h + old_parent.container_h + block_h ;
-                        break ;
                     }
+                    old_parent.container_h = std :: max ( 48 , total_h + 8 ) ;
+                    old_parent.h = block_h + old_parent.container_h + block_h ;
+                    break ;
                 }
-                dragged.parent_id = -1 ;
             }
+            dragged.parent_id = -1 ;
+        }
 
+        if ( !placed_in_container ) {
             block_try_snap ( ws , ws.drag_idx ) ;
         }
+
         ws.drag_idx = -1 ;
     }
 
@@ -765,9 +761,10 @@ namespace ui {
 
             const int sx = clip.x + b.x + ws.scroll_x ;
             const int sy = clip.y + b.y + ws.scroll_y ;
-            const int text_y = sy + ( ( b.h - inp_h ) / 2 ) ;
+            const int effective_h = b.is_container ? block_h : b.h ;
+            const int text_y = sy + ( ( effective_h - inp_h ) / 2 ) ;
 
-            if (mx < sx || mx >= sx + b.w || my < sy || my >= sy + b.h) {
+            if (mx < sx || mx >= sx + b.w || my < sy || my >= sy + effective_h ) {
                 continue;
             }
 
@@ -797,7 +794,7 @@ namespace ui {
                     b.inputs[input_idx].sel_start = 0 ;
                     b.inputs[input_idx].sel_end = (int) b.inputs[input_idx].value.size() ;
 
-
+                    SDL_StartTextInput () ;
                     ws.focused_block = i ;
                     ws.focused_input = input_idx ;
                     return true ;

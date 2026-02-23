@@ -24,6 +24,7 @@ namespace core {
 
     void interpreter_load(interpreter& interp, const std::vector<Block*>& blocks);
     void interpreter_run(interpreter& interp);
+    void interpreter_tick ( interpreter & interp ) ;
     void interpreter_pause(interpreter& interp);
     void interpreter_resume(interpreter& interp);
     void interpreter_stop(interpreter& interp);
