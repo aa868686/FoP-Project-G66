@@ -6,7 +6,7 @@
 #define FOP_PROJECT_G66_SAFETYNET_H
 namespace core {
     struct safety_net {
-        int max_ops = 1000;
+        int max_ops = 100000;
         int curr_ops = 0;
         bool infinite_loop_detected = false;
     };
