@@ -8,6 +8,7 @@
 #include <cstring>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include "layout.h"
 #include "ui_menu.h"
 #include "ui_button.h"
@@ -791,6 +792,32 @@ namespace app {
         ui::render_layout(st.renderer, st.lay);
         ui::block_palette_render( st.renderer , st.lay.leftPanel , st.fonts.medium , st.palette_state , st.workspace ) ;
         ui::block_workspace_render(st.renderer, st.workspace, st.lay.workspace, st.fonts.medium);
+        // draw operator results
+        Uint32 now = SDL_GetTicks();
+        st.interp.results.erase(
+                std::remove_if(st.interp.results.begin(), st.interp.results.end(),
+                               [now](const core::result_display& r) { return now > r.show_until; }),
+                st.interp.results.end());
+
+        for (const auto& rd : st.interp.results) {
+            // find the block position in workspace
+            if (rd.block_line >= 0 && rd.block_line < (int)st.workspace.blocks.size()) {
+                const auto& b = st.workspace.blocks[rd.block_line];
+                int bx = st.lay.workspace.x + b.x + st.workspace.scroll_x;
+                int by = st.lay.workspace.y + b.y + st.workspace.scroll_y;
+
+                // result rect appears to the right of the block
+                int rw = (int)rd.text.size() * 8 + 16;
+                int rh = 22;
+                SDL_Rect rr { bx + b.w + 6, by + (b.h - rh)/2, rw, rh };
+
+                SDL_SetRenderDrawColor(st.renderer, 30, 30, 30, 220);
+                SDL_RenderFillRect(st.renderer, &rr);
+                SDL_SetRenderDrawColor(st.renderer, 100, 200, 100, 255);
+                SDL_RenderDrawRect(st.renderer, &rr);
+                fnt::draw_text_left(st.renderer, st.fonts.small, rd.text.c_str(), rr, {100, 255, 100, 255});
+            }
+        }
         gfx::backdrop_render(st.renderer, st.backdrops, st.lay.stage);
 
         const gfx::StageRect ps{

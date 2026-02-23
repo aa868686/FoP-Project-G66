@@ -134,13 +134,93 @@ namespace compiler {
         if ( lbl.find ( "stop all" ) != std :: string :: npos ) {
             b->type = core :: block_type :: stop_all ; return b ;
         }
-        if ( lbl.find ( "+" ) != std :: string :: npos ) {
-            b->type = core :: block_type :: op_add ;
-            auto nums = extract_numbers ( ub.label ) ;
-            core :: Parameter a {} , bb2 {} ;
-            a.data   = nums.size() >= 1 ? nums[0] : core :: value_make_int ( 0 ) ;
-            bb2.data = nums.size() >= 2 ? nums[1] : core :: value_make_int ( 0 ) ;
-            b->parameters.push_back ( a ) ; b->parameters.push_back ( bb2 ) ; return b ;
+        if (lbl.find("+") != std::string::npos) {
+            b->type = core::block_type::op_add;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("-") != std::string::npos && lbl.find("_") != std::string::npos) {
+            b->type = core::block_type::op_sub;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("*") != std::string::npos) {
+            b->type = core::block_type::op_mul;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("/") != std::string::npos) {
+            b->type = core::block_type::op_div;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("=") != std::string::npos) {
+            b->type = core::block_type::op_eq;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("<") != std::string::npos) {
+            b->type = core::block_type::op_lt;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find(">") != std::string::npos) {
+            b->type = core::block_type::op_gt;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("and") != std::string::npos) {
+            b->type = core::block_type::op_and;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("or") != std::string::npos) {
+            b->type = core::block_type::op_or;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("not") != std::string::npos) {
+            b->type = core::block_type::op_not;
+            core::Parameter a{};
+            a.data = get_input(ub, 0);
+            b->parameters.push_back(a);
+            return b;
         }
 
         delete b ;
