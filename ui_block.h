@@ -52,6 +52,10 @@ namespace ui {
         std :: vector <int> children {} ;
         int container_h = 48 ;
         int parent_id = -1 ;
+
+        std::string result_text = "";
+        bool show_result = false;
+        Uint32 result_show_time = 0;
     };
 
     struct custom_block_def {

@@ -8,7 +8,15 @@
 #include "logger.h"
 #include "safetynet.h"
 #include "ui_block.h"
+#include <SDL2/SDL.h>
 namespace core {
+
+    struct result_display {
+        int block_line = -1;
+        std::string text = "";
+        Uint32 show_until = 0;
+    };
+
     struct interpreter {
         std::vector<Block*> blocks;
         int line_number = 0;
@@ -20,7 +28,9 @@ namespace core {
         int cycle = 0;
         safety_net safety;
         snd :: sound_manager * sound_manager = nullptr ;
+        std::vector<result_display> results;
     };
+
 
     void interpreter_load(interpreter& interp, const std::vector<Block*>& blocks);
     void interpreter_run(interpreter& interp);
