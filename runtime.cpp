@@ -22,6 +22,8 @@
 #include "interpreter.h"
 #include "block_compiler.h"
 #include "block.h"
+#include "project_serializer.h"
+#include "variable.h"
 
 namespace app {
 
@@ -108,6 +110,8 @@ namespace app {
 
         gfx::sprite_manager sprite_mgr{};
 
+        core :: variable_store variables {} ;
+
 
         gfx::pen_state pen{};
         gfx::backdrop_manager backdrops{};
@@ -115,6 +119,7 @@ namespace app {
         gfx::image_editor img_editor{};
 
         dbg::debug_logger logger{};
+
 
         core::interpreter interp{};
         bool sound_dragging = false;
@@ -208,8 +213,50 @@ namespace app {
 
 
                 }},
-                {"Save Project", true, [&] {/* TODO: serialise */}},
-                {"Load Project", true, [&] {/* TODO: deserialise */}},
+                {"Save Project", true, [&] {
+                    std :: string path = serial :: save_dialog () ;
+                    if ( !path.empty() ) {
+                        auto res = serial :: project_save (
+                                path ,
+                                st.sprite_mgr ,
+                                st.backdrops ,
+                                st.workspace ,
+                                st.variables ,
+                                st.sounds
+                        ) ;
+                        if ( res.ok ) {
+                            dbg :: logger_log ( st.logger , "Project saved." ) ;
+                        } else {
+                            dbg :: logger_log ( st.logger , ("Save failed: " + res.error).c_str() , dbg :: log_level :: error ) ;
+                        }
+                    }
+                    close_all_menus ( st ) ;
+                }},
+                {"Load Project", true, [&] {
+                    std :: string path = serial :: load_dialog () ;
+                    if ( !path.empty() ) {
+                        core :: interpreter_stop ( st.interp ) ;
+                        compiler :: free_compiled ( st.compiled_blocks ) ;
+                        auto res = serial :: project_load (
+                                path ,
+                                st.sprite_mgr ,
+                                st.backdrops ,
+                                st.workspace ,
+                                st.variables ,
+                                st.sounds ,
+                                st.renderer
+                        ) ;
+                        if ( res.ok ) {
+                            st.info_inputs.clear () ;
+                            st.step_mode = false ;
+                            st.is_paused = false ;
+                            dbg :: logger_log ( st.logger , "Project loaded." ) ;
+                        } else {
+                            dbg :: logger_log ( st.logger , ("Load failed: " + res.error ).c_str() , dbg :: log_level :: error ) ;
+                        }
+                    }
+                    close_all_menus ( st ) ;
+                }},
         };
 
         st.menu_help.title = "Help";
@@ -275,7 +322,7 @@ namespace app {
                             gfx::sprite s = gfx::sprite_make(
                                     static_cast <int> ( st.sprite_mgr.sprites.size()), path.c_str());
                             s.draggable = true;
-                            gfx::sprite_add_costume(s, tex, w, h, "default");
+                            gfx::sprite_add_costume(s, tex, w, h, path.c_str() , path.c_str() );
                             gfx::sprite_set_position(s, 100.f, 100.0f);
                             gfx::sprite_manager_add(st.sprite_mgr, s);
                         }
@@ -1012,7 +1059,7 @@ namespace app {
         int w = 0, h = 0;
         SDL_Texture *tex = gfx::load_texture(st.renderer, "assets/default_sprite.png", w, h);
         if (tex) {
-            gfx::sprite_add_costume(s, tex, w, h, "default");
+            gfx::sprite_add_costume(s, tex, w, h, "default" , "assets/default_sprite.png");
         }
 
         gfx::sprite_set_position(s, st.lay.stage.w * 0.5f, st.lay.stage.h * 0.5f ) ;

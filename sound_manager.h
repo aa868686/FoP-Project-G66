@@ -23,6 +23,7 @@ namespace snd {
     struct sound_manager {
         std :: vector <sound_entry> sounds {} ;
         int selected = -1 ;
+        int active_for_sprite = 0 ;
     };
 
     bool sound_init () ;
