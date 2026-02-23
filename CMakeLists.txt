@@ -48,7 +48,9 @@ add_executable(
         logger.h
         logger.cpp
         safetynet.h
-        safetynet.cpp)
+        safetynet.cpp
+        project_serializer.h
+        project_serializer.cpp)
 
 
 target_link_libraries(FoP-Project-G66

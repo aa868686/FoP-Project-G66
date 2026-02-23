@@ -137,13 +137,17 @@ namespace gfx {
     }
 
 
-    int sprite_add_costume(sprite &s, SDL_Texture *tex, int tex_w, int tex_h, const char *costume_name) {
+    int sprite_add_costume(sprite &s, SDL_Texture *tex, int tex_w, int tex_h, const char *costume_name , const char * filepath ) {
         Costume c;
         c.texture = tex;
         c.tex_w = tex_w;
         c.tex_h = tex_h;
         if (costume_name) {
             c.name = costume_name;
+        }
+
+        if ( filepath ) {
+            c.filepath = filepath ;
         }
 
         s.costumes.push_back(c);

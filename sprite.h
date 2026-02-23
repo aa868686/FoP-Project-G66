@@ -11,10 +11,11 @@
 namespace gfx {
 
     struct Costume {
+        std :: string name {} ;
+        std :: string filepath {} ;
         SDL_Texture * texture = nullptr ;
         int tex_w = 0 ;
         int tex_h = 0 ;
-        std :: string name ;
     };
 
     struct dragState {
@@ -98,7 +99,7 @@ namespace gfx {
 
 
 
-    int sprite_add_costume ( sprite &s , SDL_Texture *tex , int tex_w , int tex_h , const char * costume_name ) ;
+    int sprite_add_costume ( sprite &s , SDL_Texture *tex , int tex_w , int tex_h , const char * costume_name , const char * filepath = nullptr ) ;
 
 
     bool sprite_set_costume ( sprite &s , int index ) ;
