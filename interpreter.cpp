@@ -360,6 +360,7 @@ namespace core {
                 break;
             }
 
+
             case block_type::op_and: {
                 if (block->parameters.size() < 2) break;
                 bool result = value_to_bool(block->parameters[0].data) && value_to_bool(block->parameters[1].data);
