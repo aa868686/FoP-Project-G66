@@ -89,6 +89,7 @@ namespace app {
     struct app_state {
         SDL_Window *window = nullptr;
         SDL_Renderer *renderer = nullptr;
+        int interp_log_forwarded = 0 ;
 
         struct sprite_info_input {
             SDL_Rect rect {} ;
@@ -834,26 +835,30 @@ namespace app {
 
 
         st.btn_run.on_click = [&] {
-            auto compiled = compiler :: compile_workspace(st.workspace);
-            if (!compiled.empty()) {
-                compiler :: free_compiled ( st.compiled_blocks ) ;
-                st.compiled_blocks = compiled ;
-                if (st.sprite_mgr.active >= 0 &&
-                    st.sprite_mgr.active < (int) ( st.sprite_mgr.sprites.size()) ) {
-                    st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active];
+            compiler :: free_compiled ( st.compiled_blocks ) ;
+            st.compiled_blocks = compiler :: compile_workspace ( st.workspace ) ;
+            if ( !st.compiled_blocks.empty() ) {
+                if ( st.sprite_mgr.active >= 0 &&
+                     st.sprite_mgr.active < (int)st.sprite_mgr.sprites.size() ) {
+                    st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
                 }
-                core::interpreter_load(st.interp, st.compiled_blocks );
-                core::interpreter_run(st.interp);
+                core :: interpreter_load ( st.interp , st.compiled_blocks ) ;
+                core :: logger_clear ( st.interp.log ) ;
+                st.interp_log_forwarded = 0 ;
+                core :: interpreter_run ( st.interp ) ;
+                dbg :: logger_log ( st.logger , "Program started." ) ;
             } else {
-                dbg::logger_log(st.logger, "No blocks to run.", dbg::log_level::warn);
+                dbg :: logger_log ( st.logger , "No blocks to run." , dbg :: log_level :: warn ) ;
             }
-        };
+        } ;
 
 
         st.btn_stop.on_click = [&] {
             core::interpreter_stop(st.interp);
             compiler :: free_compiled ( st.compiled_blocks ) ;
             dbg::logger_log(st.logger, "Stopped.");
+            core :: logger_clear ( st.interp.log ) ;
+            st.interp_log_forwarded = 0 ;
         };
 
         st.btn_pause.on_click = [&] {
@@ -932,7 +937,23 @@ namespace app {
 
             update_rects(st);
             handle_events(st);
-            core :: interpreter_tick ( st.interp ) ;
+
+            // Tick interpreter
+            if ( !st.step_mode ) {
+                core :: interpreter_tick ( st.interp ) ;
+            }
+
+            for ( int i = st.interp_log_forwarded ; i < (int)st.interp.log.entries.size() ; ++i ) {
+                const auto & e = st.interp.log.entries[i] ;
+                std :: string msg = "[Line:" + std :: to_string ( e.line ) + "] "
+                                    + e.command + " " + e.data ;
+                dbg :: log_level lvl = dbg :: log_level :: info ;
+                if ( e.level == core :: log_level :: warning ) lvl = dbg :: log_level :: warn ;
+                if ( e.level == core :: log_level :: error   ) lvl = dbg :: log_level :: error ;
+                dbg :: logger_log ( st.logger , msg , lvl ) ;
+            }
+            st.interp_log_forwarded = (int)st.interp.log.entries.size() ;
+
             render_frame(st);
         }
 
