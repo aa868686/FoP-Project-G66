@@ -270,81 +270,97 @@ namespace core {
             }
             case block_type::op_add: {
                 if (block->parameters.size() < 2) break;
-                Value result = value_add(block->parameters[0].data, block->parameters[1].data);
+                Value a = block->parameters[0].data ;
+                Value b = block->parameters[1].data ;
+                Value result = value_add(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
                 rd.block_line = interp.line_number;
-                rd.text = value_to_string(block->parameters[0].data) + "+" + value_to_string(block->parameters[1].data) + "=" + value_to_string(result);
+                rd.text = value_to_string(a) + "+" + value_to_string(b) + "=" + value_to_string(result);
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
                 break;
             }
             case block_type::op_sub: {
                 if (block->parameters.size() < 2) break;
-                Value result = value_sub(block->parameters[0].data, block->parameters[1].data);
+                Value a = block->parameters[0].data ;
+                Value b = block->parameters[1].data ;
+                Value result = value_sub(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
                 rd.block_line = interp.line_number;
-                rd.text = value_to_string(block->parameters[0].data) + "-" + value_to_string(block->parameters[1].data) + "=" + value_to_string(result);
+                rd.text = value_to_string(a) + "-" + value_to_string(b) + "=" + value_to_string(result);
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
                 break;
             }
             case block_type::op_mul: {
                 if (block->parameters.size() < 2) break;
-                Value result = value_mul(block->parameters[0].data, block->parameters[1].data);
+                Value a = block->parameters[0].data ;
+                Value b = block->parameters[1].data ;
+                Value result = value_mul(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
                 rd.block_line = interp.line_number;
-                rd.text = value_to_string(block->parameters[0].data) + "*" + value_to_string(block->parameters[1].data) + "=" + value_to_string(result);
+                rd.text = value_to_string(a) + "*" + value_to_string(b) + "=" + value_to_string(result);
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
                 break;
             }
             case block_type::op_div: {
                 if (block->parameters.size() < 2) break;
-                Value result = value_div(block->parameters[0].data, block->parameters[1].data);
+                Value a = block->parameters[0].data ;
+                Value b = block->parameters[1].data ;
+                Value result = value_div(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
                 rd.block_line = interp.line_number;
-                rd.text = value_to_string(block->parameters[0].data) + "/" + value_to_string(block->parameters[1].data) + "=" + value_to_string(result);
+                rd.text = value_to_string(a) + "/" + value_to_string(b) + "=" + value_to_string(result);
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
                 break;
             }
             case block_type::op_eq: {
                 if (block->parameters.size() < 2) break;
-                bool result = value_eq(block->parameters[0].data, block->parameters[1].data);
+                Value a = block->parameters[0].data ;
+                Value b = block->parameters[1].data ;
+                bool result = value_eq(a, b);
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
                 rd.block_line = interp.line_number;
-                rd.text = value_to_string(block->parameters[0].data) + "=" + value_to_string(block->parameters[1].data) + " -> " + (result ? "true" : "false");
+                rd.text = value_to_string(a) + "=" + value_to_string(b) + " -> " + (result ? "true" : "false");
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
                 break;
             }
             case block_type::op_lt: {
                 if (block->parameters.size() < 2) break;
-                bool result = value_lt(block->parameters[0].data, block->parameters[1].data);
+                Value a = block->parameters[0].data ;
+                Value b = block->parameters[1].data ;
+                bool result = value_lt(a, b);
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
                 rd.block_line = interp.line_number;
-                rd.text = value_to_string(block->parameters[0].data) + "<" + value_to_string(block->parameters[1].data) + " -> " + (result ? "true" : "false");
+                rd.text = value_to_string(a) + "<" + value_to_string(b) + " -> " + (result ? "true" : "false");
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
                 break;
             }
             case block_type::op_gt: {
                 if (block->parameters.size() < 2) break;
-                bool result = value_gt(block->parameters[0].data, block->parameters[1].data);
+                Value a = block->parameters[0].data ;
+                Value b = block->parameters[1].data ;
+                bool result = value_gt(a, b);
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
                 rd.block_line = interp.line_number;
-                rd.text = value_to_string(block->parameters[0].data) + ">" + value_to_string(block->parameters[1].data) + " -> " + (result ? "true" : "false");
+                rd.text = value_to_string(a) + ">" + value_to_string(b) + " -> " + (result ? "true" : "false");
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
                 break;
             }
+
+
             case block_type::op_and: {
                 if (block->parameters.size() < 2) break;
                 bool result = value_to_bool(block->parameters[0].data) && value_to_bool(block->parameters[1].data);
