@@ -28,7 +28,6 @@ namespace ui {
             { block_category :: looks , "set size to _%" } ,
 
 
-            { block_category :: events , "when flag clicked" } ,
             { block_category :: events , "when key _ pressed" } ,
             { block_category :: events , "when sprite clicked" } ,
             { block_category :: events , "broadcast _" } ,

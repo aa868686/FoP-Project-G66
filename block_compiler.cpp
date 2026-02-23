@@ -221,28 +221,74 @@ namespace compiler {
     }
 
 
-    std :: vector < core :: Block * > compile_workspace ( const ui :: block_workspace & ws ) {
-        std :: vector < core :: Block * > result ;
+    std::vector<core::Block*> compile_workspace(const ui::block_workspace& ws) {
+        std::vector<core::Block*> result;
 
-        std :: vector < const ui :: ui_block * > ordered ;
-        for ( const auto & b: ws.blocks ) {
-            ordered.push_back ( &b ) ;
-        }
-
-        std :: sort ( ordered.begin() , ordered.end() ,
-                      [] ( const ui :: ui_block * a , const ui :: ui_block * b ) {
-                          if ( a->y != b->y ) return a->y < b->y ;
-                          return a->x < b->x ;
-                      } ) ;
-
-        for ( const auto * ub : ordered ) {
-            core :: Block * cb = compile_block ( *ub ) ;
-            if ( cb ) {
-                result.push_back ( cb ) ;
+        std::vector<const ui::ui_block*> roots;
+        for (const auto& b : ws.blocks) {
+            if (b.parent_id < 0) {
+                roots.push_back(&b);
             }
         }
 
-        return result ;
+        if (roots.empty()) return result;
+
+        auto chain_length = [&](const ui::ui_block* root) -> int {
+            int count = 0;
+            int current_id = root->id;
+            while (current_id >= 0) {
+                count++;
+                int next_id = -1;
+                for (const auto& b : ws.blocks) {
+                    if (b.snap_to == current_id) {
+                        next_id = b.id;
+                        break;
+                    }
+                }
+                current_id = next_id;
+            }
+            return count;
+        };
+
+        const ui::ui_block* best = roots[0];
+        int best_len = chain_length(best);
+
+        for (const auto* r : roots) {
+            int len = chain_length(r);
+            if (len > best_len) {
+                best = r;
+                best_len = len;
+            } else if (len == best_len) {
+                if (r->y < best->y) {
+                    best = r;
+                } else if (r->y == best->y && r->x < best->x) {
+                    best = r;
+                }
+            }
+        }
+
+        int current_id = best->id;
+        while (current_id >= 0) {
+            const ui::ui_block* ub = nullptr;
+            for (const auto& b : ws.blocks) {
+                if (b.id == current_id) { ub = &b; break; }
+            }
+            if (!ub) break;
+
+            core::Block* cb = compile_block(*ub);
+            if (cb) result.push_back(cb);
+
+            int next_id = -1;
+            for (const auto& b : ws.blocks) {
+                if (b.snap_to == current_id) {
+                    next_id = b.id;
+                    break;
+                }
+            }
+            current_id = next_id;
+        }
+
+        return result;
     }
 
 
