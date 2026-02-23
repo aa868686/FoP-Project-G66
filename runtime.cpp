@@ -172,7 +172,39 @@ namespace app {
     static void build_menus ( app_state &st ) {
         st.menu_file.title = "File";
         st.menu_file.items = {
-                {"New Project",  true, [&] {/* TODO: clear workspace */}},
+                {"New Project",  true, [&] {
+                    core :: interpreter_stop ( st.interp ) ;
+                    compiler :: free_compiled ( st.compiled_blocks ) ;
+
+                    st.workspace.blocks.clear() ;
+                    st.workspace.next_id = 0 ;
+                    st.workspace.scroll_x = 0 ;
+                    st.workspace.scroll_y = 0 ;
+                    st.workspace.drag_idx = -1 ;
+                    st.workspace.focused_block = -1 ;
+                    st.workspace.focused_input = -1 ;
+
+                    if ( st.sprite_mgr.active >= 0 ) {
+                        gfx :: sprite & s = st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                        s.x = st.lay.stage.w * 0.5f ;
+                        s.y = st.lay.stage.h * 0.5f ;
+                        s.size_percent = 100.0f ;
+                        s.direction_deg = 90.0f ;
+                        s.say_visible = true ;
+                    }
+
+                    snd :: sound_stop_all ( st.sounds ) ;
+
+                    st.info_inputs.clear () ;
+
+                    st.step_mode = false ;
+                    st.is_paused = false ;
+
+                    dbg :: logger_log ( st.logger , "New Project Created." ) ;
+                    close_all_menus ( st ) ;
+
+
+                }},
                 {"Save Project", true, [&] {/* TODO: serialise */}},
                 {"Load Project", true, [&] {/* TODO: deserialise */}},
         };
