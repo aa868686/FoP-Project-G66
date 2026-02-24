@@ -464,6 +464,19 @@ namespace app {
                 }
             }
 
+            if ( e.type == SDL_KEYDOWN ) {
+                if ( e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_KP_ENTER ) {
+                    bool any_focused = false ;
+                    for ( auto & inp : st.info_inputs ) {
+                        if ( inp.focused ) { any_focused = true ; break ; }
+                    }
+                    if ( st.workspace.focused_input < 0 && !any_focused ) {
+                        st.btn_run.on_click() ;
+                    }
+                }
+            }
+
+
             if ( e.type == SDL_TEXTINPUT ) {
                 ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
                 for ( auto & inp: st.info_inputs ) {
