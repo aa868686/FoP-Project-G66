@@ -38,6 +38,14 @@ namespace core {
         Uint32 timer_start = 0 ;
         gfx :: stage_rectangle active_stage {} ;
         gfx :: pen_state * pen = nullptr ;
+        int mouse_x = 0;
+        int mouse_y = 0;
+        bool mouse_down = false;
+        bool keys[512] = {};
+        int stage_x = 0;
+        int stage_y = 0;
+        int stage_w = 480;
+        int stage_h = 360;
     };
 
 

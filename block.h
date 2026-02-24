@@ -17,7 +17,7 @@ namespace core {
         key_pressed, mouse_down, mouse_x, mouse_y,
         timer, reset_timer,
         pen_down, pen_up, pen_erase_all, pen_stamp,
-        op_add, op_sub, op_mul, op_div, op_eq, op_lt, op_gt, op_and, op_or, op_not,
+        op_add, op_sub, op_mul, op_div, op_eq, op_lt, op_gt, op_and, op_or, op_not, op_mod, op_round, op_abs,sensing_mouse_down, sensing_key_pressed, if_on_edge_bounce,
         custom_define, custom_call
     };
 

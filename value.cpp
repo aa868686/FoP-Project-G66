@@ -165,4 +165,15 @@ namespace core {
         if (value_to_bool(a)) return value_make_bool(false);
         return value_make_bool(true);
     }
+    Value value_mod(const Value& a, const Value& b) {
+        int bv = value_to_int(b);
+        if (bv == 0) return value_make_int(0);
+        return value_make_int(value_to_int(a) % bv);
+    }
+    Value value_round(const Value& a) {
+        return value_make_int((int)std::round(value_to_float(a)));
+    }
+    Value value_abs(const Value& a) {
+        return value_make_float(std::fabs(value_to_float(a)));
+    }
 }

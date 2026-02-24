@@ -66,6 +66,10 @@ namespace compiler {
         const std :: string lbl = lower ( ub.label ) ;
         auto * b = new core :: Block {} ;
 
+        if (lbl.find("edge") != std::string::npos && lbl.find("bounce") != std::string::npos) {
+            b->type = core::block_type::if_on_edge_bounce;
+            return b;
+        }
         if ( lbl.find ( "move" ) != std :: string :: npos && lbl.find ( "step" ) != std :: string :: npos ) {
             b->type = core :: block_type :: move ;
             core :: Parameter p {} ; p.data = get_input ( ub , 0 ) ;
@@ -137,15 +141,19 @@ namespace compiler {
             core :: Parameter p {} ; p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ; return b ;
         }
-        if ( lbl.find ( "if" ) != std :: string :: npos && lbl.find ( "else" ) != std :: string :: npos ) {
-            b->type = core :: block_type :: if_then_else ;
-            core :: Parameter p {} ; p.data = core :: value_make_bool ( true ) ;
-            b->parameters.push_back ( p ) ; return b ;
+        if (lbl.find("if") != std::string::npos && lbl.find("else") != std::string::npos) {
+            b->type = core::block_type::if_then_else;
+            core::Parameter p{};
+            p.data = get_input(ub, 0);
+            b->parameters.push_back(p);
+            return b;
         }
-        if ( lbl.find ( "if" ) != std :: string :: npos ) {
-            b->type = core :: block_type :: if_then ;
-            core :: Parameter p {} ; p.data = core :: value_make_bool ( true ) ;
-            b->parameters.push_back ( p ) ; return b ;
+        if (lbl.find("if") != std::string::npos) {
+            b->type = core::block_type::if_then;
+            core::Parameter p{};
+            p.data = get_input(ub, 0);
+            b->parameters.push_back(p);
+            return b;
         }
         if ( lbl.find ( "stop all" ) != std :: string :: npos ) {
             b->type = core :: block_type :: stop_all ; return b ;
@@ -254,6 +262,50 @@ namespace compiler {
             val.data  = get_input(ub, 1);
             b->parameters.push_back(name);
             b->parameters.push_back(val);
+            return b;
+        }
+        if (lbl.find("mod") != std::string::npos) {
+            b->type = core::block_type::op_mod;
+            core::Parameter a{}, bb{};
+            a.data  = get_input(ub, 0);
+            bb.data = get_input(ub, 1);
+            b->parameters.push_back(a);
+            b->parameters.push_back(bb);
+            return b;
+        }
+        if (lbl.find("round") != std::string::npos) {
+            b->type = core::block_type::op_round;
+            core::Parameter a{};
+            a.data = get_input(ub, 0);
+            b->parameters.push_back(a);
+            return b;
+        }
+        if (lbl.find("abs") != std::string::npos) {
+            b->type = core::block_type::op_abs;
+            core::Parameter a{};
+            a.data = get_input(ub, 0);
+            b->parameters.push_back(a);
+            return b;
+        }
+        if (lbl.find("mouse down") != std::string::npos) {
+            b->type = core::block_type::sensing_mouse_down;
+            return b;
+        }
+        if (lbl.find("key") != std::string::npos && lbl.find("pressed") != std::string::npos) {
+            b->type = core::block_type::sensing_key_pressed;
+            core::Parameter p{};
+            p.data = get_input(ub, 0);
+            b->parameters.push_back(p);
+            return b;
+        }
+        if (lbl.find("mouse x") != std::string::npos) {
+            b->type = core::block_type::sensing_mouse_down;
+            b->name = "mouse_x";
+            return b;
+        }
+        if (lbl.find("mouse y") != std::string::npos) {
+            b->type = core::block_type::sensing_mouse_down;
+            b->name = "mouse_y";
             return b;
         }
 
@@ -374,7 +426,9 @@ namespace compiler {
                           return a->x < b->x ;
                       } ) ;
 
-
+        // Follow snap chain starting from topmost root
+        // Find the start of the chain (block not snapped to by anyone)
+        // i.e. find root whose id is not any other block's snap_to
         const ui :: ui_block * chain_start = roots[0] ;
         for ( const auto * r : roots ) {
             bool has_parent_snap = false ;

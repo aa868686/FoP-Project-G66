@@ -51,6 +51,9 @@ namespace ui {
             { block_category :: operators , "_ and _" } ,
             { block_category :: operators , "_ or _" } ,
             { block_category :: operators , "not _" } ,
+            { block_category::operators, "_ mod _" },
+            { block_category::operators, "round _" },
+            { block_category::operators, "abs _" },
 
             { block_category :: sound , "play sound _" } ,
             { block_category :: sound , "stop all sounds" } ,
@@ -70,6 +73,10 @@ namespace ui {
             { block_category :: sensing , "mouse down?" } ,
             { block_category :: sensing , "timer" } ,
             { block_category :: sensing , "reset timer" } ,
+            { block_category::sensing, "mouse down?" },
+            { block_category::sensing, "key _ pressed?" },
+            { block_category::sensing, "mouse x" },
+            { block_category::sensing, "mouse y" },
             { block_category :: my_blocks , "Make a Block" } ,
 
     } ;
