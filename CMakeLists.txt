@@ -50,7 +50,9 @@ add_executable(
         safetynet.h
         safetynet.cpp
         project_serializer.h
-        project_serializer.cpp)
+        project_serializer.cpp
+        my_block.h
+        my_block.cpp)
 
 
 target_link_libraries(FoP-Project-G66

@@ -312,6 +312,18 @@ namespace compiler {
             return b ;
         }
 
+        if ( lbl.find("define ") != std::string::npos ) {
+            b->type = core::block_type::custom_define ;
+            b->name = lbl.substr(7) ;
+            return b ;
+        }
+
+        if ( !lbl.empty() ) {
+            b->type = core::block_type::custom_call ;
+            b->name = lbl ;
+            return b ;
+        }
+
         delete b ;
         return nullptr ;
     }
@@ -365,11 +377,17 @@ namespace compiler {
 
         const ui :: ui_block * chain_start = roots[0] ;
         for ( const auto * r : roots ) {
-            bool is_target = false ;
+            bool has_parent_snap = false ;
             for ( const auto & b : ws.blocks ) {
-                if ( b.snap_to == r->id ) { is_target = true ; break ; }
+                if ( r->snap_to == b.id ){
+                    has_parent_snap = true ;
+                    break ;
+                }
             }
-            if ( !is_target ) { chain_start = r ; break ; }
+            if ( !has_parent_snap && r->snap_to < 0 ) {
+                chain_start = r ;
+                break ;
+            }
         }
 
         int current_id = chain_start->id ;
@@ -384,9 +402,13 @@ namespace compiler {
             if ( cb ) result.push_back ( cb ) ;
 
             int next_id = -1 ;
+            const ui :: ui_block * next_ub = nullptr ;
             for ( const auto & b : ws.blocks ) {
                 if ( b.snap_to == current_id && b.parent_id < 0 ) {
-                    next_id = b.id ; break ;
+                    if ( next_ub == nullptr || b.y < next_ub->y ) {
+                        next_id = b.id ;
+                        next_ub = &b ;
+                    }
                 }
             }
             current_id = next_id ;

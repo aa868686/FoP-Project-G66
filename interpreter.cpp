@@ -499,6 +499,20 @@ namespace core {
                 interp.results.push_back(rd);
                 break;
             }
+            case block_type::custom_define: {
+                break ;
+            }
+            case block_type::custom_call: {
+                for ( auto * b2: interp.blocks ) {
+                    if ( b2->type == block_type::custom_define && b2->name == block->name ) {
+                        for ( auto * nb: b2->nested_blocks ) {
+                            interpreter_execute_block ( interp , nb ) ;
+                        }
+                        break ;
+                    }
+                }
+                break ;
+            }
             case block_type::touching_edge: {
                 if (!interp.active_sprite) break;
                 const auto & s = *interp.active_sprite;
