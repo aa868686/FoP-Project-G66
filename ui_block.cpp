@@ -140,6 +140,25 @@ namespace ui {
             inp2.value = "0" ;
             b.inputs.push_back ( inp2 ) ;
         }
+        if (low.find("set") != std::string::npos && low.find("to") != std::string::npos) {
+            if (b.inputs.size() >= 1) b.inputs[0].value = "x";
+            if (b.inputs.size() >= 2) b.inputs[1].value = "0";
+        }
+        if (low.find("change") != std::string::npos && low.find("by") != std::string::npos) {
+            if (b.inputs.size() >= 1) b.inputs[0].value = "x";
+            if (b.inputs.size() >= 2) b.inputs[1].value = "1";
+        }
+        if (low.find("set") != std::string::npos && low.find("to") != std::string::npos) {
+            if (b.inputs.size() >= 1) b.inputs[0].value = "x";
+            if (b.inputs.size() >= 2) b.inputs[1].value = "0";
+        }
+        if (low.find("change") != std::string::npos && low.find("by") != std::string::npos) {
+            if (b.inputs.size() >= 1) b.inputs[0].value = "x";
+            if (b.inputs.size() >= 2) b.inputs[1].value = "1";
+        }
+        if (low.find("show variable") != std::string::npos || low.find("hide variable") != std::string::npos) {
+            if (b.inputs.size() >= 1) b.inputs[0].value = "x";
+        }
         return b ;
     }
 

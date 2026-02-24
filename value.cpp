@@ -73,8 +73,13 @@ namespace core {
         switch (v.type) {
             case value_type::type_int:
                 return std::to_string(v.int_val);
-            case value_type::type_float:
-                return std::to_string(v.float_val);
+            case value_type::type_float: {
+                float f = v.float_val;
+                if (f == (int)f) return std::to_string((int)f);
+                char buf[32];
+                snprintf(buf, sizeof(buf), "%.4g", f);
+                return std::string(buf);
+            }
             case value_type::type_string:
                 return v.string_val;
             case value_type::type_bool:

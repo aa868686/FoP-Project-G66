@@ -97,6 +97,22 @@ namespace compiler {
             core :: Parameter p {} ; p.data = get_input ( ub , 0 ) ;
             b->parameters.push_back ( p ) ; return b ;
         }
+        if (lbl.find("show variable") != std::string::npos) {
+            b->type = core::block_type::show;  // we'll handle separately
+            core::Parameter name{};
+            name.data = get_input(ub, 0);
+            b->parameters.push_back(name);
+            b->name = "show_var";  // mark it
+            return b;
+        }
+        if (lbl.find("hide variable") != std::string::npos) {
+            b->type = core::block_type::hide;
+            core::Parameter name{};
+            name.data = get_input(ub, 0);
+            b->parameters.push_back(name);
+            b->name = "hide_var";
+            return b;
+        }
         if ( lbl.find ( "show" ) != std :: string :: npos ) {
             b->type = core :: block_type :: show ; return b ;
         }
@@ -222,7 +238,24 @@ namespace compiler {
             b->parameters.push_back(a);
             return b;
         }
-
+        if (lbl.find("set") != std::string::npos && lbl.find("to") != std::string::npos) {
+            b->type = core::block_type::set_variable;
+            core::Parameter name{}, val{};
+            name.data = get_input(ub, 0);
+            val.data  = get_input(ub, 1);
+            b->parameters.push_back(name);
+            b->parameters.push_back(val);
+            return b;
+        }
+        if (lbl.find("change") != std::string::npos && lbl.find("by") != std::string::npos) {
+            b->type = core::block_type::change_variable;
+            core::Parameter name{}, val{};
+            name.data = get_input(ub, 0);
+            val.data  = get_input(ub, 1);
+            b->parameters.push_back(name);
+            b->parameters.push_back(val);
+            return b;
+        }
         delete b ;
         return nullptr ;
     }

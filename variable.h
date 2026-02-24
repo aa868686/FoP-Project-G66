@@ -12,6 +12,7 @@ namespace core {
     struct Variable {
         std::string name;
         Value value;
+        bool visible = true;
     };
 
     struct variable_store {

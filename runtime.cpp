@@ -792,7 +792,6 @@ namespace app {
         ui::render_layout(st.renderer, st.lay);
         ui::block_palette_render( st.renderer , st.lay.leftPanel , st.fonts.medium , st.palette_state , st.workspace ) ;
         ui::block_workspace_render(st.renderer, st.workspace, st.lay.workspace, st.fonts.medium);
-        // draw operator results
         Uint32 now = SDL_GetTicks();
         st.interp.results.erase(
                 std::remove_if(st.interp.results.begin(), st.interp.results.end(),
@@ -800,13 +799,11 @@ namespace app {
                 st.interp.results.end());
 
         for (const auto& rd : st.interp.results) {
-            // find the block position in workspace
             if (rd.block_line >= 0 && rd.block_line < (int)st.workspace.blocks.size()) {
                 const auto& b = st.workspace.blocks[rd.block_line];
                 int bx = st.lay.workspace.x + b.x + st.workspace.scroll_x;
                 int by = st.lay.workspace.y + b.y + st.workspace.scroll_y;
 
-                // result rect appears to the right of the block
                 int rw = (int)rd.text.size() * 8 + 16;
                 int rh = 22;
                 SDL_Rect rr { bx + b.w + 6, by + (b.h - rh)/2, rw, rh };
@@ -836,6 +833,19 @@ namespace app {
         SDL_RenderSetClipRect ( st.renderer , &st.lay.stage ) ;
         for ( const auto & spr : st.sprite_mgr.sprites ) {
             gfx::sprite_draw(st.renderer, spr, sr, st.fonts.medium);
+        }
+        int var_y = st.lay.stage.y + 8;
+        int var_x = st.lay.stage.x + 8;
+        for (const auto& pair : st.interp.store.variables) {
+            if (!pair.second.visible) continue;
+            std::string display = pair.first + " = " + value_to_string(pair.second.value);
+            SDL_Rect var_rect { var_x, var_y, 160, 22 };
+            SDL_SetRenderDrawColor(st.renderer, 20, 20, 20, 180);
+            SDL_RenderFillRect(st.renderer, &var_rect);
+            SDL_SetRenderDrawColor(st.renderer, 200, 200, 50, 255);
+            SDL_RenderDrawRect(st.renderer, &var_rect);
+            fnt::draw_text_left(st.renderer, st.fonts.small, display.c_str(), var_rect, {255, 220, 50, 255});
+            var_y += 26;
         }
         SDL_RenderSetClipRect ( st.renderer , nullptr ) ;
 
@@ -985,6 +995,7 @@ namespace app {
                 core :: interpreter_load ( st.interp , st.compiled_blocks ) ;
                 core :: logger_clear ( st.interp.log ) ;
                 st.interp_log_forwarded = 0 ;
+                st.interp.store.variables.clear();
                 core :: interpreter_run ( st.interp ) ;
                 dbg :: logger_log ( st.logger , "Program started." ) ;
             } else {

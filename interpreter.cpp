@@ -59,6 +59,14 @@ namespace core {
             interp.running = false ;
         }
     }
+    static Value resolve(const interpreter& interp, const Value& v) {
+        if (v.type == value_type::type_string) {
+            if (variable_exists(interp.store, v.string_val)) {
+                return variable_get(interp.store, v.string_val);
+            }
+        }
+        return v;
+    }
     void interpreter_execute_block(interpreter& interp, Block* block) {
         if (!block) return;
 
@@ -92,6 +100,8 @@ namespace core {
             case block_type::op_and: entry.command = "AND"; break;
             case block_type::op_or:  entry.command = "OR";  break;
             case block_type::op_not: entry.command = "NOT"; break;
+            case block_type::set_variable:    entry.command = "SET_VAR";    entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
+            case block_type::change_variable: entry.command = "CHANGE_VAR"; entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
             default:                   entry.command = "BLOCK";    break;
         }
 
@@ -104,13 +114,13 @@ namespace core {
 
         switch (block->type) {
             case block_type::set_variable: {
-                variable_set(interp.store, value_to_string(block->parameters[0].data), block->parameters[1].data);
+                variable_set(interp.store, value_to_string(block->parameters[0].data), resolve(interp, block->parameters[1].data));
                 break;
             }
             case block_type::change_variable: {
                 Value val = variable_get(interp.store, value_to_string(block->parameters[0].data));
                 variable_set(interp.store, value_to_string(block->parameters[0].data),
-                             value_add(val, block->parameters[1].data));
+                             value_add(val, resolve(interp, block->parameters[1].data)));
                 break;
             }
             case block_type::stop_all: {
@@ -118,7 +128,7 @@ namespace core {
                 break;
             }
             case block_type::if_then: {
-                if (value_to_bool(block->parameters[0].data)) {
+                if (value_to_bool(resolve(interp, block->parameters[0].data))) {
                     for (auto b: block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
@@ -126,12 +136,11 @@ namespace core {
                 break;
             }
             case block_type::if_then_else: {
-                if (value_to_bool(block->parameters[0].data)) {
+                if (value_to_bool(resolve(interp, block->parameters[0].data))) {
                     for (auto b: block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
-                }
-                else {
+                } else {
                     for (auto b: block->else_blocks) {
                         interpreter_execute_block(interp, b);
                     }
@@ -139,7 +148,8 @@ namespace core {
                 break;
             }
             case block_type::repeat: {
-                for (int i = 0; i < value_to_int(block->parameters[0].data); i++) {
+                Value v = resolve(interp, block->parameters[0].data);
+                for (int i = 0; i < value_to_int(v); i++) {
                     for (auto b: block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
@@ -147,7 +157,7 @@ namespace core {
                 break;
             }
             case block_type::repeat_until: {
-                while (interp.running && !value_to_bool(block->parameters[0].data)) {
+                while (interp.running && !value_to_bool(resolve(interp, block->parameters[0].data))) {
                     for (auto b: block->nested_blocks) {
                         interpreter_execute_block(interp, b);
                     }
@@ -163,115 +173,145 @@ namespace core {
                 break;
             }
             case block_type::wait: {
-                std::this_thread::sleep_for(std::chrono::milliseconds((int)(value_to_float(block->parameters[0].data)*1000)));
+                Value v = resolve(interp, block->parameters[0].data);
+                std::this_thread::sleep_for(std::chrono::milliseconds((int)(value_to_float(v) * 1000)));
                 break;
             }
             case block_type::move: {
                 if (!interp.active_sprite) break;
-                gfx::sprite_move_steps(*interp.active_sprite, value_to_float(block->parameters[0].data));
+                Value v = resolve(interp, block->parameters[0].data);
+                gfx::sprite_move_steps(*interp.active_sprite, value_to_float(v));
                 break;
             }
             case block_type::turn: {
                 if (!interp.active_sprite) break;
-                gfx::sprite_turn_degree(*interp.active_sprite, value_to_float(block->parameters[0].data));
+                Value v = resolve(interp, block->parameters[0].data);
+                gfx::sprite_turn_degree(*interp.active_sprite, value_to_float(v));
                 break;
             }
-            case block_type :: point_in_direction : {
-                if ( !interp.active_sprite ) {
-                    break ;
-                }
-                gfx :: sprite_set_direction ( *interp.active_sprite , value_to_float ( block -> parameters[0].data ) ) ;
-                break ;
+            case block_type::point_in_direction: {
+                if (!interp.active_sprite) break;
+                Value v = resolve(interp, block->parameters[0].data);
+                gfx::sprite_set_direction(*interp.active_sprite, value_to_float(v));
+                break;
             }
             case block_type::set_x: {
                 if (!interp.active_sprite) break;
-                interp.active_sprite->x = value_to_float(block->parameters[0].data);
+                Value v = resolve(interp, block->parameters[0].data);
+                interp.active_sprite->x = value_to_float(v);
                 break;
             }
             case block_type::set_y: {
                 if (!interp.active_sprite) break;
-                interp.active_sprite->y = value_to_float(block->parameters[0].data);
+                Value v = resolve(interp, block->parameters[0].data);
+                interp.active_sprite->y = value_to_float(v);
                 break;
             }
             case block_type::change_x: {
                 if (!interp.active_sprite) break;
-                interp.active_sprite->x += value_to_float(block->parameters[0].data);
+                Value v = resolve(interp, block->parameters[0].data);
+                interp.active_sprite->x += value_to_float(v);
                 break;
             }
             case block_type::change_y: {
                 if (!interp.active_sprite) break;
-                interp.active_sprite->y += value_to_float(block->parameters[0].data);
+                Value v = resolve(interp, block->parameters[0].data);
+                interp.active_sprite->y += value_to_float(v);
                 break;
             }
             case block_type::go_to_xy: {
                 if (!interp.active_sprite) break;
-                gfx::sprite_set_position(*interp.active_sprite, value_to_float(block->parameters[0].data), value_to_float(block->parameters[1].data));
+                Value vx = resolve(interp, block->parameters[0].data);
+                Value vy = resolve(interp, block->parameters[1].data);
+                gfx::sprite_set_position(*interp.active_sprite, value_to_float(vx), value_to_float(vy));
                 break;
             }
             case block_type::show: {
-                if (!interp.active_sprite) break;
-                gfx::sprite_set_visible(*interp.active_sprite, true);
+                if (block->name == "show_var") {
+                    if (!block->parameters.empty()) {
+                        std::string vname = value_to_string(resolve(interp, block->parameters[0].data));
+                        if (variable_exists(interp.store, vname)) {
+                            interp.store.variables[vname].visible = true;
+                        }
+                    }
+                } else {
+                    if (interp.active_sprite)
+                        gfx::sprite_set_visible(*interp.active_sprite, true);
+                }
                 break;
             }
             case block_type::hide: {
-                if (!interp.active_sprite) break;
-                gfx::sprite_set_visible(*interp.active_sprite, false);
+                if (block->name == "hide_var") {
+                    if (!block->parameters.empty()) {
+                        std::string vname = value_to_string(resolve(interp, block->parameters[0].data));
+                        if (variable_exists(interp.store, vname)) {
+                            interp.store.variables[vname].visible = false;
+                        }
+                    }
+                } else {
+                    if (interp.active_sprite)
+                        gfx::sprite_set_visible(*interp.active_sprite, false);
+                }
                 break;
             }
             case block_type::set_size: {
                 if (!interp.active_sprite) break;
-                gfx::sprite_set_size(*interp.active_sprite, value_to_float(block->parameters[0].data));
+                Value v = resolve(interp, block->parameters[0].data);
+                gfx::sprite_set_size(*interp.active_sprite, value_to_float(v));
                 break;
             }
             case block_type::change_size: {
                 if (!interp.active_sprite) break;
-                gfx::sprite_set_size(*interp.active_sprite, value_to_float(block->parameters[0].data) + interp.active_sprite->size_percent);
+                Value v = resolve(interp, block->parameters[0].data);
+                gfx::sprite_set_size(*interp.active_sprite, value_to_float(v) + interp.active_sprite->size_percent);
                 break;
             }
             case block_type::switch_costume: {
                 if (!interp.active_sprite) break;
-                gfx::sprite_set_costume_by_name(*interp.active_sprite, (value_to_string(block->parameters[0].data).c_str()));
+                Value v = resolve(interp, block->parameters[0].data);
+                gfx::sprite_set_costume_by_name(*interp.active_sprite, value_to_string(v).c_str());
                 break;
             }
             case block_type::next_costume: {
                 if (!interp.active_sprite) break;
-                int next = (interp.active_sprite->current_costume+1) % interp.active_sprite->costumes.size();
+                int next = (interp.active_sprite->current_costume + 1) % interp.active_sprite->costumes.size();
                 gfx::sprite_set_costume(*interp.active_sprite, next);
                 interp.active_sprite->current_costume = next;
                 break;
             }
-
-            case block_type :: play_sound : {
-                if ( interp.sound_manager ) {
-                    std :: string name = value_to_string ( block -> parameters[0].data ) ;
-                    for ( auto & se : interp.sound_manager -> sounds ) {
-                        if ( se.name == name ) {
-                            snd :: sound_play ( se ) ;
-                            break ;
+            case block_type::play_sound: {
+                if (interp.sound_manager) {
+                    Value v = resolve(interp, block->parameters[0].data);
+                    std::string name = value_to_string(v);
+                    for (auto& se : interp.sound_manager->sounds) {
+                        if (se.name == name) {
+                            snd::sound_play(se);
+                            break;
                         }
                     }
                 }
-                break ;
+                break;
             }
-
             case block_type::say: {
                 if (!interp.active_sprite || block->parameters.empty()) break;
-                interp.active_sprite->say_text = value_to_string(block->parameters[0].data);
+                Value v = resolve(interp, block->parameters[0].data);
+                interp.active_sprite->say_text = value_to_string(v);
                 interp.active_sprite->say_visible = true;
                 interp.active_sprite->think_bubble = false;
                 break;
             }
             case block_type::think: {
                 if (!interp.active_sprite || block->parameters.empty()) break;
-                interp.active_sprite->say_text = value_to_string(block->parameters[0].data);
+                Value v = resolve(interp, block->parameters[0].data);
+                interp.active_sprite->say_text = value_to_string(v);
                 interp.active_sprite->say_visible = true;
                 interp.active_sprite->think_bubble = true;
                 break;
             }
             case block_type::op_add: {
                 if (block->parameters.size() < 2) break;
-                Value a = block->parameters[0].data ;
-                Value b = block->parameters[1].data ;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
                 Value result = value_add(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
@@ -283,8 +323,8 @@ namespace core {
             }
             case block_type::op_sub: {
                 if (block->parameters.size() < 2) break;
-                Value a = block->parameters[0].data ;
-                Value b = block->parameters[1].data ;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
                 Value result = value_sub(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
@@ -296,8 +336,8 @@ namespace core {
             }
             case block_type::op_mul: {
                 if (block->parameters.size() < 2) break;
-                Value a = block->parameters[0].data ;
-                Value b = block->parameters[1].data ;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
                 Value result = value_mul(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
@@ -309,8 +349,8 @@ namespace core {
             }
             case block_type::op_div: {
                 if (block->parameters.size() < 2) break;
-                Value a = block->parameters[0].data ;
-                Value b = block->parameters[1].data ;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
                 Value result = value_div(a, b);
                 block->parameters[0].data = result;
                 result_display rd;
@@ -322,8 +362,8 @@ namespace core {
             }
             case block_type::op_eq: {
                 if (block->parameters.size() < 2) break;
-                Value a = block->parameters[0].data ;
-                Value b = block->parameters[1].data ;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
                 bool result = value_eq(a, b);
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
@@ -335,8 +375,8 @@ namespace core {
             }
             case block_type::op_lt: {
                 if (block->parameters.size() < 2) break;
-                Value a = block->parameters[0].data ;
-                Value b = block->parameters[1].data ;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
                 bool result = value_lt(a, b);
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
@@ -348,8 +388,8 @@ namespace core {
             }
             case block_type::op_gt: {
                 if (block->parameters.size() < 2) break;
-                Value a = block->parameters[0].data ;
-                Value b = block->parameters[1].data ;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
                 bool result = value_gt(a, b);
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
@@ -359,11 +399,9 @@ namespace core {
                 interp.results.push_back(rd);
                 break;
             }
-
-
             case block_type::op_and: {
                 if (block->parameters.size() < 2) break;
-                bool result = value_to_bool(block->parameters[0].data) && value_to_bool(block->parameters[1].data);
+                bool result = value_to_bool(resolve(interp, block->parameters[0].data)) && value_to_bool(resolve(interp, block->parameters[1].data));
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
                 rd.block_line = interp.line_number;
@@ -374,7 +412,7 @@ namespace core {
             }
             case block_type::op_or: {
                 if (block->parameters.size() < 2) break;
-                bool result = value_to_bool(block->parameters[0].data) || value_to_bool(block->parameters[1].data);
+                bool result = value_to_bool(resolve(interp, block->parameters[0].data)) || value_to_bool(resolve(interp, block->parameters[1].data));
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
                 rd.block_line = interp.line_number;
@@ -385,7 +423,7 @@ namespace core {
             }
             case block_type::op_not: {
                 if (block->parameters.empty()) break;
-                bool result = !value_to_bool(block->parameters[0].data);
+                bool result = !value_to_bool(resolve(interp, block->parameters[0].data));
                 block->parameters[0].data = value_make_bool(result);
                 result_display rd;
                 rd.block_line = interp.line_number;

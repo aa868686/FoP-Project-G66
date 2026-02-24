@@ -6,10 +6,15 @@
 #include <string>
 namespace core {
     void variable_set(variable_store &store, const std::string &name, const core::Value &value) {
-        Variable var;
-        var.name = name;
-        var.value = value;
-        store.variables[name] = var;
+        if (store.variables.count(name) > 0) {
+            store.variables[name].value = value;
+        } else {
+            Variable var;
+            var.name = name;
+            var.value = value;
+            var.visible = true;
+            store.variables[name] = var;
+        }
     }
 
     core::Value variable_get(const variable_store &store, const std::string &name) {
