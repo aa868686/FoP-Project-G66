@@ -203,9 +203,15 @@ namespace core {
                 break;
             }
             case block_type::move: {
-                if (!interp.active_sprite) break;
-                Value v = resolve(interp, block->parameters[0].data);
-                gfx::sprite_move_steps(*interp.active_sprite, value_to_float(v));
+                if (!interp.active_sprite) {
+                    break;
+                }
+                gfx::sprite_move_steps(*interp.active_sprite, value_to_float(block->parameters[0].data));
+                if ( interp.pen && interp.pen->is_down ) {
+                    gfx::pen_add_point ( *interp.pen ,
+                                         interp.active_sprite->x - interp.active_stage.x ,
+                                         interp.active_sprite->y - interp.active_stage.y ) ;
+                }
                 break;
             }
             case block_type::turn: {
@@ -221,34 +227,54 @@ namespace core {
                 break;
             }
             case block_type::set_x: {
-                if (!interp.active_sprite) break;
+                if (!interp.active_sprite) {
+                    break;
+                }
                 Value v = resolve(interp, block->parameters[0].data);
                 interp.active_sprite->x = value_to_float(v);
+                if ( interp.pen && interp.pen->is_down )
+                    gfx::pen_add_point(*interp.pen, interp.active_sprite->x - interp.active_stage.x, interp.active_sprite->y - interp.active_stage.y);
                 break;
             }
             case block_type::set_y: {
-                if (!interp.active_sprite) break;
+                if (!interp.active_sprite) {
+                    break;
+                }
                 Value v = resolve(interp, block->parameters[0].data);
                 interp.active_sprite->y = value_to_float(v);
+                if ( interp.pen && interp.pen->is_down )
+                    gfx::pen_add_point(*interp.pen, interp.active_sprite->x - interp.active_stage.x, interp.active_sprite->y - interp.active_stage.y);
                 break;
             }
             case block_type::change_x: {
-                if (!interp.active_sprite) break;
+                if (!interp.active_sprite) {
+                    break;
+                }
                 Value v = resolve(interp, block->parameters[0].data);
                 interp.active_sprite->x += value_to_float(v);
+                if ( interp.pen && interp.pen->is_down )
+                    gfx::pen_add_point(*interp.pen, interp.active_sprite->x - interp.active_stage.x, interp.active_sprite->y - interp.active_stage.y);
                 break;
             }
             case block_type::change_y: {
-                if (!interp.active_sprite) break;
+                if (!interp.active_sprite) {
+                    break;
+                }
                 Value v = resolve(interp, block->parameters[0].data);
                 interp.active_sprite->y += value_to_float(v);
+                if ( interp.pen && interp.pen->is_down )
+                    gfx::pen_add_point(*interp.pen, interp.active_sprite->x - interp.active_stage.x, interp.active_sprite->y - interp.active_stage.y);
                 break;
             }
             case block_type::go_to_xy: {
-                if (!interp.active_sprite) break;
+                if (!interp.active_sprite) {
+                    break;
+                }
                 Value vx = resolve(interp, block->parameters[0].data);
                 Value vy = resolve(interp, block->parameters[1].data);
                 gfx::sprite_set_position(*interp.active_sprite, value_to_float(vx), value_to_float(vy));
+                if ( interp.pen && interp.pen->is_down )
+                    gfx::pen_add_point(*interp.pen, interp.active_sprite->x - interp.active_stage.x, interp.active_sprite->y - interp.active_stage.y);
                 break;
             }
             case block_type::show: {
@@ -317,6 +343,47 @@ namespace core {
                 }
                 break;
             }
+
+            case block_type::pen_down: {
+                if ( !interp.pen || !interp.active_sprite ) break ;
+                gfx::pen_down ( *interp.pen ,
+                                interp.active_sprite->x - interp.active_stage.x ,
+                                interp.active_sprite->y - interp.active_stage.y ) ;
+                break ;
+            }
+            case block_type::pen_up: {
+                if ( !interp.pen ) break ;
+                gfx::pen_up ( *interp.pen ) ;
+                break ;
+            }
+            case block_type::pen_erase_all: {
+                if ( !interp.pen ) break ;
+                gfx::pen_erase_all ( *interp.pen ) ;
+                break ;
+            }
+            case block_type::pen_stamp: {
+                if ( !interp.pen || !interp.active_sprite ) break ;
+                const gfx::sprite & s = *interp.active_sprite ;
+                if ( s.costumes.empty() || s.current_costume >= (int)s.costumes.size() ) {
+                    break ;
+                }
+                const gfx::Costume & c = s.costumes[s.current_costume] ;
+                if ( !c.texture ) {
+                    break ;
+                }
+                float w = c.tex_w * s.size_percent / 100.0f ;
+                float h = c.tex_h * s.size_percent / 100.0f ;
+                SDL_FRect dst {
+                        s.x - w / 2.0f ,
+                        s.y - h / 2.0f ,
+                        w , h
+                } ;
+                SDL_FPoint center { w / 2.0f , h / 2.0f } ;
+                double angle = (double)(s.direction_deg - 90.0f) ;
+                gfx::pen_stamp ( *interp.pen , c.texture , dst , angle , center ) ;
+                break ;
+            }
+
             case block_type::say: {
                 if (!interp.active_sprite || block->parameters.empty()) break;
                 Value v = resolve(interp, block->parameters[0].data);
@@ -565,6 +632,87 @@ namespace core {
                 s.direction_deg = std::atan2(dy, dx) * 180.0f / (float)M_PI;
                 if (s.direction_deg < 0) s.direction_deg += 360.0f;
 
+                break;
+            }
+            case block_type::custom_define: {
+                break ;
+            }
+            case block_type::custom_call: {
+                for ( auto * b2: interp.blocks ) {
+                    if ( b2->type == block_type::custom_define && b2->name == block->name ) {
+                        for ( auto * nb: b2->nested_blocks ) {
+                            interpreter_execute_block ( interp , nb ) ;
+                        }
+                        break ;
+                    }
+                }
+                break ;
+            }
+            case block_type::touching_edge: {
+                if (!interp.active_sprite) break;
+                const auto & s = *interp.active_sprite;
+                const auto & st = interp.active_stage;
+                bool touching = (s.x <= 0 || s.x >= st.w || s.y <= 0 || s.y >= st.h);
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = std::string("touching edge: ") + (touching ? "true" : "false");
+                rd.show_until = SDL_GetTicks() + 3000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::key_pressed: {
+                if (block->parameters.empty()) break;
+                std::string key = value_to_string(block->parameters[0].data);
+                bool pressed = false;
+                if (interp.keyboard_state) {
+                    SDL_Scancode sc = SDL_GetScancodeFromName(key.c_str());
+                    if (sc != SDL_SCANCODE_UNKNOWN) {
+                        pressed = interp.keyboard_state[sc];
+                    }
+                }
+                block->parameters[0].data = value_make_bool(pressed);
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = "key " + key + ": " + (pressed ? "true" : "false");
+                rd.show_until = SDL_GetTicks() + 3000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::mouse_down: {
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = std::string("mouse down: ") + (interp.mouse_down ? "true" : "false");
+                rd.show_until = SDL_GetTicks() + 3000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::mouse_x: {
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = "mouse x: " + std::to_string(interp.mouse_x - interp.active_stage.x);
+                rd.show_until = SDL_GetTicks() + 3000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::mouse_y: {
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = "mouse y: " + std::to_string(interp.mouse_y - interp.active_stage.y);
+                rd.show_until = SDL_GetTicks() + 3000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::timer: {
+                float t = (SDL_GetTicks() - interp.timer_start) / 1000.0f;
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = "timer: " + std::to_string(t) + "s";
+                rd.show_until = SDL_GetTicks() + 3000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::reset_timer: {
+                interp.timer_start = SDL_GetTicks();
                 break;
             }
         }

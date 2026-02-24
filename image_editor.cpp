@@ -233,6 +233,7 @@ namespace gfx {
         ed.btn_circle = { bx , by , ed_btn_w , ed_btn_h } ; bx += ed_btn_w + ed_pad ;
         ed.btn_rect_tool = { bx , by , ed_btn_w , ed_btn_h } ; bx += ed_btn_w + ed_pad ;
         ed.btn_fill = { bx , by , ed_btn_w , ed_btn_h } ; bx += ed_btn_w + ( ed_pad * 3 ) ;
+        ed.btn_erase_all = { bx , by , ed_btn_w , ed_btn_h } ; bx += ed_btn_w + ed_pad ;
         ed.btn_size_down = { bx , by , 24 , ed_btn_h } ; bx += 24 + 4 ;
         ed.btn_size_up   = { bx , by , 24 , ed_btn_h } ; bx += 24 + ed_pad ;
 
@@ -347,6 +348,12 @@ namespace gfx {
             }
         }
 
+        ed_fill ( ren , ed.btn_erase_all , 180 , 60 , 60 ) ;
+        ed_outline ( ren , ed.btn_erase_all , 90  , 90 , 90 ) ;
+        if ( font ) {
+            fnt :: draw_text_centered ( ren , font , "Clear" , ed.btn_erase_all , { 255,255,255,255 } ) ;
+        }
+
         const int by = ed.toolbar.y + ( ed_toolbar_h - ed_btn_h ) / 2 ;
         ed_fill    ( ren , ed.btn_size_down , 55 , 55 , 55 ) ;
         ed_outline ( ren , ed.btn_size_down , 90 , 90 , 90 ) ;
@@ -455,6 +462,19 @@ namespace gfx {
         }
         if ( ed_hit ( ed.btn_fill , mx , my ) ) {
             ed.tool = editor_tool::fill ;
+            return true ;
+        }
+        if ( ed_hit ( ed.btn_erase_all , mx , my ) ) {
+            if ( ed.canvas ) {
+                void * pixels = nullptr ;
+                int pitch = 0 ;
+                SDL_LockTexture ( ed.canvas , nullptr , &pixels , &pitch ) ;
+                auto * px = static_cast<Uint32*> ( pixels ) ;
+                for ( int i = 0 ; i < ed.canvas_w * ed.canvas_h ; ++i ) {
+                    px[i] = 0xFFFFFFFF ;
+                }
+                SDL_UnlockTexture ( ed.canvas ) ;
+            }
             return true ;
         }
 

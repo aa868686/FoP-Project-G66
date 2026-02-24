@@ -77,6 +77,7 @@ namespace ui {
             { block_category::sensing, "key _ pressed?" },
             { block_category::sensing, "mouse x" },
             { block_category::sensing, "mouse y" },
+            { block_category :: my_blocks , "Make a Block" } ,
 
     } ;
 
@@ -99,6 +100,7 @@ namespace ui {
             case block_category :: sound : return { 180 , 80 , 200 , 255 } ;
             case block_category :: variables : return { 220 , 120 , 20  , 255 } ;
             case block_category :: sensing : return { 20  , 180 , 200 , 255 } ;
+            case block_category :: my_blocks : return { 180 , 100 , 200 , 255 } ;
         }
         return { 100 , 100 , 100 , 255 } ;
     }
@@ -654,9 +656,10 @@ namespace ui {
             { block_category :: sound , "Sound" } ,
             { block_category :: variables , "Variables" } ,
             { block_category :: sensing , "Sensing"   } ,
+            { block_category :: my_blocks , "My Blocks" } ,
     } ;
 
-    static constexpr int cat_count = 8 ;
+    static constexpr int cat_count = 9 ;
     static constexpr int cat_w = 80 ;
     static constexpr int cat_item_h = 48 ;
 
@@ -719,6 +722,17 @@ namespace ui {
             y += palette_item_h + palette_pad ;
         }
 
+        if ( state.selected_category == block_category :: my_blocks ) {
+            for ( const auto & lbl : state.my_block_labels ) {
+                SDL_Rect r { blocks_panel.x + palette_pad , y , blocks_panel.w - ( palette_pad * 2 ) , palette_item_h } ;
+                SDL_Color col = block_category_color ( block_category :: my_blocks ) ;
+                fill_rect ( ren , r , col ) ;
+                draw_rect_outline ( ren , r , darker(col,40) ) ;
+                if ( font ) fnt :: draw_text_left ( ren , font , lbl.c_str() , r , {255,255,255,255} , pad ) ;
+                y += palette_item_h + palette_pad ;
+            }
+        }
+
         SDL_RenderSetClipRect ( ren , nullptr ) ;
     }
 
@@ -767,6 +781,19 @@ namespace ui {
             }
 
             y += palette_item_h + palette_pad ;
+        }
+
+        if ( state.selected_category == block_category :: my_blocks ) {
+            for ( const auto & lbl : state.my_block_labels ) {
+                SDL_Rect r { blocks_panel.x + palette_pad , y , blocks_panel.w - ( palette_pad * 2 ) , palette_item_h } ;
+                if ( mx >= r.x && mx < r.x + r.w &&
+                     my >= r.y && my < r.y + r.h ) {
+                    out_cat = block_category :: my_blocks ;
+                    out_label = lbl ;
+                    return true ;
+                }
+                y += palette_item_h + palette_pad ;
+            }
         }
 
         return false ;

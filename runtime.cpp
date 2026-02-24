@@ -24,6 +24,7 @@
 #include "block.h"
 #include "project_serializer.h"
 #include "variable.h"
+#include "my_block.h"
 
 namespace app {
 
@@ -136,6 +137,9 @@ namespace app {
         ui::button btn_run{};
         ui::button btn_stop{};
         ui :: button btn_pause {} ;
+
+        myblock :: func_store func_store {} ;
+        myblock :: my_block_editor my_block_ed {} ;
 
         bool running = true;
         bool is_paused = false;
@@ -335,6 +339,7 @@ namespace app {
                         snd::sound_add(st.sounds, path, path);
                     }
                 }},
+
         };
 
         st.menu_background.title = "Background" ;
@@ -463,8 +468,22 @@ namespace app {
                 }
             }
 
+            if ( e.type == SDL_KEYDOWN ) {
+                if ( e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_KP_ENTER ) {
+                    bool any_focused = false ;
+                    for ( auto & inp : st.info_inputs ) {
+                        if ( inp.focused ) { any_focused = true ; break ; }
+                    }
+                    if ( st.workspace.focused_input < 0 && !any_focused ) {
+                        st.btn_run.on_click() ;
+                    }
+                }
+            }
+
+
             if ( e.type == SDL_TEXTINPUT ) {
                 ui :: block_input_handle_key ( st.workspace , SDLK_UNKNOWN , e.text.text ) ;
+                myblock :: editor_handle_text ( st.my_block_ed , e.text.text ) ;
                 for ( auto & inp: st.info_inputs ) {
                     if ( inp.focused && inp.value.size() < 6 ) {
                         inp.value += e.text.text ;
@@ -511,6 +530,9 @@ namespace app {
                         }
                     }
                 }
+                if ( e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_BACKSPACE ) {
+                    myblock :: editor_handle_backspace ( st.my_block_ed ) ;
+                }
             }
 
 
@@ -535,6 +557,20 @@ namespace app {
 
                 if (gfx :: editor_handle_click (st.img_editor, mx, my )) {
                     return;
+                }
+
+                {
+                    int out_new = -1 ;
+                    if ( myblock :: editor_handle_click ( st.my_block_ed , st.func_store , mx , my , out_new ) ) {
+                        if ( out_new >= 0 ) {
+                            const auto & f = st.func_store.funcs[out_new] ;
+                            std :: string def_lbl = myblock :: func_define_label ( f ) ;
+                            ui :: block_workspace_add ( st.workspace , def_lbl , ui :: block_category :: my_blocks , 50 , 50 ) ;
+                            std :: string call_lbl = myblock :: func_call_label ( f ) ;
+                            st.palette_state.my_block_labels.push_back ( call_lbl ) ;
+                        }
+                        return ;
+                    }
                 }
 
 
@@ -670,6 +706,14 @@ namespace app {
                         std :: string label {} ;
 
                         if ( ui :: block_palette_click ( st.lay.leftPanel , mx , my , cat , label , st.palette_state ) ) {
+                            if ( label == "Make a Block" ) {
+                                int ww , wh ;
+                                SDL_GetWindowSize (SDL_GetWindowFromID ( 1 ) , &ww , &wh ) ;
+                                myblock :: editor_open ( st.my_block_ed , ww , wh ) ;
+                            } else {
+                                ui :: block_workspace_add ( st.workspace , label , cat , 80 ,
+                                                            80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
+                            }
                             ui :: block_workspace_add ( st.workspace , label , cat , 80 ,
                                                         80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
 
@@ -890,7 +934,7 @@ namespace app {
 
         dbg::logger_render(st.renderer, st.logger, st.fonts.small);
         gfx::editor_render(st.renderer, st.img_editor, st.fonts.medium);
-
+        myblock :: editor_render ( st.renderer , st.my_block_ed , st.func_store , st.fonts.medium ) ;
         if ( st.context_menu_open ) {
             SDL_Rect r = st.context_menu_rect ;
             SDL_SetRenderDrawColor ( st.renderer , 45 , 45 , 45 , 255 ) ;
@@ -993,6 +1037,9 @@ namespace app {
                 if ( st.sprite_mgr.active >= 0 &&
                      st.sprite_mgr.active < (int)st.sprite_mgr.sprites.size() ) {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                    st.interp.keyboard_state = SDL_GetKeyboardState(nullptr);
+                    st.interp.active_stage = { st.lay.stage.x, st.lay.stage.y, st.lay.stage.w, st.lay.stage.h };
+                    st.interp.timer_start = SDL_GetTicks();
                 }
                 core :: interpreter_load ( st.interp , st.compiled_blocks ) ;
                 core :: logger_clear ( st.interp.log ) ;
@@ -1038,6 +1085,7 @@ namespace app {
                 }
                 if ( st.sprite_mgr.active >= 0 && st.sprite_mgr.active < (int)st.sprite_mgr.sprites.size() ) {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                    st.interp.pen = &st.pen ;
                 }
                 core :: interpreter_load ( st.interp , st.compiled_blocks ) ;
                 st.interp.running = true ;
@@ -1090,6 +1138,9 @@ namespace app {
 
             update_rects(st);
             handle_events(st);
+
+            SDL_GetMouseState(&st.interp.mouse_x, &st.interp.mouse_y);
+            st.interp.mouse_down = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(1)) != 0 ;
 
             if ( !st.step_mode ) {
                 core :: interpreter_tick ( st.interp ) ;

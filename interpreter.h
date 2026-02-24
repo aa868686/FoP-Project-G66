@@ -9,6 +9,7 @@
 #include "safetynet.h"
 #include "ui_block.h"
 #include <SDL2/SDL.h>
+#include "pen.h"
 namespace core {
 
     struct result_display {
@@ -29,6 +30,14 @@ namespace core {
         safety_net safety;
         snd :: sound_manager * sound_manager = nullptr ;
         std::vector<result_display> results;
+        const Uint8 * keyboard_state = nullptr ;
+        int mouse_x = 0 ;
+        int mouse_y = 0 ;
+        bool mouse_down = false ;
+        std :: string answer {} ;
+        Uint32 timer_start = 0 ;
+        gfx :: stage_rectangle active_stage {} ;
+        gfx :: pen_state * pen = nullptr ;
         int mouse_x = 0;
         int mouse_y = 0;
         bool mouse_down = false;

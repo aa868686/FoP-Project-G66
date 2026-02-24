@@ -11,11 +11,12 @@
 namespace ui {
 
     enum struct block_category {
-        motion , looks , control , events , operators , sound , variables , sensing ,
+        motion , looks , control , events , operators , sound , variables , sensing , my_blocks ,
     } ;
 
     struct block_palette_state {
         block_category selected_category = block_category :: motion ;
+        std :: vector < std :: string > my_block_labels {} ;
     };
 
     struct block_input {
