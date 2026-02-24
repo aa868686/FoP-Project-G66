@@ -123,7 +123,7 @@ namespace ui {
         std :: transform ( low.begin() , low.end() , low.begin() , ::tolower ) ;
         if ( low.find ( "repeat" ) != std :: string :: npos ||
              low.find ( "forever" ) != std :: string :: npos ||
-              low.find ( "if" ) != std :: string :: npos ) {
+              low.find ( "define " ) != std :: string :: npos ) {
             b.is_container = true ;
             b.container_h = 48 ;
             b.h = block_h + b.container_h + block_h ;

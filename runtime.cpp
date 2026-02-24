@@ -714,9 +714,6 @@ namespace app {
                                 ui :: block_workspace_add ( st.workspace , label , cat , 80 ,
                                                             80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
                             }
-                            ui :: block_workspace_add ( st.workspace , label , cat , 80 ,
-                                                        80 + static_cast <int> ( st.workspace.blocks.size() ) * 44 ) ;
-
                             menu_consumed = true ;
                         }
                     }
