@@ -256,11 +256,66 @@ namespace compiler {
             b->parameters.push_back(val);
             return b;
         }
+
+        if ( lbl.find  ( "touching" ) != std :: string::npos && lbl.find("edge") != std::string::npos ) {
+            b->type = core::block_type::touching_edge ;
+            return b ;
+        }
+        if ( lbl.find("key") != std::string::npos && lbl.find("pressed") != std::string::npos ) {
+            b->type = core::block_type::key_pressed ;
+            core::Parameter p {} ;
+            p.data = get_input(ub, 0) ;
+            b->parameters.push_back(p) ;
+            return b ;
+        }
+        if ( lbl.find("mouse down") != std::string::npos ) {
+            b->type = core::block_type::mouse_down ;
+            return b ;
+        }
+        if ( lbl.find("mouse x") != std::string::npos ) {
+            b->type = core::block_type::mouse_x ;
+            return b ;
+        }
+        if ( lbl.find("mouse y") != std::string::npos ) {
+            b->type = core::block_type::mouse_y ;
+            return b ;
+        }
+        if ( lbl.find("timer") != std::string::npos && lbl.find("reset") == std::string::npos ) {
+            b->type = core::block_type::timer ;
+            return b ;
+        }
+        if ( lbl.find("reset timer") != std::string::npos ) {
+            b->type = core::block_type::reset_timer ;
+            return b ;
+        }
+        if ( lbl.find("ask") != std::string::npos && lbl.find("wait") != std::string::npos ) {
+            b->type = core::block_type::ask_and_wait ;
+            core::Parameter p {} ;
+            p.data = get_input(ub, 0) ;
+            b->parameters.push_back(p) ;
+            return b ;
+        }
+
+        if ( lbl.find("touching") != std::string::npos && lbl.find("edge") != std::string::npos ) {
+            b->type = core::block_type::touching_edge ;
+            return b ;
+        }
+        if ( lbl.find("key") != std::string::npos && lbl.find("pressed") != std::string::npos ) {
+            b->type = core::block_type::key_pressed ;
+            core::Parameter p {} ;
+            p.data = get_input(ub, 0) ;
+            b->parameters.push_back(p) ;
+            return b ;
+        }
+        if ( lbl.find("mouse down") != std::string::npos ) {
+            b->type = core::block_type::mouse_down ;
+            return b ;
+        }
+
         delete b ;
         return nullptr ;
     }
 
-    // Forward declaration
     static core :: Block * compile_block_recursive ( const ui :: ui_block & ub , const ui :: block_workspace & ws ) ;
 
     static core :: Block * compile_block_recursive ( const ui :: ui_block & ub , const ui :: block_workspace & ws ) {
@@ -268,7 +323,6 @@ namespace compiler {
         if ( !cb ) return nullptr ;
 
         if ( ub.is_container && !ub.children.empty() ) {
-            // Collect children sorted by y position
             std :: vector < const ui :: ui_block * > sorted_children ;
             for ( int cid : ub.children ) {
                 for ( const auto & child : ws.blocks ) {
@@ -295,7 +349,6 @@ namespace compiler {
     std :: vector < core :: Block * > compile_workspace ( const ui :: block_workspace & ws ) {
         std :: vector < core :: Block * > result ;
 
-        // Get all top-level blocks (no parent)
         std :: vector < const ui :: ui_block * > roots ;
         for ( const auto & b : ws.blocks ) {
             if ( b.parent_id < 0 ) roots.push_back ( &b ) ;
@@ -303,16 +356,13 @@ namespace compiler {
 
         if ( roots.empty() ) return result ;
 
-        // Sort roots by y then x
         std :: sort ( roots.begin() , roots.end() ,
                       [] ( const ui :: ui_block * a , const ui :: ui_block * b ) {
                           if ( a->y != b->y ) return a->y < b->y ;
                           return a->x < b->x ;
                       } ) ;
 
-        // Follow snap chain starting from topmost root
-        // Find the start of the chain (block not snapped to by anyone)
-        // i.e. find root whose id is not any other block's snap_to
+
         const ui :: ui_block * chain_start = roots[0] ;
         for ( const auto * r : roots ) {
             bool is_target = false ;
@@ -322,7 +372,6 @@ namespace compiler {
             if ( !is_target ) { chain_start = r ; break ; }
         }
 
-        // Walk the snap chain
         int current_id = chain_start->id ;
         while ( current_id >= 0 ) {
             const ui :: ui_block * ub = nullptr ;
@@ -334,7 +383,6 @@ namespace compiler {
             core :: Block * cb = compile_block_recursive ( *ub , ws ) ;
             if ( cb ) result.push_back ( cb ) ;
 
-            // Find next in chain
             int next_id = -1 ;
             for ( const auto & b : ws.blocks ) {
                 if ( b.snap_to == current_id && b.parent_id < 0 ) {

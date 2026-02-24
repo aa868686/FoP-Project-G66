@@ -55,6 +55,7 @@ namespace gfx {
         SDL_Rect btn_apply {} ;
         SDL_Rect btn_size_up {} ;
         SDL_Rect btn_size_down {} ;
+        SDL_Rect btn_erase_all {} ;
 
         editor_color_picker color_picker {} ;
 

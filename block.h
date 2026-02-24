@@ -1,7 +1,3 @@
-//
-// Created by amirf on 2/20/2026.
-//
-
 #ifndef FOP_PROJECT_G66_BLOCK_H
 #define FOP_PROJECT_G66_BLOCK_H
 #include "value.h"
@@ -16,6 +12,10 @@ namespace core {
         set_variable, change_variable,
         play_sound, stop_all_sounds,
         ask_and_wait,
+        touching_edge, touching_sprite, touching_color,
+        distance_to_mouse, distance_to_sprite,
+        key_pressed, mouse_down, mouse_x, mouse_y,
+        timer, reset_timer,
         pen_down, pen_up, pen_erase_all, pen_stamp,
         op_add, op_sub, op_mul, op_div, op_eq, op_lt, op_gt, op_and, op_or, op_not,
         custom_define, custom_call
@@ -24,7 +24,7 @@ namespace core {
     struct Parameter {
         Value data;
         bool is_variable = false;
-        std::string variable_name = "";
+        std::string variable_name = "" ;
     };
 
     struct Block {
@@ -32,6 +32,7 @@ namespace core {
         std::vector<Parameter> parameters;
         std::vector<Block*> nested_blocks;
         std::vector<Block*> else_blocks;
+        Block * condition_block = nullptr ;
         int line_number = -1;
         int jump_target = -1;
         std::string name;

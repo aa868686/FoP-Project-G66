@@ -335,6 +335,7 @@ namespace app {
                         snd::sound_add(st.sounds, path, path);
                     }
                 }},
+
         };
 
         st.menu_background.title = "Background" ;
@@ -991,6 +992,9 @@ namespace app {
                 if ( st.sprite_mgr.active >= 0 &&
                      st.sprite_mgr.active < (int)st.sprite_mgr.sprites.size() ) {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                    st.interp.keyboard_state = SDL_GetKeyboardState(nullptr);
+                    st.interp.active_stage = { st.lay.stage.x, st.lay.stage.y, st.lay.stage.w, st.lay.stage.h };
+                    st.interp.timer_start = SDL_GetTicks();
                 }
                 core :: interpreter_load ( st.interp , st.compiled_blocks ) ;
                 core :: logger_clear ( st.interp.log ) ;
@@ -1036,6 +1040,7 @@ namespace app {
                 }
                 if ( st.sprite_mgr.active >= 0 && st.sprite_mgr.active < (int)st.sprite_mgr.sprites.size() ) {
                     st.interp.active_sprite = &st.sprite_mgr.sprites[st.sprite_mgr.active] ;
+                    st.interp.pen = &st.pen ;
                 }
                 core :: interpreter_load ( st.interp , st.compiled_blocks ) ;
                 st.interp.running = true ;
@@ -1088,6 +1093,9 @@ namespace app {
 
             update_rects(st);
             handle_events(st);
+
+            SDL_GetMouseState(&st.interp.mouse_x, &st.interp.mouse_y);
+            st.interp.mouse_down = (SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(1)) != 0 ;
 
             if ( !st.step_mode ) {
                 core :: interpreter_tick ( st.interp ) ;
