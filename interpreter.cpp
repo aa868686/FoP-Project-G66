@@ -100,8 +100,14 @@ namespace core {
             case block_type::op_and: entry.command = "AND"; break;
             case block_type::op_or:  entry.command = "OR";  break;
             case block_type::op_not: entry.command = "NOT"; break;
+            case block_type::op_mod:   entry.command = "MOD";   break;
+            case block_type::op_round: entry.command = "ROUND"; break;
+            case block_type::op_abs:   entry.command = "ABS";   break;
             case block_type::set_variable:    entry.command = "SET_VAR";    entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
             case block_type::change_variable: entry.command = "CHANGE_VAR"; entry.data = !block->parameters.empty() ? value_to_string(block->parameters[0].data) : ""; break;
+            case block_type::sensing_mouse_down:  entry.command = "MOUSE_DOWN";  break;
+            case block_type::sensing_key_pressed: entry.command = "KEY_PRESSED"; break;
+            case block_type::if_on_edge_bounce: entry.command = "BOUNCE"; break;
             default:                   entry.command = "BLOCK";    break;
         }
 
@@ -147,28 +153,47 @@ namespace core {
                 }
                 break;
             }
-            case block_type::repeat: {
-                Value v = resolve(interp, block->parameters[0].data);
-                for (int i = 0; i < value_to_int(v); i++) {
-                    for (auto b: block->nested_blocks) {
+            case block_type::forever: {
+                while (interp.running && !interp.is_paused) {
+                    for (auto b : block->nested_blocks) {
+                        if (!interp.running || interp.is_paused) break;
                         interpreter_execute_block(interp, b);
                     }
+                    SDL_PumpEvents();
+                    int mx, my;
+                    Uint32 ms = SDL_GetMouseState(&mx, &my);
+                    interp.mouse_down = (ms & SDL_BUTTON(1)) != 0;
+                    interp.mouse_x = mx - interp.stage_x;
+                    interp.mouse_y = my - interp.stage_y;
+                    const Uint8* ks = SDL_GetKeyboardState(nullptr);
+                    for (int i = 0; i < 512; i++) interp.keys[i] = ks[i];
+                }
+                break;
+            }
+            case block_type::repeat: {
+                Value v = resolve(interp, block->parameters[0].data);
+                int count = value_to_int(v);
+                for (int i = 0; i < count && interp.running && !interp.is_paused; i++) {
+                    for (auto b : block->nested_blocks) {
+                        if (!interp.running || interp.is_paused) break;
+                        interpreter_execute_block(interp, b);
+                    }
+                    SDL_PumpEvents();
+                    const Uint8* ks = SDL_GetKeyboardState(nullptr);
+                    for (int i2 = 0; i2 < 512; i2++) interp.keys[i2] = ks[i2];
                 }
                 break;
             }
             case block_type::repeat_until: {
-                while (interp.running && !value_to_bool(resolve(interp, block->parameters[0].data))) {
-                    for (auto b: block->nested_blocks) {
-                        interpreter_execute_block(interp, b);
-                    }
-                }
-                break;
-            }
-            case block_type::forever: {
-                while (interp.running) {
+                while (interp.running && !interp.is_paused &&
+                       !value_to_bool(resolve(interp, block->parameters[0].data))) {
                     for (auto b : block->nested_blocks) {
+                        if (!interp.running || interp.is_paused) break;
                         interpreter_execute_block(interp, b);
                     }
+                    SDL_PumpEvents();
+                    const Uint8* ks = SDL_GetKeyboardState(nullptr);
+                    for (int i = 0; i < 512; i++) interp.keys[i] = ks[i];
                 }
                 break;
             }
@@ -430,6 +455,116 @@ namespace core {
                 rd.text = std::string("NOT -> ") + (result ? "true" : "false");
                 rd.show_until = SDL_GetTicks() + 5000;
                 interp.results.push_back(rd);
+                break;
+            }
+            case block_type::op_mod: {
+                if (block->parameters.size() < 2) break;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value b = resolve(interp, block->parameters[1].data);
+                Value result = value_mod(a, b);
+                block->parameters[0].data = result;
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = value_to_string(a) + " mod " + value_to_string(b) + "=" + value_to_string(result);
+                rd.show_until = SDL_GetTicks() + 5000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::op_round: {
+                if (block->parameters.empty()) break;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value result = value_round(a);
+                block->parameters[0].data = result;
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = "round(" + value_to_string(a) + ")=" + value_to_string(result);
+                rd.show_until = SDL_GetTicks() + 5000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::op_abs: {
+                if (block->parameters.empty()) break;
+                Value a = resolve(interp, block->parameters[0].data);
+                Value result = value_abs(a);
+                block->parameters[0].data = result;
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = "abs(" + value_to_string(a) + ")=" + value_to_string(result);
+                rd.show_until = SDL_GetTicks() + 5000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::sensing_mouse_down: {
+                bool result = interp.mouse_down;
+                block->parameters.resize(1);
+                block->parameters[0].data = value_make_bool(result);
+                variable_set(interp.store, "mouse_down", value_make_bool(result));
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = std::string("mouse_down=") + (result ? "true" : "false");
+                rd.show_until = SDL_GetTicks() + 5000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::sensing_key_pressed: {
+                std::string key_name = value_to_string(resolve(interp, block->parameters[0].data));
+                bool pressed = false;
+                if (key_name == "space")      pressed = interp.keys[SDL_SCANCODE_SPACE];
+                else if (key_name == "up")    pressed = interp.keys[SDL_SCANCODE_UP];
+                else if (key_name == "down")  pressed = interp.keys[SDL_SCANCODE_DOWN];
+                else if (key_name == "left")  pressed = interp.keys[SDL_SCANCODE_LEFT];
+                else if (key_name == "right") pressed = interp.keys[SDL_SCANCODE_RIGHT];
+                else if (key_name.size() == 1) {
+                    SDL_Scancode sc = SDL_GetScancodeFromName(key_name.c_str());
+                    if (sc != SDL_SCANCODE_UNKNOWN) pressed = interp.keys[sc];
+                }
+                block->parameters[0].data = value_make_bool(pressed);
+                variable_set(interp.store, "key_" + key_name, value_make_bool(pressed));
+                result_display rd;
+                rd.block_line = interp.line_number;
+                rd.text = "key[" + key_name + "]=" + (pressed ? "true" : "false");
+                rd.show_until = SDL_GetTicks() + 5000;
+                interp.results.push_back(rd);
+                break;
+            }
+            case block_type::if_on_edge_bounce: {
+                if (!interp.active_sprite) break;
+                gfx::sprite& s = *interp.active_sprite;
+
+                float rw = 0, rh = 0;
+                gfx::sprite_get_render_size(s, rw, rh);
+                float half_rw = rw * 0.5f;
+                float half_rh = rh * 0.5f;
+
+                bool hit_x = false, hit_y = false;
+
+                if (s.x - half_rw < 0.0f) {
+                    s.x = half_rw;
+                    hit_x = true;
+                } else if (s.x + half_rw > (float)interp.stage_w) {
+                    s.x = (float)interp.stage_w - half_rw;
+                    hit_x = true;
+                }
+
+                if (s.y - half_rh < 0.0f) {
+                    s.y = half_rh;
+                    hit_y = true;
+                } else if (s.y + half_rh > (float)interp.stage_h) {
+                    s.y = (float)interp.stage_h - half_rh;
+                    hit_y = true;
+                }
+
+                // reflect direction
+                float rad = s.direction_deg * (float)M_PI / 180.0f;
+                float dx = std::cos(rad);
+                float dy = std::sin(rad);  // no negative here — match move_steps convention
+
+                if (hit_x) dx = -dx;
+                if (hit_y) dy = -dy;
+
+                s.direction_deg = std::atan2(dy, dx) * 180.0f / (float)M_PI;
+                if (s.direction_deg < 0) s.direction_deg += 360.0f;
+
                 break;
             }
         }

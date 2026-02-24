@@ -985,6 +985,8 @@ namespace app {
 
 
         st.btn_run.on_click = [&] {
+            st.interp.stage_w = st.lay.stage.w;
+            st.interp.stage_h = st.lay.stage.h;
             compiler :: free_compiled ( st.compiled_blocks ) ;
             st.compiled_blocks = compiler :: compile_workspace ( st.workspace ) ;
             if ( !st.compiled_blocks.empty() ) {
@@ -1103,7 +1105,15 @@ namespace app {
                 dbg :: logger_log ( st.logger , msg , lvl ) ;
             }
             st.interp_log_forwarded = (int)st.interp.log.entries.size() ;
-
+            int raw_mx, raw_my;
+            Uint32 mouse_state = SDL_GetMouseState(&raw_mx, &raw_my);
+            st.interp.mouse_x = raw_mx - st.lay.stage.x;
+            st.interp.mouse_y = raw_my - st.lay.stage.y;
+            st.interp.mouse_down = (mouse_state & SDL_BUTTON(1)) != 0;
+            st.interp.stage_x = st.lay.stage.x;
+            st.interp.stage_y = st.lay.stage.y;
+            const Uint8* ks = SDL_GetKeyboardState(nullptr);
+            for (int i = 0; i < 512; i++) st.interp.keys[i] = ks[i];
             render_frame(st);
         }
 

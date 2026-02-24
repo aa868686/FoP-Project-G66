@@ -45,6 +45,10 @@ namespace core {
     Value value_or (const Value& a, const Value& b);
     Value value_not(const Value& a);
 
+    Value value_mod(const Value& a, const Value& b);
+    Value value_round(const Value& a);
+    Value value_abs(const Value& a);
+
 }
 
 #endif //FPROJECT_VALUE_H

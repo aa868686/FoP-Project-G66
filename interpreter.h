@@ -29,6 +29,14 @@ namespace core {
         safety_net safety;
         snd :: sound_manager * sound_manager = nullptr ;
         std::vector<result_display> results;
+        int mouse_x = 0;
+        int mouse_y = 0;
+        bool mouse_down = false;
+        bool keys[512] = {};
+        int stage_x = 0;
+        int stage_y = 0;
+        int stage_w = 480;
+        int stage_h = 360;
     };
 
 
