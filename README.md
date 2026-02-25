@@ -1,5 +1,5 @@
-# FoP-Project-G66
-FoP Project G66
+
+
 Scratch Engine
 A Scratch-like visual programming environment built with C++ and SDL2.
 
@@ -49,4 +49,5 @@ How to Use
 •	Click the edit icon on a sprite to open the costume editor
 •	Use File > Save Project / Load Project to manage your work
 •	Use My Blocks category to define custom functions
+
 
