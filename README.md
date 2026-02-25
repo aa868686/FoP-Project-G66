@@ -1,10 +1,13 @@
 
 
 Scratch Engine
+
 A Scratch-like visual programming environment built with C++ and SDL2.
 
 Team Members
+
 •	Amirhossein Abolhassani
+
 •	Amir Foroughi Esfahani
 
 Course
@@ -49,5 +52,6 @@ How to Use
 •	Click the edit icon on a sprite to open the costume editor
 •	Use File > Save Project / Load Project to manage your work
 •	Use My Blocks category to define custom functions
+
 
 
